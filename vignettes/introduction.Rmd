@@ -1,0 +1,276 @@
+---
+title: "HARplus: Enhanced Tools for GEMPACK File Processing"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{HARplus: Enhanced Tools for GEMPACK File Processing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
+)
+```
+
+## Introduction
+
+HARplus is an R package designed to provide enhanced functionality for working with GEMPACK files, specifically HAR and SL4 formats. The package extends the basic capabilities of the HARr package by adding robust dimension handling, data extraction, and multi-file analysis features.
+
+```{r load-package}
+install.packages("devtools") 
+devtools::install_github("Bodysbobb/HARplus")
+```
+
+## Working with HAR Files
+
+### Reading HAR Files
+
+The `read_harx()` function provides enhanced HAR file reading capabilities:
+
+```{r har-reading, eval=FALSE}
+# Read a HAR file with default settings
+har_data <- read_harx("path/to/your/file.har")
+
+# Read with coefficient names instead of headers
+har_data_coef <- read_harx("path/to/your/file.har", 
+                          useCoefficientsAsNames = TRUE)
+
+# Read specific headers only
+har_data_subset <- read_harx("path/to/your/file.har", 
+                            headersToRead = c("REGI", "SECT"))
+```
+
+### Exploring HAR Structure
+
+```{r har-structure, eval=FALSE}
+# Get dimension summary for all headers
+dims_summary <- get_dims_har(har_data)
+print(dims_summary)
+
+# Get detailed information for a specific header
+header_info <- get_var_summary_har(har_data, "REGI")
+str(header_info)
+```
+
+### Extracting HAR Data
+
+```{r har-extraction, eval=FALSE}
+# Extract data from a specific header
+header_data <- get_data_har(har_data, "REGI",
+                           add_experiment = TRUE,
+                           experiment_name = "BaseCase",
+                           rename_cols = c("REG" = "Region"))
+
+# Extract data from all headers
+all_data <- get_all_har(har_data,
+                        add_experiment = TRUE,
+                        drop_subtotals = TRUE)
+```
+
+### Working with Multiple HAR Files
+
+```{r har-multi, eval=FALSE}
+# Compare specific header across files
+multi_header_data <- get_var_data_multi_har("REGI",
+                                           baseline_har, policy_har,
+                                           experiment_names = c("Baseline", "Policy"))
+
+# Compare all headers across files
+all_comparisons <- get_all_multi_har(baseline_har, policy_har,
+                                    experiment_names = c("Baseline", "Policy"))
+```
+
+## Working with SL4 Files
+
+### Reading SL4 Files
+
+```{r sl4-reading, eval=FALSE}
+# Read an SL4 file
+sl4_data <- read_sl4x("path/to/your/file.sl4")
+
+# Read with lowercase variable names
+sl4_data_lower <- read_sl4x("path/to/your/file.sl4", 
+                           toLowerCase = TRUE)
+```
+
+### Exploring SL4 Structure
+
+```{r sl4-structure, eval=FALSE}
+# Get dimension summary
+dims_summary <- get_dims_summary(sl4_data)
+
+# Get variable-specific information
+var_info <- get_var_summary(sl4_data, "VAR1")
+
+# Explore dimensions
+dim_elements <- get_dims_elements(sl4_data)
+dim_strings <- get_dims_strings(sl4_data)
+```
+
+### Data Extraction and Grouping
+
+```{r sl4-extraction, eval=FALSE}
+# Extract specific variable data
+var_data <- get_var_data(sl4_data, "VAR1",
+                         add_experiment = TRUE,
+                         experiment_name = "Scenario1")
+
+# Group by dimension pattern
+grouped_data <- group_by_dims(sl4_data, "Region*Sector")
+
+# Group all data
+all_grouped <- group_all(sl4_data)
+```
+
+### Multi-File Analysis
+
+```{r sl4-multi, eval=FALSE}
+# Compare variables across files
+multi_var_data <- get_var_data_multi("VAR1",
+                                    baseline_sl4, policy_sl4,
+                                    experiment_names = c("Baseline", "Policy"))
+
+# Group by dimensions across files
+multi_grouped <- group_by_dims_multi("Region*Sector",
+                                    baseline_sl4, policy_sl4,
+                                    experiment_names = c("Baseline", "Policy"))
+
+# Comprehensive multi-file analysis
+all_multi <- group_all_multi(baseline_sl4, policy_sl4,
+                            experiment_names = c("Baseline", "Policy"))
+```
+
+## Example Workflows
+
+### Basic Data Exploration
+
+```{r workflow-basic, eval=FALSE}
+# Read and explore HAR file
+har_data <- read_harx("model.har")
+har_structure <- get_dims_har(har_data)
+har_contents <- get_all_har(har_data)
+
+# Read and explore SL4 file
+sl4_data <- read_sl4x("solution.sl4")
+sl4_structure <- get_dims_summary(sl4_data)
+sl4_contents <- group_all(sl4_data)
+```
+
+### Comparative Analysis
+
+```{r workflow-comparative, eval=FALSE}
+# Compare baseline and policy scenarios
+baseline_har <- read_harx("baseline.har")
+policy_har <- read_harx("policy.har")
+
+har_comparison <- get_all_multi_har(baseline_har, policy_har,
+                                   experiment_names = c("Baseline", "Policy"))
+
+baseline_sl4 <- read_sl4x("baseline.sl4")
+policy_sl4 <- read_sl4x("policy.sl4")
+
+sl4_comparison <- group_all_multi(baseline_sl4, policy_sl4,
+                                 experiment_names = c("Baseline", "Policy"))
+```
+
+## Error Handling Examples
+
+### Handling Missing Files
+
+```{r error-missing, eval=FALSE}
+# Safely read a file that might not exist
+tryCatch({
+  har_data <- read_harx("nonexistent.har")
+}, error = function(e) {
+  message("Error reading file: ", e$message)
+})
+```
+
+### Handling Data Type Issues
+
+```{r error-types, eval=FALSE}
+# Function to check data types
+check_numeric_values <- function(data) {
+  if (!is.numeric(data$Value)) {
+    warning("Non-numeric values found in data")
+    return(FALSE)
+  }
+  return(TRUE)
+}
+
+# Example usage
+har_data <- read_harx("model.har")
+header_data <- get_data_har(har_data, "REGI")
+check_numeric_values(header_data)
+```
+
+### Memory Management
+
+```{r memory-management, eval=FALSE}
+# Function to process large files in chunks
+process_large_file <- function(file_path, chunk_size = 1000) {
+  har_data <- read_harx(file_path)
+  
+  # Process in chunks
+  chunks <- split(names(har_data$data), 
+                 ceiling(seq_along(names(har_data$data))/chunk_size))
+  
+  results <- list()
+  for(chunk in chunks) {
+    # Process chunk
+    chunk_results <- lapply(chunk, function(header) {
+      get_data_har(har_data, header)
+    })
+    results <- c(results, chunk_results)
+    
+    # Clean up
+    gc()
+  }
+  
+  return(results)
+}
+```
+
+## Best Practices
+
+### File Organization
+
+```{r best-practices-files, eval=FALSE}
+# Example project structure
+project_structure <- list(
+  data = list(
+    har = c("baseline.har", "policy.har"),
+    sl4 = c("baseline.sl4", "policy.sl4")
+  ),
+  results = list(
+    tables = "output_tables",
+    plots = "output_plots"
+  )
+)
+```
+
+### Data Validation
+
+```{r best-practices-validation, eval=FALSE}
+# Function to validate dimensions across files
+validate_dimensions <- function(baseline_har, policy_har) {
+  baseline_dims <- get_dims_har(baseline_har)
+  policy_dims <- get_dims_har(policy_har)
+  
+  # Compare dimensions
+  all.equal(
+    baseline_dims$Dimensions,
+    policy_dims$Dimensions
+  )
+}
+```
+
+## Conclusion
+
+This vignette demonstrates the core functionality of the HARplus package for working with both HAR and SL4 files. The package provides a consistent interface for data extraction, manipulation, and analysis across file types, making it a valuable tool for economic modeling and analysis.
