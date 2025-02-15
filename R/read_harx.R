@@ -9,7 +9,6 @@
 #' @param headersToRead Specific headers to read; if NULL, all headers are read.
 #' @return An enhanced HAR object containing extracted data along with dimension details.
 #' @export
-#' @importFrom HARr read_har
 #' @examples
 #' # ─── Load HAR Data ───────────────────────────────────────────────────
 #' har_path <- "path/to/file.har"
@@ -24,7 +23,7 @@ read_harx <- function(con,
                       useCoefficientsAsNames = FALSE,
                       headersToRead = NULL) {
   
-  har_data <- HARr::read_har(con, 
+  har_data <- rhar_enhanced(con, 
                              useCoefficientsAsNames = useCoefficientsAsNames,
                              toLowerCase = FALSE,  
                              headersToRead = headersToRead)
