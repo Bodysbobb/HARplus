@@ -1,14 +1,20 @@
 Package: HARplus
-Title: What the Package Does (One Line, Title Case)
+Title: Enhanced .HAR and .SL4 File Manipulation
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Pattawee", "Puangchit", , "ppuangch@purdue.edu", role = c("aut", "cre"))
+Description:  An extension of the HARr package for enhanced manipulation of .HAR and .SL4 files.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+
+Imports: 
+    HARr
+
+Remotes:
+    USDA-ERS/MTED-HARr
+
 Suggests: 
     knitr,
     rmarkdown

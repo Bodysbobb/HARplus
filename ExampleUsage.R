@@ -1,127 +1,274 @@
-# Example of Usage of read_harx -------------------------------------------------------------------
-
-# Define the input folder path
+# Example of Usage of read_harx ===============================================
+# Load example HAR files
 input_folder <- "D:/GitHub/GTAP-Results-using-R/TestData/in"
-
-# 1. Reading the data
 har_data1 <- read_harx(file.path(input_folder, "ExB14-WEL.har"))
 har_data2 <- read_harx(file.path(input_folder, "ExB15-WEL.har"))
 
-# 2. Retrieving data structure
-data_dims_har <- get_dims_har(har_data1)
+# (1) One header, one experiment ----------------------------------------
 
-# 3. Extracting data from a selected header
+# Default experiment name (will use "har_data1")
+one.head.basic <- get_har_data("A", har_data1)
 
-## Retrieve a summary of the variable, including its data, dimensions, and dimension sizes
-var_summary_har <- get_var_summary_har(har_data1, "A")
+# With custom experiment name
+one.head.named <- get_har_data("A", har_data1, 
+                               experiment_names = "baseline")
 
-## Extract a dataframe of the selected Header
-var_data_har_E1 <- get_data_har(har_data1, "E1", 
-                                add_experiment = TRUE,
-                                experiment_name = "Exp1", 
-                                rename_cols = c(REG = "Region",
-                                                FORM = "Type"))
-
-
-var_data_har_A <- get_data_har(har_data1, "A", 
-                               add_experiment = TRUE,
-                               experiment_name = "Exp1", 
-                               rename_cols = c(REG = "Region"))
-
-
-# 4. Extracting data from all header
-var_data_har_C16 <- get_data_har(har_data1, "C16", 
-                                 add_experiment = TRUE,
-                                 experiment_name = "Exp1", 
+# With column renaming
+one.head.renamed <- get_har_data("A", har_data1, 
+                                 experiment_names = "baseline",
                                  rename_cols = c(REG = "Region"))
 
-# 5. Extracting datafram from the selected header across multiple HAR files
-multi_data <- get_var_data_multi_har("A", har_data1, har_data2, 
-                                     experiment_names = c("Scenario1", "Scenario2"))
+# (2) Multiple headers, one experiment ---------------------------------
 
-# 6. Extracting datafram from all header across multiple HAR files
-all_data <- get_all_multi_har(har_data1, har_data2, 
-                              experiment_names = c("Scenario1", "Scenario2"))
+# Default experiment name
+multi.head.basic <- get_har_data(c("A", "A1", "E1"), 
+                                 har_data1)
+
+# With custom experiment name
+multi.head.named <- get_har_data(
+  c("A", "A1", "E1"),
+  har_data1,
+  experiment_names = "baseline"
+)
+
+# With column renaming
+multi.head.renamed <- get_har_data(
+  c("A", "A1", "E1"),
+  har_data1,
+  experiment_names = "baseline",
+  rename_cols = c(REG = "Region", COMM = "Commodity")
+)
+
+# (3) One header, multiple experiments --------------------------------
+
+# Default experiment names (will use "har_data1" and "har_data2")
+one.head.multi.basic <- get_har_data("A",
+                                     har_data1, har_data2)
+
+# Custom experiment names
+one.head.multi.named <- get_har_data("A",
+                                     har_data1, har_data2,
+                                     experiment_names = c("baseline", "policy"))
+
+# With column renaming
+one.head.multi.renamed <- get_har_data("A",
+                                       har_data1, har_data2,
+                                       experiment_names = c("baseline", "policy"),
+                                       rename_cols = c(REG = "Region"))
+
+# (4) Multiple headers, multiple experiments --------------------------
+
+# Default experiment names
+multi.head.multi.basic <- get_har_data(
+  c("A", "A1", "E1"),
+  har_data1, har_data2
+)
+
+# Custom experiment names
+multi.head.multi.named <- get_har_data(
+  c("A", "A1", "E1"),
+  har_data1, har_data2,
+  experiment_names = c("baseline", "policy")
+)
+
+# Full example with all options
+multi.head.multi.full <- get_har_data(
+  c("A", "A1", "E1"),
+  har_data1, har_data2,
+  experiment_names = c("baseline", "policy"),
+  drop_subtotals = TRUE,
+  rename_cols = c(REG = "Region", COMM = "Commodity")
+)
+
+# (5) Extract all headers --------------------------------------------
+
+# From single experiment
+all.head.one <- get_har_data(NULL, har_data1)
+
+# From multiple experiments
+all.head.multi <- get_har_data(NULL, 
+                               har_data1, har_data2,
+                               experiment_names = c("baseline", "policy"))
 
 
 
-# Example of Usage of read_sl4x --------------------------------------------------------
+# EXAMPLE OF <read_sl4x> ===============================================
 
 # Define the input folder path
 input_folder <- "D:/GitHub/GTAP-Results-using-R/TestData/in"
 
-# 1. Reading the data
+# Reading the data
 sl4_data1 <- read_sl4x(file.path(input_folder, "ExB14.sl4"))
 sl4_data2 <- read_sl4x(file.path(input_folder, "ExB15.sl4"))
 
-# 2. Retrieving data structure
-data_dims <- get_dims_summary(sl4_data1)
+# EXAMPLE OF <get_sl4_data> ===============================================
 
-## Extracting unique element of dimension name
-dim.element <- get_dims_elements(sl4_data1)
+# (1) One variable, one experiment ----------------------------------------
+# Default experiment name
+one.var.oricol <- get_sl4_data("qo", sl4_data1)
 
-## Extracting unique strings of dimension name
-dim.string <- get_dims_strings(sl4_data1)
+# With custom experiment name
+one.var.oricol.exp <- get_sl4_data("qo", sl4_data1, 
+                                    experiment_names = "exp1")
+
+# With column renaming
+one.var.recol <- get_sl4_data("qo", sl4_data1, 
+                               experiment_names = "exp1", 
+                               rename_cols = c(REG = "Region"))
+
+# With dropping subtotals
+one.var.no.subtotals <- get_sl4_data("qo", sl4_data1,
+                                      experiment_names = "exp1",
+                                      drop_subtotals = TRUE)
+
+# (2) Multiple variables, one experiment ---------------------------------
+# Default experiment name
+multi.var.one.exp <- get_sl4_data(c("qo", "qgdp", "EV", "u"), 
+                                   sl4_data1)
+
+# With custom experiment name
+multi.var.one.exp.named <- get_sl4_data(c("qo", "qgdp", "EV", "u"), 
+                                         sl4_data1, 
+                                         experiment_names = "baseline")
+
+# With column renaming
+multi.var.one.exp.renamed <- get_sl4_data(c("qo", "qgdp", "EV", "u"), 
+                                           sl4_data1,
+                                           experiment_names = "baseline",
+                                           rename_cols = c(REG = "Region", 
+                                                           COMM = "Commodity"))
+
+# (3) One variable, multiple experiments --------------------------------
+# Default experiment names
+one.var.multi.exp <- get_sl4_data("qo", 
+                                   sl4_data1, sl4_data2)
+
+# Custom experiment names
+one.var.multi.exp.named <- get_sl4_data("qo",
+                                         sl4_data1, sl4_data2,
+                                         experiment_names = c("baseline", "policy"))
+
+# With column renaming
+one.var.multi.exp.renamed <- get_sl4_data("qo",
+                                           sl4_data1, sl4_data2,
+                                           experiment_names = c("baseline", "policy"),
+                                           rename_cols = c(REG = "Region"))
+
+# (4) Multiple variables, multiple experiments --------------------------
+# Default experiment names
+multi.var.multi.exp <- get_sl4_data(c("qo", "qgdp", "EV", "u"),
+                                     sl4_data1, sl4_data2)
+
+# Custom experiment names
+multi.var.multi.exp.named <- get_sl4_data(c("qo", "qgdp", "EV", "u"),
+                                           sl4_data1, sl4_data2,
+                                           experiment_names = c("baseline", "policy"))
+
+# With column renaming and dropping subtotals
+multi.var.multi.exp.full <- get_sl4_data(c("qo", "qgdp", "EV", "u"),
+                                          sl4_data1, sl4_data2,
+                                          experiment_names = c("baseline", "policy"),
+                                          drop_subtotals = TRUE,
+                                          rename_cols = c(REG = "Region", 
+                                                          COMM = "Commodity"))
 
 
-# 3. Extracting data for a selected variable
+# EXAMPLE OF <extract_by_dims > ===============================================
 
-## Retrieve a summary of the variable, including its data, dimensions, and dimension sizes
-var_summary <- get_var_summary(sl4_data1, "qo")
+# (1) One pattern, one experiment ----------------------------------------
+# Default experiment name
+one.pat.oricol <- extract_by_dims ("comm*reg", sl4_data1)
 
-## Extract a dataframe of the selected variable
-# (1) By default, `drop_subtotals = FALSE`. If set to `TRUE`, subtotal values are included.
-#     Subtotals are indicated in the "Type" column if available; otherwise, the column will contain "TOTAL".
-# (2) By default, the dataset does not include an "Experiment" column.
-#     If `add_experiment = TRUE`, the experiment name can be specified.
-var_data <- get_var_data(sl4_data1, "qo", drop_subtotals = FALSE, 
-                         add_experiment = TRUE, experiment_name = "Exp1", 
-                         rename_cols = c(REG = "Region"))
+# With custom experiment name
+one.pat.oricol.exp <- extract_by_dims ("comm*reg", sl4_data1, 
+                                     experiment_names = "exp1")
+
+# With column renaming
+one.pat.recol <- extract_by_dims ("comm*reg", sl4_data1, 
+                                experiment_names = "exp1",
+                                rename_cols = c(REG = "Region"))
+
+# (2) Multiple patterns, one experiment ---------------------------------
+# Default experiment name
+multi.pat.one.exp <- extract_by_dims (c("comm*reg", "comm*reg*reg", "reg", "COMM"), 
+                                    sl4_data1)
+
+# With custom experiment name
+multi.pat.one.exp.named <- extract_by_dims (
+  c("comm*reg", "comm*reg*reg", "reg", "COMM"),
+  sl4_data1,
+  experiment_names = "baseline"
+)
+
+# With column renaming
+multi.pat.one.exp.renamed <- extract_by_dims (
+  c("comm*reg", "comm*reg*reg", "reg", "COMM"),
+  sl4_data1,
+  experiment_names = "baseline",
+  rename_cols = c(REG = "Region", COMM = "Commodity")
+)
+
+# (3) One pattern, multiple experiments --------------------------------
+# Default experiment names
+one.pat.multi.exp <- extract_by_dims ("comm*reg",
+                                    sl4_data1, sl4_data2)
+
+# Custom experiment names
+one.pat.multi.exp.named <- extract_by_dims ("comm*reg",
+                                          sl4_data1, sl4_data2,
+                                          experiment_names = c("baseline", "policy"))
+
+# With column renaming
+one.pat.multi.exp.renamed <- extract_by_dims ("comm*reg",
+                                            sl4_data1, sl4_data2,
+                                            experiment_names = c("baseline", "policy"),
+                                            rename_cols = c(REG = "Region"))
+
+# (4) Multiple patterns, multiple experiments --------------------------
+# Default experiment names
+multi.pat.multi.exp <- extract_by_dims (
+  c("comm*reg", "comm*reg*reg", "reg", "COMM"),
+  sl4_data1, sl4_data2
+)
+
+# Custom experiment names
+multi.pat.multi.exp.named <- extract_by_dims (
+  c("comm*reg", "comm*reg*reg", "reg", "COMM"),
+  sl4_data1, sl4_data2,
+  experiment_names = c("baseline", "policy")
+)
+
+# With column renaming and dropping subtotals
+multi.pat.multi.exp.full <- extract_by_dims (
+  c("comm*reg", "comm*reg*reg", "reg", "COMM"),
+  sl4_data1, sl4_data2,
+  experiment_names = c("baseline", "policy"),
+  drop_subtotals = FALSE,
+  rename_cols = c(REG = "Region", COMM = "Commodity")
+)
+
+# (5) Extract all patterns --------------------------------------------
+# From single experiment
+all.pat.one.exp <- extract_by_dims (NULL, sl4_data1)
+
+# From multiple experiments
+all.pat.multi.exp <- extract_by_dims (NULL, sl4_data1, sl4_data2, 
+                                    experiment_names = c("baseline", "policy"))
 
 
-# Alternatively, extract data without adding an experiment column
-var_data_no_exp_oricol <- get_var_data(sl4_data1, "qo")
+# EXAMPLE OF <group_by_dims> ===============================================
+regrouped_data <- group_by_dims(
+  all.pat.multi.exp,  
+  dimension_map = data.frame(
+    dimension = c("COMM", "ACTS", "REG"),
+    group = c("Sector", "Sector", "Region"),
+    priority = c(1, 1, 2)
+  )
+)
 
-# 4. Grouping data by a selected dimension within an experiment (solution file)
-agg_dim <- group_by_dims(sl4_data1, "comm*reg", drop_subtotals = TRUE, 
-                         add_experiment = TRUE, experiment_name = "Exp1", 
-                         rename_cols = c(REG = "Region", COMM = "Sector"))
-
-# 5. Grouping across all dimensions within an experiment
-agg_all <- group_all(sl4_data1, drop_subtotals = FALSE, 
-                     add_experiment = TRUE, experiment_name = "Exp1", 
-                     rename_cols = c(REG = "Region", COMM = "Sector"))
-
-# 6. Extracting a dataframe of the selected variable across multiple solution files
-# By default:
-# - The experiment name is assigned based on the dataset name.
-# - The "Type" column will automatically include subtotals if at least one dataset contains them.
-# - Subtotals can only be suppressed if all datasets do not include them.
-data_multi <- get_var_data_multi("qo", sl4_data1, sl4_data2, 
-                                 experiment_names = c("EXP1", "EXP2"), 
-                                 drop_subtotals = FALSE, 
-                                 rename_cols = c(REG = "Region", COMM = "Sector"))
-# Althernatively
-data_multi_oricol <- get_var_data_multi("qo", sl4_data1, sl4_data2, 
-                                        experiment_names = c("EXP1", "EXP2"), 
-                                        drop_subtotals = FALSE)
-
-
-# 7. Grouping by a selected dimension across multiple experiments
-agg_dim_multi <- group_by_dims_multi("comm*reg", sl4_data1, sl4_data2, 
-                                     experiment_names = c("EXP1", "EXP2"), 
-                                     drop_subtotals = FALSE, 
-                                     rename_cols = c(REG = "Region", COMM = "Sector"))
-
-# 8. Grouping across all dimensions across multiple experiments
-agg_all_multi <- group_all_multi(sl4_data1, sl4_data2,
-                                 experiment_names = c("Test1", "Test2"), 
-                                 rename_cols = c(REG = "Region", COMM = "Sector"))
-
-
-# 9. Combining data based on defined priority
-regrouped_data <- combine_by_dims(
-  agg_all_multi,
+# EXAMPLE OF <group_by_dims_from_sl4> ===============================================
+result <- group_by_dims_from_sl4(
+  sl4_data1, sl4_data2,
   dimension_map = data.frame(
     dimension = c("COMM", "ACTS", "REG"),
     group = c("Sector", "Sector", "Region"),
