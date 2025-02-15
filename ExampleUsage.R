@@ -1,9 +1,8 @@
 # Example of Usage of read_harx ===============================================
 # Load example HAR files
-input_folder <- "D:/GitHub/GTAP-Results-using-R/TestData/in"
+input_folder <- "C:/GitHub/GTAP-Results-using-R/TestData/in"
 har_data1 <- read_harx(file.path(input_folder, "ExB14-WEL.har"))
 har_data2 <- read_harx(file.path(input_folder, "ExB15-WEL.har"))
-
 # (1) One header, one experiment ----------------------------------------
 
 # Default experiment name (will use "har_data1")
@@ -93,10 +92,6 @@ all.head.multi <- get_har_data(NULL,
 
 
 # EXAMPLE OF <read_sl4x> ===============================================
-
-# Define the input folder path
-input_folder <- "D:/GitHub/GTAP-Results-using-R/TestData/in"
-
 # Reading the data
 sl4_data1 <- read_sl4x(file.path(input_folder, "ExB14.sl4"))
 sl4_data2 <- read_sl4x(file.path(input_folder, "ExB15.sl4"))

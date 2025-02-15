@@ -20,7 +20,7 @@ read_sl4x <- function(filename, toLowerCase = FALSE) {
     stop(sprintf("File '%s' does not exist", filename))
   }
   
-  solution <- HARr::read_har(filename, toLowerCase = toLowerCase)
+  solution <- rhar_enhanced(filename, toLowerCase = toLowerCase)
   subtotals <- c('TOTAL', solution$STDS)
   dimension_info <- list()
   
