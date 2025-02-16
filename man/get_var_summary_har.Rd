@@ -2,14 +2,15 @@
 % Please edit documentation in R/read_harx.R
 \name{get_var_summary_har}
 \alias{get_var_summary_har}
-\title{Get dimension information for a header}
+\title{─────────────────────────────────────────────────────────────────────────────
+Get Dimension Information for a Header}
 \usage{
-get_var_summary_har(har_obj, var_name)
+get_var_summary_har(header_name, har_obj)
 }
 \arguments{
-\item{har_obj}{An enhanced HAR object created using \code{read_harx()}.}
+\item{header_name}{Name of the header whose dimension details are to be retrieved.}
 
-\item{var_name}{Name of the header whose dimension details are to be retrieved.}
+\item{har_obj}{An enhanced HAR object created using \code{read_harx()}.}
 }
 \value{
 A list containing the dimension names, sizes, and elements for the specified header.
@@ -18,4 +19,11 @@ A list containing the dimension names, sizes, and elements for the specified hea
 Retrieves detailed dimension information for a specific header within an
 enhanced HAR object. It returns the structure of dimensions, including
 their names, sizes, and element labels.
+}
+\examples{
+# ─── Load HAR Data ───────────────────────────────────────────────────
+har_data <- read_harx("path/to/file.har")
+
+# ─── Get Dimension Details for a Header ──────────────────────────────
+dim_info <- get_var_summary_har("GDP", har_data)
 }

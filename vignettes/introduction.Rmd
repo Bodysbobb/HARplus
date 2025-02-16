@@ -19,7 +19,11 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
+devtools::install("D:/GitHub/HARplus")
 library(HARplus)
+
+har_file <- system.file("data", "ExB14-WEL.har", package = "HARplus")
+sl4_file <- system.file("data", "ExB14.sl4", package = "HARplus")
 ```
 
 ## Introduction

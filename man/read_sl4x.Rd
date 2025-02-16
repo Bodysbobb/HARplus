@@ -18,3 +18,11 @@ An enhanced SL4 object containing structured data, metadata, and dimension detai
 Reads an SL4 file and processes its structured data into an enhanced SL4 object.
 Extracts metadata, dimensions, and variables while handling subtotal information.
 }
+\examples{
+# ─── Load SL4 Data ─────────────────────────────────────────────────
+sl4_path <- "path/to/file.sl4"
+sl4_data <- read_sl4x(sl4_path)
+
+# ─── Load SL4 Data with lowercase -─────────────────────────────────
+sl4_data <- read_sl4x(sl4_path, toLowerCase = TRUE)
+}

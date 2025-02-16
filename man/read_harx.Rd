@@ -2,7 +2,7 @@
 % Please edit documentation in R/read_harx.R
 \name{read_harx}
 \alias{read_harx}
-\title{Enhanced read for GEMPACK HAR files}
+\title{Read and Process GEMPACK HAR Files}
 \usage{
 read_harx(con, useCoefficientsAsNames = FALSE, headersToRead = NULL)
 }
@@ -18,6 +18,17 @@ An enhanced HAR object containing extracted data along with dimension details.
 }
 \description{
 Reads a GEMPACK HAR file and enhances the extracted data by incorporating
-detailed dimension information for each header. The function allows for customization,
-such as using coefficient names instead of headers and converting names to lowercase.
+detailed dimension information for each header. This function allows for customization,
+such as using coefficient names instead of headers and specifying which headers to read.
+}
+\examples{
+# ─── Load HAR Data ───────────────────────────────────────────────────
+har_path <- "path/to/file.har"
+har_data <- read_harx(har_path)
+
+# ─── Load HAR Data with coefficient names instead of headers ─────────
+har_data <- read_harx(har_path, useCoefficientsAsNames = TRUE)
+
+# ─── Load HAR Data but only read selected headers ────────────────────
+har_data <- read_harx(har_path, headersToRead = c("A", "B1", "GDP"))
 }

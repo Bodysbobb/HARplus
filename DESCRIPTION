@@ -3,7 +3,7 @@ Title: Enhanced Processing of GEMPACK .HAR and .SL4 Files
 Version: 0.0.0.9000
 Authors@R: 
     person("Pattawee", "Puangchit", , "ppuangch@purdue.edu", role = c("aut", "cre"))
-Maintainer: "Pattawee Puangchit <ppuangch@purdue.edu>"
+Maintainer: Pattawee Puangchit <ppuangch@purdue.edu>
 Description: HARplus extends the capabilities of GEMPACK `.HAR` and `.SL4` file processing by providing 
     advanced dimension handling, multi-file analysis, and structured metadata management. While inspired 
     by the HARr package, originally developed by Maros Ivanic and his team, HARplus is fully independent 
