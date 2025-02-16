@@ -2,18 +2,19 @@
 % Please edit documentation in R/utils.R
 \name{are_patterns_equal}
 \alias{are_patterns_equal}
-\title{Check if dimension patterns are equivalent}
+\title{Check if Dimension Patterns Are Equivalent (Internal)}
 \usage{
 are_patterns_equal(pattern1, pattern2)
 }
 \arguments{
-\item{pattern1}{First dimension pattern}
+\item{pattern1}{First dimension pattern.}
 
-\item{pattern2}{Second dimension pattern}
+\item{pattern2}{Second dimension pattern.}
 }
 \value{
-Logical indicating if patterns are equivalent
+Logical indicating if patterns are equivalent.
 }
 \description{
-Check if dimension patterns are equivalent
+This function checks whether two dimension patterns are the same.
 }
+\keyword{internal}

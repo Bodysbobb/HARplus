@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{process_dim_names}
 \alias{process_dim_names}
-\title{Process Dimension Names to Handle Duplicates}
+\title{Process Dimension Names to Handle Duplicates (Internal)}
 \usage{
 process_dim_names(dim_names)
 }
@@ -13,5 +13,6 @@ process_dim_names(dim_names)
 A character vector of unique dimension names.
 }
 \description{
-Process Dimension Names to Handle Duplicates
+Ensures dimension names are unique by appending suffixes where necessary.
 }
+\keyword{internal}
