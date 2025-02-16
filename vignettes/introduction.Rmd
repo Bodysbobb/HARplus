@@ -1,6 +1,6 @@
 ---
 title: "HARplus: Enhanced Tools for GEMPACK File Processing"
-author: "Your Name"
+author: "Pattawee Puangchit"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -9,7 +9,7 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -18,10 +18,13 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r setup}
+library(HARplus)
+```
+
 ## Introduction
 
-HARplus is an R package designed to provide enhanced functionality for working with GEMPACK files, specifically HAR and SL4 formats. The package extends the basic capabilities of the HARr package by adding robust dimension handling, data extraction, and multi-file analysis features.
-
+In this vignette, I aim to highlight the usage of grouping-data features `group_by_dims` and `group_by_dims_from_sl4` that may be useful for those GEMPACK users. Note that I firstly build this package based on the GTAPv7 models using the example of simulation solution file `<sl4>` and the Welfare decompostion file `<har>`. That's, I will use the course 3x3 simulation for this vignette. \footnote{For GTAP model information, please }
 ```{r load-package}
 install.packages("devtools") 
 devtools::install_github("Bodysbobb/HARplus")

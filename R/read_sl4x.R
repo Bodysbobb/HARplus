@@ -103,45 +103,6 @@ read_sl4x <- function(filename, toLowerCase = FALSE) {
 
 
 #' ─────────────────────────────────────────────────────────────────────────────
-#' Get Variable Summary from SL4 Object
-#' 
-#' Generates a summary of the variables within an enhanced SL4 object, 
-#' listing their dimension sizes and structures.
-#' 
-#' @param sl4_obj An enhanced SL4 object created using `read_sl4x()`.
-#' @return A data frame containing variable names, dimension counts, and dimension strings.
-#' @export
-#' @examples
-#' # ─── Load SL4 Data ───────────────────────────────────────────────────
-#' sl4_data <- read_sl4x("path/to/sl4file.sl4")
-#'
-#' # ─── Get Summary of All Variables ────────────────────────────────────
-#' var_summary <- get_dims_summary(sl4_data)
-get_dims_summary <- function(sl4_obj) {
-  variables <- character(0)
-  sizes <- numeric(0)
-  dimensions <- character(0)
-  
-  for (var_name in names(sl4_obj$dimension_info)) {
-    dim_info <- sl4_obj$dimension_info[[var_name]]
-    variables <- c(variables, var_name)
-    sizes <- c(sizes, length(dim_info$dimension_names))
-    dimensions <- c(dimensions, dim_info$dimension_string)
-  }
-  
-  summary_df <- data.frame(
-    Variable = variables,
-    Size = sizes,
-    Dimensions = dimensions,
-    stringsAsFactors = FALSE,
-    row.names = NULL
-  )
-  
-  summary_df[order(variables), ]
-}
-
-
-#' ─────────────────────────────────────────────────────────────────────────────
 #' Get Dimension Information for a Variable
 #' 
 #' Retrieves detailed dimension information for a specific variable 
@@ -162,133 +123,6 @@ get_var_summary <- function(sl4_obj, var_name) {
     stop(sprintf("Variable '%s' not found", var_name))
   }
   return(sl4_obj$dimension_info[[var_name]])
-}
-
-
-#' ─────────────────────────────────────────────────────────────────────────────
-#' Extract Unique Dimension Elements
-#' 
-#' Extracts and lists unique dimension elements present in an SL4 object.
-#' 
-#' @param sl4_obj A structured SL4 object containing dimension information.
-#' @return A data frame containing unique dimension elements.
-#' @export
-#' @examples
-#' # ─── Load SL4 Data ───────────────────────────────────────────────────
-#' sl4_data <- read_sl4x("path/to/sl4file.sl4")
-#'
-#' # ─── Retrieve Unique Dimension Elements for Mapping ─────────────────
-#' dim_elements <- get_dims_elements(sl4_data)
-#'
-#' # ─── Create a Mapping Data Frame for Renaming ──────────────────────
-#' mapping_df <- data.frame(
-#'   old = dim_elements$DimName,  # Extracted dimension names
-#'   new = paste0("New_", dim_elements$DimName)  # Example: Adding "New_" prefix
-#' )
-#'
-#' # ─── Apply Column Renaming ──────────────────────────────────────────
-#' renamed_sl4_data <- rename_sl4col_all(sl4_data, mapping_df)
-get_dims_elements <- function(sl4_obj) {
-  dimensions <- character(0)
-  
-  for (var_name in names(sl4_obj$dimension_info)) {
-    dim_info <- sl4_obj$dimension_info[[var_name]]
-    dimensions <- c(dimensions, dim_info$dimension_string)
-  }
-  
-  unique_dim_names <- unique(unlist(strsplit(dimensions, "\\*")))
-  
-  return(data.frame(DimName = unique_dim_names, stringsAsFactors = FALSE))
-}
-
-
-#' ─────────────────────────────────────────────────────────────────────────────
-#' Extract Unique Dimension Strings
-#' 
-#' Extracts and lists unique dimension strings present in an SL4 object.
-#' 
-#' @param sl4_obj A structured SL4 object containing dimension information.
-#' @return A data frame containing unique dimension strings.
-#' @export
-#' @examples
-#' # ─── Load SL4 Data ───────────────────────────────────────────────────
-#' sl4_data <- read_sl4x("path/to/sl4file.sl4")
-#'
-#' # ─── Retrieve Unique Dimension Strings ───────────────────────────────
-#' dim_strings <- get_dims_strings(sl4_data)
-get_dims_strings <- function(sl4_obj) {
-  dimensions <- character(0)
-  
-  for (var_name in names(sl4_obj$dimension_info)) {
-    dim_info <- sl4_obj$dimension_info[[var_name]]
-    dimensions <- c(dimensions, dim_info$dimension_string)
-  }
-  
-  unique_dim_names <- unique(dimensions)
-  
-  return(data.frame(DimName = unique_dim_names, stringsAsFactors = FALSE))
-}
-
-
-#' ─────────────────────────────────────────────────────────────────────────────
-#' Rename Data Frame Columns Based on Mapping
-#' 
-#' Renames the columns of a data frame within an SL4 object according to a specified mapping, 
-#' ensuring that duplicate names are avoided by appending numeric suffixes if necessary.
-#' 
-#' @param sl4_obj An enhanced SL4 object containing structured data.
-#' @param mapping_df A two-column data frame where the first column contains old names, 
-#'        and the second column contains new names.
-#' @return An SL4 object with updated column names.
-#' @export
-#' @examples
-#' # ─── Load SL4 Data ─────────────────────────────────────────────────
-#' sl4_path <- "path/to/file.sl4"
-#' sl4_obj <- read_sl4x(sl4_path)
-#'
-#' # ─── Retrieve Unique Dimension Elements ────────────────────────────
-#' dim_elements <- get_dims_elements(sl4_obj)
-#'
-#' # ─── Create a Mapping Data Frame for Renaming ──────────────────────
-#' mapping_df <- data.frame(
-#'   old = dim_elements$DimName,  # Extracted dimension names
-#'   new = paste0("New_", dim_elements$DimName)  # New names (Example)
-#' )
-#'
-#' # ─── Rename Columns Using the Mapping ───────────────────────────────
-#' renamed_sl4_obj <- rename_sl4col_all(sl4_obj, mapping_df)
-rename_sl4col_all <- function(sl4_obj, mapping_df) {
-  if (!is.list(sl4_obj) || !"data" %in% names(sl4_obj)) {
-    stop("Invalid SL4 object: Expected a structured SL4 object with a 'data' component.")
-  }
-  if (!is.data.frame(mapping_df) || ncol(mapping_df) != 2) {
-    stop("Invalid mapping_df: Expected a two-column data frame with old and new names.")
-  }
-  
-  old_names <- mapping_df[[1]]
-  new_names <- mapping_df[[2]]
-  rename_cols <- setNames(new_names, old_names)
-  
-  # Rename columns in the SL4 object
-  for (var_name in names(sl4_obj$data)) {
-    df <- sl4_obj$data[[var_name]]
-    
-    if (!is.data.frame(df)) next  # Skip non-data frame elements
-    
-    for (old_name in names(rename_cols)) {
-      matching_cols <- which(names(df) == old_name)
-      if (length(matching_cols) > 0) {
-        for (i in seq_along(matching_cols)) {
-          new_name <- if (i == 1) rename_cols[old_name] else paste0(rename_cols[old_name], i - 1)
-          names(df)[matching_cols[i]] <- new_name
-        }
-      }
-    }
-    
-    sl4_obj$data[[var_name]] <- df  # Update the SL4 object with renamed data frame
-  }
-  
-  return(sl4_obj)  # Return the modified SL4 object
 }
 
 
@@ -337,11 +171,14 @@ rename_sl4col_all <- function(sl4_obj, mapping_df) {
 #'
 #' # ─── Extracting All Variables ────────────────────────────────────────
 #' # Extract all variables from a single SL4 file
-#' get_sl4_data(NULL, sl4_data1)
+#' get_sl4_data("ALL", sl4_data1)   # Using the <"ALL">
+#' get_sl4_data(NULL, sl4_data1)    # Using the <NULL>
 #' 
 #' # Extract all variables from multiple SL4 files
+#' get_sl4_data("ALL", sl4_data1, sl4_data2
+#' get_sl4_data(NULL, sl4_data1, sl4_data2)   # Using the <NULL>
 #' get_sl4_data(NULL, sl4_data1, sl4_data2, experiment_names = c("baseline", "policy"))
-get_sl4_data <- function(var_names = NULL, ..., experiment_names = NULL, 
+get_sl4_data <- function(var_names = "ALL", ..., experiment_names = NULL, 
                          drop_subtotals = FALSE, rename_cols = NULL) {
   sl4_list <- list(...)
   
@@ -359,6 +196,10 @@ get_sl4_data <- function(var_names = NULL, ..., experiment_names = NULL,
   }
   if (length(experiment_names) != length(sl4_list)) {
     stop("The number of experiment names must match the number of SL4 objects.")
+  }
+  
+  if (is.null(var_names) || (length(var_names) == 1 && var_names == "ALL")) {
+    var_names <- unique(unlist(lapply(sl4_list, function(x) names(x$data))))
   }
   
   if (is.null(var_names)) {
@@ -518,15 +359,14 @@ get_sl4_data <- function(var_names = NULL, ..., experiment_names = NULL,
 #' @param drop_subtotals Logical; whether to remove subtotal rows
 #' @param rename_cols Named vector for renaming columns
 #' @export
-extract_by_dims  <- function(patterns = NULL, ..., experiment_names = NULL, 
-                                  drop_subtotals = FALSE, rename_cols = NULL) {
+extract_by_dims  <- function(patterns = "ALL", ..., experiment_names = NULL, 
+                             drop_subtotals = FALSE, rename_cols = NULL) {
   sl4_list <- list(...)
   
   if (length(sl4_list) == 0) {
     stop("At least one SL4 object is required.")
   }
   
-  # Handle experiment names
   if (is.null(experiment_names)) {
     dots <- match.call(expand.dots = FALSE)$...
     experiment_names <- if (length(dots) == 1) {
@@ -540,23 +380,20 @@ extract_by_dims  <- function(patterns = NULL, ..., experiment_names = NULL,
     stop("The number of experiment names must match the number of SL4 objects.")
   }
   
-  # Get all patterns if none specified
-  if (is.null(patterns)) {
+  if (is.null(patterns) || (length(patterns) == 1 && patterns == "ALL")) {
     all_patterns <- list()
     for (i in seq_along(sl4_list)) {
       patterns_i <- sapply(sl4_list[[i]]$dimension_info, 
                            function(x) x$dimension_string)
       all_patterns[[i]] <- patterns_i
     }
-    patterns <- unique(unlist(all_patterns))  # Keep original patterns
+    patterns <- unique(unlist(all_patterns))  
   }
   
-  # Single pattern optimization
   if (is.character(patterns) && length(patterns) == 1) {
     pattern <- patterns
     df_list <- list()
     
-    # Find original pattern name from the first matching pattern
     original_pattern <- NULL
     for (sl4_obj in sl4_list) {
       dim_strings <- sapply(sl4_obj$dimension_info, function(x) x$dimension_string)
@@ -619,7 +456,6 @@ extract_by_dims  <- function(patterns = NULL, ..., experiment_names = NULL,
     result <- do.call(rbind, df_list)
     rownames(result) <- NULL
     
-    # Check if dropping subtotals would create structural issues
     if (drop_subtotals) {
       has_totals <- any(result$Type == "TOTAL")
       if (has_totals && all(result$Type == "TOTAL")) {
@@ -632,13 +468,12 @@ extract_by_dims  <- function(patterns = NULL, ..., experiment_names = NULL,
       result <- rename_sl4col(result, rename_cols)
     }
     
-    attr(result, "pattern") <- original_pattern  # Use original pattern name
+    attr(result, "pattern") <- original_pattern  
     class(result) <- c("grouped_sl4", class(result))
     
     return(result)
   }
   
-  # Multiple patterns case
   result_list <- list()
   pattern_errors <- character()
   
@@ -649,7 +484,6 @@ extract_by_dims  <- function(patterns = NULL, ..., experiment_names = NULL,
                                       drop_subtotals = drop_subtotals,
                                       rename_cols = rename_cols)
       if (!is.null(result) && nrow(result) > 0) {
-        # Use original pattern name as key
         result_list[[attr(result, "pattern")]] <- result
       }
     }, error = function(e) {

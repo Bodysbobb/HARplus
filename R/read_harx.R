@@ -82,54 +82,14 @@ read_harx <- function(con,
 
 
 #' ─────────────────────────────────────────────────────────────────────────────
-#' Get Header Summary from HAR Object
-#' 
-#' Extracts a summary of the headers within an enhanced HAR object, providing 
-#' details about their dimensions and sizes.
-#'
-#' @param har_obj An enhanced HAR object created using `read_harx()`.
-#' @return A data frame containing the header names, dimension count, and 
-#'         a formatted dimension string.
-#' @export
-#' @examples
-#' # ─── Load HAR Data ───────────────────────────────────────────────────
-#' har_data <- read_harx("path/to/file.har")
-#'
-#' # ─── Get Summary of All Headers ──────────────────────────────────────
-#' header_summary <- get_dims_har(har_data)
-get_dims_har <- function(har_obj) {
-  variables <- character(0)
-  sizes <- numeric(0)
-  dimensions <- character(0)
-  
-  for (var_name in names(har_obj$dimension_info)) {
-    dim_info <- har_obj$dimension_info[[var_name]]
-    variables <- c(variables, var_name)
-    sizes <- c(sizes, length(dim_info$dimension_names))
-    dimensions <- c(dimensions, dim_info$dimension_string)
-  }
-  
-  summary_df <- data.frame(
-    Header = variables,
-    Size = sizes,
-    Dimensions = dimensions,
-    stringsAsFactors = FALSE,
-    row.names = NULL
-  )
-  
-  summary_df[order(variables), ]
-}
-
-
-#' ─────────────────────────────────────────────────────────────────────────────
 #' Get Dimension Information for a Header
 #' 
 #' Retrieves detailed dimension information for a specific header within an 
 #' enhanced HAR object. It returns the structure of dimensions, including 
 #' their names, sizes, and element labels.
 #' 
-#' @param har_obj An enhanced HAR object created using `read_harx()`.
 #' @param header_name Name of the header whose dimension details are to be retrieved.
+#' @param har_obj An enhanced HAR object created using `read_harx()`.
 #' @return A list containing the dimension names, sizes, and elements for the specified header.
 #' @export
 #' @examples
@@ -137,8 +97,8 @@ get_dims_har <- function(har_obj) {
 #' har_data <- read_harx("path/to/file.har")
 #'
 #' # ─── Get Dimension Details for a Header ──────────────────────────────
-#' dim_info <- get_var_summary_har(har_data, "GDP")
-get_var_summary_har <- function(har_obj, header_name) {
+#' dim_info <- get_var_summary_har("GDP", har_data)
+get_var_summary_har <- function(header_name, har_obj) {
   if (!header_name %in% names(har_obj$dimension_info)) {
     stop(sprintf("Header '%s' not found", header_name))
   }
@@ -175,9 +135,10 @@ get_var_summary_har <- function(har_obj, header_name) {
 #' get_har_data("GDP", har_data1, har_data2, experiment_names = c("baseline", "policy"))
 #'
 #' # ─── Extract All Headers ─────────────────────────────────────────────
-#' get_har_data(NULL, har_data1)
+#' get_har_data(NULL, har_data1)   # Using the <NULL>
+#' get_har_data("ALL", har_data1)  # Using the word <"ALL">
 #' get_har_data(NULL, har_data1, har_data2, experiment_names = c("baseline", "policy"))
-get_har_data <- function(headers = NULL, ..., experiment_names = NULL,
+get_har_data <- function(headers = "ALL", ..., experiment_names = NULL,
                          drop_subtotals = FALSE, rename_cols = NULL) {
   har_list <- list(...)
   
@@ -187,16 +148,20 @@ get_har_data <- function(headers = NULL, ..., experiment_names = NULL,
   
   # Handle experiment names
   if (is.null(experiment_names)) {
-    # Get the argument names from the call
     dots <- match.call(expand.dots = FALSE)$...
     experiment_names <- if (length(dots) == 1) {
-      deparse(dots[[1]])  # For single object, use its name
+      deparse(dots[[1]]) 
     } else {
-      as.character(dots)  # For multiple objects, use all names
+      as.character(dots)  
     }
   }
   if (length(experiment_names) != length(har_list)) {
     stop("The number of experiment names must match the number of HAR objects.")
+  }
+  
+  # Get all headers if "ALL" or NULL specified
+  if (is.null(headers) || (length(headers) == 1 && headers == "ALL")) {
+    headers <- unique(unlist(lapply(har_list, function(x) names(x$data))))
   }
   
   # Internal function to extract data from a single header

@@ -1,9 +1,12 @@
-# Example of Usage of read_harx ===============================================
-# Load example HAR files
-input_folder <- "C:/GitHub/GTAP-Results-using-R/TestData/in"
+# HAR File =====================================================================
+## <read_harx> ===============================================
+input_folder <- "D:/GitHub/GTAP-Results-using-R/TestData/in"
 har_data1 <- read_harx(file.path(input_folder, "ExB14-WEL.har"))
 har_data2 <- read_harx(file.path(input_folder, "ExB15-WEL.har"))
-# (1) One header, one experiment ----------------------------------------
+
+## <get_har_data> ===============================================
+
+### (1) One header, one experiment ----------------------------------------
 
 # Default experiment name (will use "har_data1")
 one.head.basic <- get_har_data("A", har_data1)
@@ -17,7 +20,7 @@ one.head.renamed <- get_har_data("A", har_data1,
                                  experiment_names = "baseline",
                                  rename_cols = c(REG = "Region"))
 
-# (2) Multiple headers, one experiment ---------------------------------
+### (2) Multiple headers, one experiment ---------------------------------
 
 # Default experiment name
 multi.head.basic <- get_har_data(c("A", "A1", "E1"), 
@@ -38,7 +41,7 @@ multi.head.renamed <- get_har_data(
   rename_cols = c(REG = "Region", COMM = "Commodity")
 )
 
-# (3) One header, multiple experiments --------------------------------
+### (3) One header, multiple experiments --------------------------------
 
 # Default experiment names (will use "har_data1" and "har_data2")
 one.head.multi.basic <- get_har_data("A",
@@ -55,7 +58,7 @@ one.head.multi.renamed <- get_har_data("A",
                                        experiment_names = c("baseline", "policy"),
                                        rename_cols = c(REG = "Region"))
 
-# (4) Multiple headers, multiple experiments --------------------------
+### (4) Multiple headers, multiple experiments --------------------------
 
 # Default experiment names
 multi.head.multi.basic <- get_har_data(
@@ -79,7 +82,7 @@ multi.head.multi.full <- get_har_data(
   rename_cols = c(REG = "Region", COMM = "Commodity")
 )
 
-# (5) Extract all headers --------------------------------------------
+### (5) Extract all headers --------------------------------------------
 
 # From single experiment
 all.head.one <- get_har_data(NULL, har_data1)
@@ -90,15 +93,15 @@ all.head.multi <- get_har_data(NULL,
                                experiment_names = c("baseline", "policy"))
 
 
+# SL4 File =====================================================================
 
-# EXAMPLE OF <read_sl4x> ===============================================
-# Reading the data
+## <read_sl4x> ===============================================
 sl4_data1 <- read_sl4x(file.path(input_folder, "ExB14.sl4"))
 sl4_data2 <- read_sl4x(file.path(input_folder, "ExB15.sl4"))
 
-# EXAMPLE OF <get_sl4_data> ===============================================
+## <get_sl4_data> ===============================================
 
-# (1) One variable, one experiment ----------------------------------------
+### (1) One variable, one experiment ----------------------------------------
 # Default experiment name
 one.var.oricol <- get_sl4_data("qo", sl4_data1)
 
@@ -116,7 +119,7 @@ one.var.no.subtotals <- get_sl4_data("qo", sl4_data1,
                                       experiment_names = "exp1",
                                       drop_subtotals = TRUE)
 
-# (2) Multiple variables, one experiment ---------------------------------
+### (2) Multiple variables, one experiment ---------------------------------
 # Default experiment name
 multi.var.one.exp <- get_sl4_data(c("qo", "qgdp", "EV", "u"), 
                                    sl4_data1)
@@ -133,7 +136,7 @@ multi.var.one.exp.renamed <- get_sl4_data(c("qo", "qgdp", "EV", "u"),
                                            rename_cols = c(REG = "Region", 
                                                            COMM = "Commodity"))
 
-# (3) One variable, multiple experiments --------------------------------
+### (3) One variable, multiple experiments --------------------------------
 # Default experiment names
 one.var.multi.exp <- get_sl4_data("qo", 
                                    sl4_data1, sl4_data2)
@@ -149,7 +152,7 @@ one.var.multi.exp.renamed <- get_sl4_data("qo",
                                            experiment_names = c("baseline", "policy"),
                                            rename_cols = c(REG = "Region"))
 
-# (4) Multiple variables, multiple experiments --------------------------
+### (4) Multiple variables, multiple experiments --------------------------
 # Default experiment names
 multi.var.multi.exp <- get_sl4_data(c("qo", "qgdp", "EV", "u"),
                                      sl4_data1, sl4_data2)
@@ -167,10 +170,23 @@ multi.var.multi.exp.full <- get_sl4_data(c("qo", "qgdp", "EV", "u"),
                                           rename_cols = c(REG = "Region", 
                                                           COMM = "Commodity"))
 
+### (5) All variables, multiple experiments --------------------------
+all.var.A <- get_sl4_data("ALL", sl4_data1)  # Using <"ALL">
+all.var.B <- get_sl4_data(NULL, sl4_data1)  # Using <NULL>
+all.var.C <- get_sl4_data("ALL", sl4_data1, sl4_data2,
+                          experiment_names = c("baseline", "policy"),
+                          drop_subtotals = TRUE,
+                          rename_cols = c(REG = "Region", 
+                                          COMM = "Commodity"))  # Using <"ALL">
+all.var.D <- get_sl4_data(NULL, sl4_data1, sl4_data2,
+                          experiment_names = c("baseline", "policy"),
+                          drop_subtotals = TRUE,
+                          rename_cols = c(REG = "Region", 
+                                          COMM = "Commodity"))  # Using <NULL>
 
-# EXAMPLE OF <extract_by_dims > ===============================================
+## <extract_by_dims > ===============================================
 
-# (1) One pattern, one experiment ----------------------------------------
+### (1) One pattern, one experiment ----------------------------------------
 # Default experiment name
 one.pat.oricol <- extract_by_dims ("comm*reg", sl4_data1)
 
@@ -183,7 +199,7 @@ one.pat.recol <- extract_by_dims ("comm*reg", sl4_data1,
                                 experiment_names = "exp1",
                                 rename_cols = c(REG = "Region"))
 
-# (2) Multiple patterns, one experiment ---------------------------------
+### (2) Multiple patterns, one experiment ---------------------------------
 # Default experiment name
 multi.pat.one.exp <- extract_by_dims (c("comm*reg", "comm*reg*reg", "reg", "COMM"), 
                                     sl4_data1)
@@ -203,7 +219,7 @@ multi.pat.one.exp.renamed <- extract_by_dims (
   rename_cols = c(REG = "Region", COMM = "Commodity")
 )
 
-# (3) One pattern, multiple experiments --------------------------------
+### (3) One pattern, multiple experiments --------------------------------
 # Default experiment names
 one.pat.multi.exp <- extract_by_dims ("comm*reg",
                                     sl4_data1, sl4_data2)
@@ -219,7 +235,7 @@ one.pat.multi.exp.renamed <- extract_by_dims ("comm*reg",
                                             experiment_names = c("baseline", "policy"),
                                             rename_cols = c(REG = "Region"))
 
-# (4) Multiple patterns, multiple experiments --------------------------
+### (4) Multiple patterns, multiple experiments --------------------------
 # Default experiment names
 multi.pat.multi.exp <- extract_by_dims (
   c("comm*reg", "comm*reg*reg", "reg", "COMM"),
@@ -242,18 +258,21 @@ multi.pat.multi.exp.full <- extract_by_dims (
   rename_cols = c(REG = "Region", COMM = "Commodity")
 )
 
-# (5) Extract all patterns --------------------------------------------
+### (5) Extract all patterns --------------------------------------------
 # From single experiment
-all.pat.one.exp <- extract_by_dims (NULL, sl4_data1)
+all.pat.one.exp.A <- extract_by_dims ("ALL", sl4_data1)
+all.pat.one.exp.B <- extract_by_dims (NULL, sl4_data1)
 
 # From multiple experiments
-all.pat.multi.exp <- extract_by_dims (NULL, sl4_data1, sl4_data2, 
+all.pat.multi.exp.A <- extract_by_dims ("ALL", sl4_data1, sl4_data2, 
+                                        experiment_names = c("baseline", "policy"))
+all.pat.multi.exp.B <- extract_by_dims (NULL, sl4_data1, sl4_data2, 
                                     experiment_names = c("baseline", "policy"))
 
 
-# EXAMPLE OF <group_by_dims> ===============================================
+## <group_by_dims> ===============================================
 regrouped_data <- group_by_dims(
-  all.pat.multi.exp,  
+  all.pat.multi.exp.A,  
   dimension_map = data.frame(
     dimension = c("COMM", "ACTS", "REG"),
     group = c("Sector", "Sector", "Region"),
@@ -261,7 +280,8 @@ regrouped_data <- group_by_dims(
   )
 )
 
-# EXAMPLE OF <group_by_dims_from_sl4> ===============================================
+
+## <group_by_dims_from_sl4> ======================================
 result <- group_by_dims_from_sl4(
   sl4_data1, sl4_data2,
   dimension_map = data.frame(
@@ -270,3 +290,35 @@ result <- group_by_dims_from_sl4(
     priority = c(1, 1, 2)
   )
 )
+
+
+# Data Structure ==============================================================
+
+## <get_var_summary> =============================================
+var_har_sum  <- get_var_summary("A", har_data1)
+var_sl4_sum <- get_var_summary("qo", sl4_data1)
+
+## <get_dims_summary> ================================================
+dims_har_sum <- get_dims_summary(har_data1)
+dims_sl4_sum <- get_dims_summary(sl4_data1)
+
+
+## <get_dims_elements> ============================================
+dims_ele_har_sum <- get_dims_elements(har_data1)
+dims_ele_sl4_sum <- get_dims_elements(sl4_data1)
+
+
+## <get_dims_elements> ============================================
+dims_strg_har_sum <- get_dims_strings(har_data1)
+dims_strg_sl4_sum <- get_dims_strings(sl4_data1)
+
+## <rename_dims> ==================================================
+mapping_df <- data.frame(
+  old = c("REG", "COMM"),
+  new = c("Region", "Commodity")
+)
+
+# Only rename columns
+har_rename <- rename_dims(all.pat.multi.exp.A, mapping_df)
+# Rename both columns and list names
+har_rename_list <- rename_dims(all.pat.multi.exp.A, mapping_df, rename_list_names = TRUE)

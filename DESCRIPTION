@@ -1,20 +1,21 @@
 Package: HARplus
-Title: Enhanced .HAR and .SL4 File Manipulation
+Title: Enhanced Processing of GEMPACK .HAR and .SL4 Files
 Version: 0.0.0.9000
 Authors@R: 
     person("Pattawee", "Puangchit", , "ppuangch@purdue.edu", role = c("aut", "cre"))
-Description:  An extension of the HARr package for enhanced manipulation of .HAR and .SL4 files.
+Maintainer: "Pattawee Puangchit <ppuangch@purdue.edu>"
+Description: HARplus extends the capabilities of GEMPACK `.HAR` and `.SL4` file processing by providing 
+    advanced dimension handling, multi-file analysis, and structured metadata management. While inspired 
+    by the HARr package, originally developed by Maros Ivanic and his team, HARplus is fully independent 
+    and does not require HARr to be installed. It enhances functionality with optimized data extraction, 
+    subtotal support, and improved memory efficiency. Designed for large-scale economic modeling workflows, 
+    HARplus offers a streamlined and consistent interface for `.HAR` and `.SL4` files.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-
-Imports: 
-    HARr
-
-Remotes:
-    USDA-ERS/MTED-HARr
-
+BugReports: https://github.com/bodysbobb/HARplus/issues
+URL: https://github.com/bodysbobb/HARplus
 Suggests: 
     knitr,
     rmarkdown
