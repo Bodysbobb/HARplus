@@ -2,24 +2,33 @@
 % Please edit documentation in R/data_summary.R
 \name{get_dims_strings}
 \alias{get_dims_strings}
-\title{─────────────────────────────────────────────────────────────────────────────
-Extract Unique Dimension Strings}
+\title{Extract Unique Dimension Strings from SL4 and HAR Objects}
 \usage{
-get_dims_strings(sl4_obj)
+get_dims_strings(..., keep_unique = FALSE)
 }
 \arguments{
-\item{sl4_obj}{A structured SL4 object containing dimension information.}
+\item{...}{One or more structured SL4 or HAR objects containing dimension information.}
+
+\item{keep_unique}{Logical; if TRUE, returns only unique dimension strings across inputs.}
 }
 \value{
 A data frame containing unique dimension strings.
 }
 \description{
-Extracts and lists unique dimension strings present in an SL4 object.
+Extracts and lists unique dimension strings from one or more SL4 or HAR objects.
 }
 \examples{
-# ─── Load SL4 Data ───────────────────────────────────────────────────
-sl4_data <- read_sl4x("path/to/sl4file.sl4")
+# Load SL4 and HAR Data
+sl4_data1 <- read_sl4x("path/to/file1.sl4")
+sl4_data2 <- read_sl4x("path/to/file2.sl4")
 
-# ─── Retrieve Unique Dimension Strings ───────────────────────────────
-dim_strings <- get_dims_strings(sl4_data)
+# Extract unique dimension strings from a single dataset
+get_dims_strings(sl4_data1)
+
+# Extract unique dimension strings from multiple datasets
+get_dims_strings(sl4_data1, sl4_data2)
+
+# Extract only unique dimension strings across datasets
+get_dims_strings(sl4_data1, sl4_data2, keep_unique = TRUE)
+
 }

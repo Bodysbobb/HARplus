@@ -2,34 +2,33 @@
 % Please edit documentation in R/data_summary.R
 \name{get_dims_elements}
 \alias{get_dims_elements}
-\title{Standardize dimension pattern
-─────────────────────────────────────────────────────────────────────────────
-Extract Unique Dimension Elements}
+\title{Extract Unique Dimension Elements from SL4 and HAR Objects}
 \usage{
-get_dims_elements(sl4_obj)
+get_dims_elements(..., keep_unique = FALSE)
 }
 \arguments{
-\item{sl4_obj}{A structured SL4 object containing dimension information.}
+\item{...}{One or more structured SL4 or HAR objects containing dimension information.}
+
+\item{keep_unique}{Logical; if TRUE, returns only unique dimension elements across inputs.}
 }
 \value{
 A data frame containing unique dimension elements.
 }
 \description{
-Extracts and lists unique dimension elements present in an SL4 object.
+Extracts and lists unique dimension elements from one or more SL4 or HAR objects.
 }
 \examples{
-# ─── Load SL4 Data ───────────────────────────────────────────────────
-sl4_data <- read_sl4x("path/to/sl4file.sl4")
+# Load SL4 and HAR Data
+sl4_data1 <- read_sl4x("path/to/file1.sl4")
+sl4_data2 <- read_sl4x("path/to/file2.sl4")
 
-# ─── Retrieve Unique Dimension Elements for Mapping ─────────────────
-dim_elements <- get_dims_elements(sl4_data)
+# Extract unique dimension elements from a single dataset
+get_dims_elements(sl4_data1)
 
-# ─── Create a Mapping Data Frame for Renaming ──────────────────────
-mapping_df <- data.frame(
-  old = dim_elements$DimName,  # Extracted dimension names
-  new = paste0("New_", dim_elements$DimName)  # Example: Adding "New_" prefix
-)
+# Extract unique dimension elements from multiple datasets
+get_dims_elements(sl4_data1, sl4_data2)
 
-# ─── Apply Column Renaming ──────────────────────────────────────────
-renamed_sl4_data <- rename_dims(sl4_data, mapping_df)
+# Extract only unique dimension elements across datasets
+get_dims_elements(sl4_data1, sl4_data2, keep_unique = TRUE)
+
 }

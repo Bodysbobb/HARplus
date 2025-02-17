@@ -90,7 +90,9 @@ all.head.one <- get_har_data(NULL, har_data1)
 # From multiple experiments
 all.head.multi <- get_har_data(NULL, 
                                har_data1, har_data2,
-                               experiment_names = c("baseline", "policy"))
+                               experiment_names = c("baseline", "policy"),
+                               rename_cols = c(REG = "Region",
+                                               FORM = "Type"))
 
 
 # SL4 File =====================================================================
@@ -294,14 +296,17 @@ result <- group_by_dims_from_sl4(
 
 # Data Structure ==============================================================
 
-## <get_var_summary> =============================================
-var_har_sum  <- get_var_summary("A", har_data1)
-var_sl4_sum <- get_var_summary("qo", sl4_data1)
+## <get_var_structure> ================================================
+# Get a basic summary. A variable can be selected or left as NULL or "ALL" to include all.
+# This function supports multiple variables but only from a single input file.
+dims_har_sum <- get_var_structure("ALL", har_data1)
+dims_sl4_sum <- get_var_structure("qo", sl4_data1)
 
-## <get_dims_summary> ================================================
-dims_har_sum <- get_dims_summary(har_data1)
-dims_sl4_sum <- get_dims_summary(sl4_data1)
-
+# Get Summary with Column and Observation Counts
+dims_har_sum_count <- get_var_structure("ALL", har_data1, 
+                                        include_col_size = TRUE)
+dims_sl4_sum_count <- get_var_structure(c("qo","EV"), sl4_data1, 
+                                        include_col_size = TRUE)
 
 ## <get_dims_elements> ============================================
 dims_ele_har_sum <- get_dims_elements(har_data1)
@@ -322,3 +327,35 @@ mapping_df <- data.frame(
 har_rename <- rename_dims(all.pat.multi.exp.A, mapping_df)
 # Rename both columns and list names
 har_rename_list <- rename_dims(all.pat.multi.exp.A, mapping_df, rename_list_names = TRUE)
+
+
+## <compare_var_structure> =============================================
+comparison <- compare_var_structure(
+  variables = c("qo", "EV"), sl4_data1, sl4_data2
+)
+
+# This checks if the variables "qo" and "EV" have the same structure across 
+# sl4_data1 and sl4_data2.
+# 
+# The function returns a list with:
+# - match: A data frame containing variables that have identical dimension names 
+#          and structures in both objects.
+# - diff (if applicable): A data frame listing variables with mismatched structures.
+
+# ─── Extracting Unique Variable Structures ────────────────────────────────
+unique_vars <- compare_var_structure(
+  variables = c("qo", "EV"), sl4_data1, sl4_data2,
+  keep_unique = TRUE
+)
+
+# Instead of checking compatibility, this extracts the unique structures of 
+# "qo" and "EV" across sl4_data1 and sl4_data2.
+# 
+# The function returns a list with:
+# - match: A data frame showing the distinct variable structures found across inputs.
+# - diff (if applicable): A data frame detailing how structures differ across objects.
+
+# ─── Key Difference ───────────────────────────────────────────────────────
+# - With keep_unique = FALSE → The function checks if variables match across objects.
+# - With keep_unique = TRUE  → The function extracts all unique variable structures 
+#                               without requiring them to match.

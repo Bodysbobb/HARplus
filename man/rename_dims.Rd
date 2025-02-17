@@ -2,13 +2,12 @@
 % Please edit documentation in R/data_summary.R
 \name{rename_dims}
 \alias{rename_dims}
-\title{─────────────────────────────────────────────────────────────────────────────
-Rename Data Frame Columns and List Names in SL4 or HAR Object}
+\title{Rename Data Frame Columns and List Names in SL4 or HAR Object}
 \usage{
-rename_dims(sl4_obj, mapping_df, rename_list_names = FALSE)
+rename_dims(data_obj, mapping_df, rename_list_names = FALSE)
 }
 \arguments{
-\item{sl4_obj}{A structured SL4 object (represented as a list) containing data frames.}
+\item{data_obj}{A structured SL4 or HAR object (represented as a list) containing data frames.}
 
 \item{mapping_df}{A two-column data frame where the first column (\code{old}) contains current names,
 and the second column (\code{new}) contains the new names.}
@@ -17,43 +16,28 @@ and the second column (\code{new}) contains the new names.}
 the list element names based on the mapping.}
 }
 \value{
-The modified SL4 object with updated column names and, optionally, updated list names.
+The modified SL4 or HAR object with updated column names and, optionally, updated list names.
 }
 \description{
-This function renames the columns of data frames within an SL4 object (or HAR),
+This function renames the columns of data frames within an SL4 or HAR object,
 based on a mapping. It also allows renaming list element names if requested.
 }
 \examples{
-# ─── Example 1: Using Direct Data ───────────────────────────────────────────
-mapping_df <- data.frame(
-  old = c("REG", "COMM"),
-  new = c("Region", "Commodity")
-)
+# ─── Load SL4 and HAR Data ─────────────────────────────────────────────
+sl4_data <- read_sl4x("path/to/file.sl4")
+har_data <- read_harx("path/to/file.har")
 
-# Only rename columns
-result1 <- rename_dims(all.pat.multi.exp, mapping_df)
-
-# Rename both columns and list names
-result2 <- rename_dims(all.pat.multi.exp, mapping_df, rename_list_names = TRUE)
-
-# ─── Example 2: Using SL4 Data ──────────────────────────────────────────────
-
-# ─── Load SL4 Data ─────────────────────────────────────────────────
-sl4_path <- "path/to/file.sl4"
-sl4_obj <- read_sl4x(sl4_path)
-
-# ─── Retrieve Unique Dimension Elements ────────────────────────────
-dim_elements <- get_dims_elements(sl4_obj)
+# ─── Retrieve Unique Dimension Elements ──────────────────────────────
+dim_elements_sl4 <- get_dims_elements(sl4_data)
+dim_elements_har <- get_dims_elements(har_data)
 
 # ─── Create a Mapping Data Frame for Renaming ──────────────────────
 mapping_df <- data.frame(
-  old = dim_elements$DimName,  # Extracted dimension names
-  new = paste0("New_", dim_elements$DimName)  # Example new names
+  old = dim_elements_sl4$DimName,  # Extracted dimension names
+  new = paste0("New_", dim_elements_sl4$DimName)  # Example new names
 )
 
-# ─── Rename Columns in SL4 Object ──────────────────────────────────
-renamed_sl4_obj <- rename_dims(sl4_obj, mapping_df)
-
-# ─── Rename Both Columns and List Names ────────────────────────────
-renamed_sl4_obj_full <- rename_dims(sl4_obj, mapping_df, rename_list_names = TRUE)
+# ─── Rename Columns in SL4 and HAR Object ────────────────────────────
+renamed_sl4_data <- rename_dims(sl4_data, mapping_df)
+renamed_har_data <- rename_dims(har_data, mapping_df)
 }

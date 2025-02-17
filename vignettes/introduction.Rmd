@@ -20,18 +20,123 @@ knitr::opts_chunk$set(
 
 # Introduction
 
-This vignette demonstrates the use of the `group_by_dims` and `group_by_dims_from_sl4` functions, which facilitate structured data grouping for GEMPACK users. The package was initially developed based on the GTAPv7 model and utilizes the freely available GTAP 9 database.  
-For more details on the GTAP Data Base, refer to the official archive:  
-[https://www.gtap.agecon.purdue.edu/databases/archives.asp](https://www.gtap.agecon.purdue.edu/databases/archives.asp).
+The `HARplus` package enhances GEMPACK users' experience by improving functionality for working with GEMPACK file formats. It streamlines dimension handling by automatically extracting, organizing, and maintaining dimension structures throughout processing. By structuring dimension information separately from data, `HARplus` ensures consistency, efficient memory management, and preserves dimension type information, enabling more effective data manipulation, aggregation, and figure illustration. Additionally, it supports proper handling of subtotals, provides a consistent interface for HAR and SL4 files, and includes built-in data transformation tools.  
 
-The examples in this vignette utilize two **simulation solution files** (`.sl4`) and two **welfare decomposition files** (`.har`). The primary focus is to showcase how results can be processed using this package, without interpreting simulation outcomes or discussing model setup.
+This vignette demonstrates how to use `HARplus` to read, process, and structure data from `.har` and `.sl4` files. While briefly covering data extraction functions, the primary focus is on `group_by_dims` and `group_by_dims_from_sl4`, which facilitate structured data grouping for GEMPACK simulations.  
 
-First, you can download and install the package then calling the example files using command:
+This example is based on the GTAPv7 model and utilizes publicly available data from the GTAP 9 database. For more details, refer to the official GTAP Database Archive:  
+[GTAP Database Archive](https://www.gtap.agecon.purdue.edu/databases/archives.asp).  
 
+## Installation and Loading Example Data  
+Before proceeding, ensure that `HARplus` is installed and loaded:
 ```{r load-package}
 devtools::install("D:/GitHub/HARplus")
 library(HARplus)
-
-har_file <- system.file("data", "ExB14-WEL.har", package = "HARplus")
-sl4_file <- system.file("data", "ExB14.sl4", package = "HARplus")
 ```
+
+# Reading Data `.HAR` and `.SL4` 
+First, load the example data using the following commands:
+```{r load-data}
+# Paths to the .har files
+har_path1 <- system.file("data", "TAR10-WEL.har", package = "HARplus")
+har_path2 <- system.file("data", "SUBT10-WEL.har", package = "HARplus")
+
+# Paths to the .sl4 files
+sl4_path1 <- system.file("data", "TAR10.sl4", package = "HARplus")
+sl4_path2 <- system.file("data", "SUBT10.sl4", package = "HARplus")
+
+# Read the .har files using read_harx()
+har_data1 <- read_harx(har_path1)
+har_data2 <- read_harx(har_path2)
+
+# Read the .sl4 files using read_sl4x()
+sl4_data1 <- read_sl4x(sl4_path1)
+sl4_data2 <- read_sl4x(sl4_path2)
+```
+
+# Exploring Data Structure
+
+Since this package is designed to handle multiple inputs with a similar structure, such as simulation outputs from the GTAP model with different shocks or experiments, the first important step is to understand the data structure. This process can also be useful even with a single input, as it helps in analyzing the data shape and dimension size of each variable.  
+
+There are a couple of commands available to illustrate the data structure, all of which can be applied to both `.har` and `.sl4` files in the same manner.  
+
+## Variable Structure  
+
+To get a summary of variable names, dimension counts, dimension strings, and optionally the column and observation counts for one or multiple variables from a single input file:  
+
+```{r get_var_structure}
+# (1) Getting all variables from the input file
+vars_har_sum <- get_var_structure("ALL", har_data1)
+vars_sl4_sum <- get_var_structure(, har_data1)
+
+# (2) Getting selected variables
+var_sl4_sum <- get_var_structure(c("pds","pfd","pms"), sl4_data1)
+
+# (3) Including column size and number of observation in the summary
+var_sl4_sum <- get_var_structure(c("pds","pfd","pms"), sl4_data1, 
+                                 include_col_size = TRUE)
+
+print(var_sl4_sum[1:2, ])
+```
+
+Understanding the data structure is crucial for aggregating data across multiple experiments (inputs). Even when using the same variables, different experiments may have varying column sizes or data structures due to factors such as subtotal effects and other experimental settings. These discrepancies can lead to errors if the merging process relies solely on variable names without accounting for structural differences.
+
+To compare data structures across multiple experiments, use the following command:
+
+```{r compare_var_structure}
+# (1) Comparing all variable structures across experiments 
+vars_comparison <- compare_var_structure(
+  variables = "ALL", sl4_data1, sl4_data2
+)
+
+# (2) Comparing selected variable structures across experiments 
+var_comparison <- compare_var_structure(
+  variables = c("pds", "pms"), sl4_data1, sl4_data2
+)
+print(var_comparison$match[1:2, ])
+```
+This function returns a list containing:
+- **match**: A data frame of variables with identical dimension names and structures across inputs.
+- **diff** (if any): A data frame listing variables with structural mismatches. Note: If this list appears, you may need to focus on handling these variables. It is designed to report potential issue-causing variables when merging datasets.
+
+Additionally, the function includes the `<keep_unique>` option (default: `FALSE`) which allows users to extract variables with unique names and structures across all inputs. This is particularly useful when inputs contain different sets of variables that need to be combined into a final dataset.
+
+```{r}
+# (3) Extracting unique variable structures
+unique_vars <- compare_var_structure(
+  variables = c("pds", "pms"), sl4_data1, sl4_data2,
+  keep_unique = TRUE
+)
+print(unique_vars$match[1:2, ])
+```
+This function returns a list containing:
+- **match**: A data frame displaying distinct variable structures found across inputs.
+- **diff** (if any): A data frame detailing how structures differ between inputs.
+
+To sum up,
+- `keep_unique = FALSE` → Checks whether variables match across inputs.
+- `keep_unique = TRUE` → Extracts all unique variable structures, regardless of whether they match, while reports any variables that do not align.
+
+## Dimension Structure  
+
+The following commands can be used to retrieve unique dimension names as strings and their corresponding elements:
+```{r}
+# (1) Extracting unique dimension strings (e.g., REG*COMM*ACTS)
+dims_strg_har <- get_dims_strings(har_data1)
+print(dims_strg_har[1:4, ])
+
+# (2) Unique dimension elements e.g., REG, COMM, ACTS
+dims_ele_sl4 <- get_dims_elements(sl4_data1)
+print(dims_ele_sl4[1:4, ])
+
+# (3) Tip: Use the command with the list of unique dimension names (compare_var_structure → keep_unique = TRUE) to retrieve all dimension names present in your final report.
+get_dims_strings(unique_vars$match$Dimensions)
+get_dims_elements(unique_vars$match$Dimensions)
+```
+
+
+# HAR File
+## get_har_data
+
+
+# HAR File

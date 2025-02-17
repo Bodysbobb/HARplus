@@ -69,3 +69,4 @@ har_data <- rhar_enhanced(har_path,
 har_data <- rhar_enhanced(har_path, 
                          toLowerCase = FALSE)
 }
+\keyword{internal}

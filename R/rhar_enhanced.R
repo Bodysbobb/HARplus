@@ -30,7 +30,7 @@
 #' * REFULL: Real headers with extended information
 #' * RESPSE: Sparse real headers
 #' 
-#' @export
+#' @keywords internal
 #' @examples
 #' # ─── Basic Usage ───────────────────────────────────────────────────
 #' har_path <- "path/to/file.har"

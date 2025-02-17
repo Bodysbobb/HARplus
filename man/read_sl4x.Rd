@@ -12,11 +12,11 @@ read_sl4x(filename, toLowerCase = FALSE)
 \item{toLowerCase}{Logical; whether to convert variable names to lowercase.}
 }
 \value{
-An enhanced SL4 object containing structured data, metadata, and dimension details.
+An enhanced SL4 object containing structured data, and dimension details.
 }
 \description{
 Reads an SL4 file and processes its structured data into an enhanced SL4 object.
-Extracts metadata, dimensions, and variables while handling subtotal information.
+Extracts dimensions, and variables while handling subtotal information.
 }
 \examples{
 # ─── Load SL4 Data ─────────────────────────────────────────────────
