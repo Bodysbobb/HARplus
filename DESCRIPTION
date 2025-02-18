@@ -1,6 +1,7 @@
 Package: HARplus
 Title: Enhanced Processing of GEMPACK .HAR and .SL4 Files
 Version: 1.0.0
+Author: Pattawee Puangchit <ppuangch@purdue.edu>
 Authors@R: 
     person("Pattawee", "Puangchit", , "ppuangch@purdue.edu", role = c("aut", "cre"))
 Description: HARplus is an advanced package for processing GEMPACK `.HAR` and `.SL4` files, 
@@ -16,6 +17,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Maintainer: Pattawee Puangchit
 BugReports: https://github.com/bodysbobb/HARplus/issues
 URL: https://github.com/bodysbobb/HARplus
 Imports:

@@ -18,7 +18,6 @@ HARplus provides an efficient way to handle `.HAR` and `.SL4` files, especially 
 HARplus is currently under **CRAN review** and will be available there soon. In the meantime, install it directly from GitHub using the following command:
 
 ```r
-# Install from GitHub using devtools
 devtools::install_github("Bodysbobb/HARplus")
 ```
 
