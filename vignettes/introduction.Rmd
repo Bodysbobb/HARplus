@@ -40,7 +40,6 @@ The development of `HARplus` builds upon the foundational work of the `HARr` pac
 Before proceeding, ensure that `HARplus` is installed and loaded:
 
 ```{r load package}
-# devtools::install("D:/GitHub/HARplus")
 library(HARplus)
 ```
 
