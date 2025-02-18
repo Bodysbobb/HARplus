@@ -1,60 +1,45 @@
-#' Enhanced GEMPACK HAR File Reader
-#' 
-#' An optimized implementation for reading and processing GEMPACK HAR (Header Array) files.
-#' This enhanced version improves upon the original by implementing efficient file reading,
-#' better memory management, and optimized data processing while maintaining full compatibility
-#' with the original output format.
-#' 
-#' Key improvements:
-#' * Efficient chunked file reading with optimal buffer size
-#' * Reduced memory allocations and better cleanup
-#' * Streamlined header processing
-#' * Optimized binary data handling
-#' * Improved sparse data processing
-#' 
-#' @param con File connection or path to the HAR file
-#' @param useCoefficientsAsNames Logical; if TRUE, uses coefficient names instead of headers
-#' @param toLowerCase Logical; if TRUE, converts all strings to lower case
-#' @param headersToRead Character vector of specific headers to read; if NULL, reads all headers
-#' 
-#' @return A list containing the processed HAR data, where:
-#' * Each element corresponds to a header in the HAR file
-#' * Names are either header names or coefficient names (if useCoefficientsAsNames = TRUE)
-#' * Data maintains original dimensions and attributes
-#' 
+#' Load and Process GEMPACK HAR Files (Internal)
+#'
+#' Reads a GEMPACK HAR file and efficiently extracts structured data while maintaining 
+#' compatibility with standard HAR formats. This implementation builds upon the foundational 
+#' work of the **HARr** package, reorganizing the process for improved execution speed, 
+#' memory management, and handling of sparse data structures.
+#'
 #' @details
-#' Supports multiple HAR file header types:
-#' * 1CFULL: Character headers
-#' * 2IFULL: Integer headers
-#' * 2RFULL: Real headers
-#' * REFULL: Real headers with extended information
-#' * RESPSE: Sparse real headers
+#' - **Efficient File Reading:** Reads large HAR files in chunks for better performance.
+#' - **Optimized Memory Usage:** Reduces unnecessary allocations and improves cleanup.
+#' - **Streamlined Header Processing:** Ensures accurate extraction of dimension metadata.
+#' - **Supports Sparse Data Structures:** Handles `RESPSE` and `REFULL` headers efficiently.
+#'
+#' **Supported HAR Header Types:**
+#' - `1CFULL`: Character headers
+#' - `2IFULL`: Integer headers
+#' - `2RFULL`: Real headers
+#' - `REFULL`: Real headers with extended metadata
+#' - `RESPSE`: Sparse real headers
+#'
+#' @param con Character or connection. The file path to the HAR file or an open binary connection.
+#' @param coefAsname Logical. If `TRUE`, replaces four-letter headers with coefficient names when available. Default is `FALSE`.
+#' @param lowercase Logical. If `TRUE`, converts all string values to lowercase. Default is `TRUE`.
+#' @param select_header Character vector. Specific headers to extract; if `NULL`, reads all headers.
+#'
+#' @return A structured list where:
+#' - Each element corresponds to a header in the HAR file.
+#' - Names are either header names or coefficient names (if `coefAsname = TRUE`).
+#' - Data maintains its original dimensions and attributes.
+#'
+#' @author Pattawee Puangchit
 #' 
+#' @seealso \code{\link{load_sl4x}}, \code{\link{load_harx}}
+#'
 #' @keywords internal
-#' @examples
-#' # ─── Basic Usage ───────────────────────────────────────────────────
-#' har_path <- "path/to/file.har"
-#' har_data <- rhar_enhanced(har_path)
-#' 
-#' # ─── Use Coefficient Names ─────────────────────────────────────────
-#' har_data <- rhar_enhanced(har_path, useCoefficientsAsNames = TRUE)
-#' 
-#' # ─── Read Specific Headers ──────────────────────────────────────── 
-#' har_data <- rhar_enhanced(har_path, 
-#'                          headersToRead = c("ABCD", "EFGH"))
-#' 
-#' # ─── Read with Case Preservation ──────────────────────────────────
-#' har_data <- rhar_enhanced(har_path, 
-#'                          toLowerCase = FALSE)
-rhar_enhanced <- function(con, useCoefficientsAsNames = FALSE, 
-                          toLowerCase = TRUE, headersToRead = NULL) {
-  # Open the file
+#'
+load_harplus <- function(con, coefAsname = FALSE, lowercase = TRUE, select_header = NULL) {
   if(is.character(con)) {
     con <- file(con, 'rb')
     on.exit(close(con))
   }
   
-  # Read all bytes efficiently
   cf <- raw()
   while (length(chunk <- readBin(con, raw(), n=1e6)) > 0) {
     cf <- c(cf, chunk)
@@ -142,8 +127,8 @@ rhar_enhanced <- function(con, useCoefficientsAsNames = FALSE,
     }
   }
   
-  if(length(headersToRead) > 0) {
-    headers <- headers[headersToRead]
+  if(length(select_header) > 0) {
+    headers <- headers[select_header]
   }
   
   for (h in names(headers)) {
@@ -165,13 +150,13 @@ rhar_enhanced <- function(con, useCoefficientsAsNames = FALSE,
                   nrow = headers[[h]]$dimensions[2], 
                   ncol = headers[[h]]$dimensions[1])
       
-      if(tolower(h) == 'xxhs') {
-        headers[[h]]$data <- apply(m, 2, paste, collapse = '')
+      headers[[h]]$data <- if(tolower(h) == 'xxhs') {
+        apply(m, 2, paste, collapse = '')
       } else {
-        headers[[h]]$data <- trimws(apply(m, 2, paste, collapse = ''))
+        trimws(apply(m, 2, paste, collapse = ''))
       }
       
-      if(toLowerCase) {
+      if(lowercase) {
         headers[[h]]$data <- tolower(headers[[h]]$data)
       }
     }
@@ -266,14 +251,14 @@ rhar_enhanced <- function(con, useCoefficientsAsNames = FALSE,
   
   result <- lapply(headers, function(f) {
     data <- f$data
-    if (toLowerCase && !is.null(dimnames(data))) {
+    if (lowercase && !is.null(dimnames(data))) {
       names(dimnames(data)) <- tolower(names(dimnames(data)))
       dimnames(data) <- lapply(dimnames(data), tolower)
     }
     data
   })
   
-  if (useCoefficientsAsNames) {
+  if (coefAsname) {
     for (h in names(headers)) {
       if (!is.null(headers[[h]]$coefficient)) {
         names(result)[which(names(result) == h)] <- trimws(headers[[h]]$coefficient)
@@ -281,7 +266,7 @@ rhar_enhanced <- function(con, useCoefficientsAsNames = FALSE,
     }
   }
   
-  if (toLowerCase) {
+  if (lowercase) {
     names(result) <- tolower(names(result))
   }
   

@@ -2,56 +2,56 @@
 % Please edit documentation in R/data_summary.R
 \name{compare_var_structure}
 \alias{compare_var_structure}
-\title{Compare Variable Structures Across Multiple SL4 and HAR Objects}
+\title{\strong{Compare Variable Structures Across SL4 and HAR Objects}}
 \usage{
 compare_var_structure(variables = NULL, ..., keep_unique = FALSE)
 }
 \arguments{
-\item{variables}{Character vector specifying variable names to compare. Use \code{NULL} or \code{"ALL"}
-to compare all variables (default is \code{NULL}).}
+\item{variables}{Character vector. Variable names to compare. Use \code{NULL} or \code{"ALL"} to compare all variables.}
 
-\item{...}{Named SL4 or HAR objects created using \code{read_sl4x()} or \code{read_harx()}.
-At least two objects must be provided.}
+\item{...}{Named SL4 or HAR objects to compare.}
 
-\item{keep_unique}{Logical. If \code{TRUE}, returns unique variable structures across
-all inputs instead of checking compatibility (default is \code{FALSE}).}
+\item{keep_unique}{Logical. If \code{TRUE}, returns unique variable structures across datasets instead of checking for compatibility. Default is \code{FALSE}.}
 }
 \value{
 A list containing:
 \itemize{
-\item \code{match}: A data frame of variables with consistent structures across inputs.
-\item \code{diff} (if differences exist): A data frame highlighting variables with mismatched
-structures, showing how they differ across inputs.
+\item \code{match}: A data frame listing variables with identical structures across datasets.
+\item \code{diff}: A data frame listing variables with mismatched structures, useful for debugging and alignment.
+\item If \code{keep_unique = TRUE}, instead of \code{match} and \code{diff}, returns a data frame with distinct variable structures across datasets.
 }
 }
 \description{
-This function compares the variable structures of multiple SL4 and HAR objects
-to check compatibility for \code{rbind} operations. It ensures that variables have
-consistent dimension names and order across all inputs.
+Compares variable structures across multiple SL4 and HAR datasets to ensure compatibility.
+Identifies matching and mismatched variable structures, helping users diagnose inconsistencies.
 }
 \details{
-The function provides two modes:
 \itemize{
-\item If \code{keep_unique = FALSE}, it verifies if variables match across inputs for
-compatibility and identifies discrepancies.
-\item If \code{keep_unique = TRUE}, it extracts and returns unique variable structures
-across all provided objects.
+\item Verifies whether variables have consistent structures across multiple datasets.
+\item Ensures correct ordering of dimensions and checks for structural compatibility.
+\item If \code{keep_unique = TRUE}, returns a list of unique variable structures instead of performing a direct comparison.
+\item Useful for merging or aligning datasets before further processing.
+\item Helps detect differences in variable dimensions, which may arise due to model updates or dataset variations.
 }
 }
 \examples{
-# ─── Load SL4 and HAR Data ─────────────────────────────────────────────
-sl4_data1 <- read_sl4x("path/to/file1.sl4")
-sl4_data2 <- read_sl4x("path/to/file2.sl4")
-har_data  <- read_harx("path/to/file.har")
+# Import sample data:
+har_data1 <- load_harx(system.file("extdata", "TAR10-WEL.har", package = "HARplus"))
+har_data2 <- load_harx(system.file("extdata", "SUBT10-WEL.har", package = "HARplus"))
 
-# ─── Compare Structures for Compatibility ──────────────────────────────
-comparison <- compare_var_structure(
-  variables = c("qo", "EV"), sl4_data1, sl4_data2
-)
+# Compare structure for a single variable across multiple datasets
+compare_var_structure("A", har_data1, har_data2)
 
-# ─── Extract Unique Variable Structures Across Inputs ──────────────────
-unique_vars <- compare_var_structure(
-  variables = c("qo", "EV"), sl4_data1, sl4_data2, har_data,
-  keep_unique = TRUE
-)
+# Compare structure for multiple variables across multiple datasets
+comparison_multiple <- compare_var_structure(c("A", "E1"), har_data1, har_data2)
+
+# Extract unique variable structures across multiple datasets
+unique_vars <- compare_var_structure("ALL", har_data1, har_data2, keep_unique = TRUE)
+
+}
+\seealso{
+\code{\link{get_var_structure}}, \code{\link{get_dim_patterns}}, \code{\link{get_dim_elements}}
+}
+\author{
+Pattawee Puangchit
 }

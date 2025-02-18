@@ -2,21 +2,35 @@
 % Please edit documentation in R/utils.R
 \name{get_original_pattern}
 \alias{get_original_pattern}
-\title{Retrieve the original pattern name}
+\title{\strong{Retrieve the Original Dimension Pattern (Internal)}}
 \usage{
 get_original_pattern(pattern, data_obj, mix_patterns = FALSE)
 }
 \arguments{
-\item{pattern}{A character string representing the pattern to search for.}
+\item{pattern}{Character. The pattern to search for in dimension structures.}
 
-\item{data_obj}{A data object containing dimension information.}
+\item{data_obj}{An SL4 or HAR object containing dimension information.}
 
-\item{mix_patterns}{Logical; if TRUE, allows matching of mixed patterns.}
+\item{mix_patterns}{Logical. If \code{TRUE}, allows dimension order to vary when matching patterns.}
 }
 \value{
-The original pattern name as a character string, or NULL if no match is found.
+The original dimension pattern name as a character string, or \code{NULL} if no match is found.
 }
 \description{
-Finds the original dimension pattern name in the data object that matches a given pattern.
+A helper function that finds the original dimension pattern name in an SL4 or HAR dataset
+that matches a given pattern. Used internally in \code{get_data_by_dims()}.
+}
+\details{
+\itemize{
+\item Performs a case-insensitive comparison to identify matching dimension patterns.
+\item Supports flexible pattern matching when \code{mix_patterns = TRUE}, allowing dimension order to vary.
+\item Returns the standardized dimension pattern name as stored in the dataset.
+}
+}
+\seealso{
+\code{\link{pattern_match}}, \code{\link{process_pattern}}, \code{\link{get_data_by_dims}}
+}
+\author{
+Pattawee Puangchit
 }
 \keyword{internal}

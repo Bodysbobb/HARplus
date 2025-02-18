@@ -2,28 +2,44 @@
 % Please edit documentation in R/utils.R
 \name{get_dim_info}
 \alias{get_dim_info}
-\title{Extract Dimension Information (Internal)}
+\title{\strong{Extract and Organize Dimension Metadata (Internal)}}
 \usage{
 get_dim_info(dim_info)
 }
 \arguments{
-\item{dim_info}{A list containing dimension metadata, including \code{dimension_string},
-\code{dimension_names}, and \code{dimension_sizes}.}
+\item{dim_info}{A list containing dimension metadata, including:
+\itemize{
+\item \code{dimension_string}: A textual representation of dimensions (e.g., \code{"REG*COMM*YEAR"}).
+\item \code{dimension_names}: A character vector of dimension names.
+\item \code{dimension_sizes}: A numeric vector indicating the size of each dimension.
+}}
 }
 \value{
-A list with extracted dimension details:
-\item{dimension_string}{The original dimension string.}
-\item{dim_size}{The number of dimensions.}
-\item{data_shape}{A string representing the shape of the data (e.g., "10x20x30").}
-\item{col_size}{The product of all dimension sizes except the first, representing
-the column size.}
-\item{n_obs}{The first dimension size, typically representing the number of observations.}
+A structured list containing:
+\itemize{
+\item \code{dimension_string}: The original dimension string.
+\item \code{dim_size}: The number of dimensions.
+\item \code{data_shape}: A formatted string representing the data shape (e.g., \code{"10x20x30"}).
+\item \code{col_size}: The product of all dimension sizes except the first, representing column count.
+\item \code{n_obs}: The first dimension size, typically representing the number of observations.
+}
 }
 \description{
-This internal helper function extracts and organizes dimension-related information
-from a given dimension metadata object.
+A helper function that extracts and structures dimension-related metadata
+from a given dimension structure. Used internally in \code{get_var_structure()}
+and \code{compare_var_structure()}.
 }
-\keyword{code}
-\keyword{data_summary}
-\keyword{for}
+\details{
+\itemize{
+\item Retrieves structured metadata for variables in SL4 and HAR datasets.
+\item Computes data shape and ensures consistency in dimension structures.
+\item Helps determine observation counts and column sizes for variable summaries.
+}
+}
+\seealso{
+\code{\link{get_var_structure}}, \code{\link{compare_var_structure}}
+}
+\author{
+Pattawee Puangchit
+}
 \keyword{internal}

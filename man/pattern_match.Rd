@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{pattern_match}
 \alias{pattern_match}
-\title{Match patterns with optional mixing}
+\title{Match Patterns with Optional Mixing (Internal)}
 \usage{
 pattern_match(pattern1, pattern2, mix_patterns = FALSE)
 }
@@ -11,12 +11,24 @@ pattern_match(pattern1, pattern2, mix_patterns = FALSE)
 
 \item{pattern2}{A character string representing the second pattern.}
 
-\item{mix_patterns}{Logical; if TRUE, allows matching of mixed patterns.}
+\item{mix_patterns}{Logical; if \code{TRUE}, allows dimension order to be ignored during comparison.}
 }
 \value{
-Logical; TRUE if the patterns match, FALSE otherwise.
+Logical; \code{TRUE} if the patterns match, \code{FALSE} otherwise.
 }
 \description{
-Performs case-insensitive comparison of patterns, with an option to allow mixed pattern matching.
+Compares two patterns to determine if they match, with an option to allow flexible dimension order.
+}
+\details{
+\itemize{
+\item Performs case-insensitive pattern matching.
+\item If \code{mix_patterns = TRUE}, allows patterns to match even if dimensions are in different order.
+}
+}
+\seealso{
+\code{\link{get_original_pattern}}, \code{\link{process_pattern}}, \code{\link{get_data_by_dims}}
+}
+\author{
+Pattawee Puangchit
 }
 \keyword{internal}
