@@ -31,7 +31,7 @@ HARplus simplifies `.HAR` and `.SL4` file processing. You can:
 - Pivot and export data into structured formats.
 - Filter subtotals and rename dimensions for clarity.
 
-## Quick Overview of HARplus
+## Quick Guide to HARplus
 
 Below is a categorized reference of the main functions in HARplus.
 
@@ -62,7 +62,8 @@ Below is a categorized reference of the main functions in HARplus.
 
 ## Package Manual
 
-For a complete guide on HARplus functions, check out the **[HARplus Package Manual](docs/Ref.HARplus.pdf)**.
+All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[HARplus Package Manual](docs/Ref.HARplus.pdf)**.
+
 
 ## License
 
