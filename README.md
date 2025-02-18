@@ -77,7 +77,7 @@ Research Assistant at GTAP
 
 ## Acknowledgements
 
-Big shoutout to **Maros Ivanic** for his work on the `HARr` package, which laid the foundation for HARplus. This package wouldn’t exist without that starting point!
+Acknowledgement is due to **Maros Ivanic** for his work on the `HARr` package, which served as the foundation for HARplus. This package would not have been possible without his contributions.
 
 ## Note
 
