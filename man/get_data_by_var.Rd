@@ -37,11 +37,7 @@ get_data_by_var(
 A list of structured data:
 \itemize{
 \item If \code{merge_data = FALSE}, returns a named list where each element corresponds to an experiment.
-\item If \code{merge_data = TRUE}, returns:
-\itemize{
-\item \verb{$merged}: Merged data where variables have consistent structures across datasets.
-\item \verb{$unmerged}: A nested list of datasets that could not be merged.
-}
+\item If \code{merge_data = TRUE}, returns a named list of all merged data
 }
 }
 \description{

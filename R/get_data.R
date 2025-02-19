@@ -23,9 +23,7 @@
 #'
 #' @return A list of structured data:
 #' - If `merge_data = FALSE`, returns a named list where each element corresponds to an experiment.
-#' - If `merge_data = TRUE`, returns:
-#'     - `$merged`: Merged data where variables have consistent structures across datasets.
-#'     - `$unmerged`: A nested list of datasets that could not be merged.
+#' - If `merge_data = TRUE`, returns a named list of all merged data
 #'     
 #' @importFrom stats setNames
 #' @importFrom utils tail
@@ -73,13 +71,12 @@
 #' merge_data = TRUE)
 #' 
 get_data_by_var <- function(var_names = NULL, ..., experiment_names = NULL,
-                         subtotal_level  = FALSE, rename_cols = NULL, merge_data = FALSE) {
-  if (!is.logical(subtotal_level ) && !subtotal_level  %in% c("all", "total", "decomposed")) {
-    stop("subtotal_level  must be either logical (TRUE/FALSE) or one of: 'all', 'total', 'decomposed'")
+                            subtotal_level = FALSE, rename_cols = NULL, merge_data = FALSE) {
+  if (!is.logical(subtotal_level) && !subtotal_level %in% c("all", "total", "decomposed")) {
+    stop("subtotal_level must be either logical (TRUE/FALSE) or one of: 'all', 'total', 'decomposed'")
   }
   
   data_list <- list(...)
-  
   if (length(data_list) == 0) {
     stop("At least one data object is required.")
   }
@@ -125,45 +122,29 @@ get_data_by_var <- function(var_names = NULL, ..., experiment_names = NULL,
     df$Dimension <- dim_info$dimension_string
     df$Experiment <- experiment_name
     
-    df <- process_decomp_level(df, subtotal_level )
+    df <- process_decomp_level(df, subtotal_level)
     df <- rename_col(df, rename_cols)
     return(df)
   }
   
   if (merge_data) {
-    merged_results <- list()
-    unmerged_results <- list()
-    
-    for (var_name in var_names) {
+    result <- lapply(var_names, function(var_name) {
       df_list <- lapply(seq_along(data_list), function(i) {
         process_variable(var_name, data_list[[i]], experiment_names[i])
       })
-      
       df_list <- Filter(Negate(is.null), df_list)
-      
       if (length(df_list) > 0) {
-        col_names <- lapply(df_list, names)
-        if (length(unique(lapply(col_names, paste, collapse = "|"))) == 1) {
-          result <- do.call(rbind, df_list)
-          rownames(result) <- NULL
-          merged_results[[var_name]] <- result
-        } else {
-          for (i in seq_along(df_list)) {
-            exp_name <- names(df_list)[i]
-            if (is.null(unmerged_results[[exp_name]])) {
-              unmerged_results[[exp_name]] <- list()
-            }
-            unmerged_results[[exp_name]][[var_name]] <- df_list[[i]]
-          }
-        }
+        result <- do.call(rbind, df_list)
+        rownames(result) <- NULL
+        return(result)
       }
-    }
-    
-    result <- list()
-    if (length(merged_results) > 0) result$merged <- merged_results
-    if (length(unmerged_results) > 0) result$unmerged <- unmerged_results
+      return(NULL)
+    })
+    names(result) <- var_names
+    result <- Filter(Negate(is.null), result)
     
     return(result)
+    
   } else {
     result_by_experiment <- lapply(seq_along(data_list), function(i) {
       obj <- data_list[[i]]
@@ -214,9 +195,7 @@ get_data_by_var <- function(var_names = NULL, ..., experiment_names = NULL,
 #'
 #' @return A structured list of extracted data:
 #' - If `merge_data = FALSE`, returns a named list where each element corresponds to an experiment.
-#' - If `merge_data = TRUE`, returns:
-#'     - `$merged`: Merged data where patterns have consistent structures across datasets.
-#'     - `$unmerged`: A nested list of datasets that could not be merged.
+#' - If `merge_data = TRUE`, returns a named list of all merged data
 #'     
 #' @importFrom stats setNames
 #' @importFrom utils tail
@@ -381,20 +360,17 @@ get_data_by_dims <- function(patterns = NULL, ..., experiment_names = NULL,
       df$Experiment <- exp_name
       
       if ("Subtotal" %in% names(df)) {
-        # Handle subtotal_level  based on input type
         level <- if (is.logical(subtotal_level )) {
           if (subtotal_level ) "total" else "all"
         } else {
           subtotal_level 
         }
         
-        # Apply filtering based on subtotal_level 
         if (level == "total") {
           df <- df[df$Subtotal == "TOTAL", ]
         } else if (level == "decomposed") {
           df <- df[df$Subtotal != "TOTAL", ]
         }
-        # "all" keeps everything
       }
       
       df <- df[!is.na(df$Value), ]
