@@ -81,4 +81,4 @@ Acknowledgement is due to **Maros Ivanic** for his work on the `HARr` package, w
 
 ## Note
 
-Sample data used in this vignette is obtained from the GTAPv7 model and utilizes publicly available data from the [GTAP 9 database](https://www.gtap.agecon.purdue.edu/databases/archives.asp). For more details about the GTAP database and model, refer to the **[GTAP Database](https://www.gtap.agecon.purdue.edu/)**.
+Sample data used in this [vignette](https://rpubs.com/Bodysbob/1273998) is obtained from the GTAPv7 model and utilizes publicly available data from the [GTAP 9 database](https://www.gtap.agecon.purdue.edu/databases/archives.asp). For more details about the GTAP database and model, refer to the **[GTAP Database](https://www.gtap.agecon.purdue.edu/)**.
