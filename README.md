@@ -61,7 +61,7 @@ Below is a categorized reference of the main functions in HARplus.
 
 ## Package Manual
 
-All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[HARplus Package Manual](docs/Ref.HARplus.pdf)** and **[Vignette]**(https://www.gtap.agecon.purdue.edu/databases/archives.asp)
+All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[HARplus Package Manual](docs/Ref.HARplus.pdf)** and **[Vignette](https://www.gtap.agecon.purdue.edu/databases/archives.asp)**
 
 
 ## License
