@@ -1,6 +1,6 @@
-#' **Load and Process SL4 Files with Enhanced Options**
+#' @title Load and Process SL4 Files with Enhanced Options
 #' 
-#' Reads an SL4 file and processes its structured data into an enhanced SL4 object. 
+#' @description Reads an SL4 file and processes its structured data into an enhanced SL4 object. 
 #' Extracts structured variable information, dimensions, and handles subtotal columns.
 #'
 #' @details

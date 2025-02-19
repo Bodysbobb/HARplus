@@ -1,6 +1,6 @@
-#' **Rename Columns in a Data Frame (Internal)**
+#' @title Rename Columns in a Data Frame (Internal)
 #'
-#' A helper function that renames columns in a data frame based on a specified mapping.
+#' @description A helper function that renames columns in a data frame based on a specified mapping.
 #' Used internally in `get_var_structure()`, `get_data_by_dims()`, and `rename_dims()`.
 #'
 #' @details
@@ -36,9 +36,9 @@ rename_col <- function(df, rename_cols) {
 }
 
 
-#' **Extract and Organize Dimension Metadata (Internal)**
+#' @title Extract and Organize Dimension Metadata (Internal)
 #'
-#' A helper function that extracts and structures dimension-related metadata 
+#' @description A helper function that extracts and structures dimension-related metadata 
 #' from a given dimension structure. Used internally in `get_var_structure()` 
 #' and `compare_var_structure()`.
 #'
@@ -76,9 +76,9 @@ get_dim_info <- function(dim_info) {
 }
 
 
-#' Match Patterns with Optional Mixing (Internal)
+#' @title Match Patterns with Optional Mixing (Internal)
 #'
-#' Compares two patterns to determine if they match, with an option to allow flexible dimension order.
+#' @description Compares two patterns to determine if they match, with an option to allow flexible dimension order.
 #'
 #' @details
 #' - Performs case-insensitive pattern matching.
@@ -108,9 +108,9 @@ pattern_match <- function(pattern1, pattern2, mix_patterns = FALSE) {
 }
 
 
-#' **Retrieve the Original Dimension Pattern (Internal)**
+#' @title Retrieve the Original Dimension Pattern (Internal)
 #'
-#' A helper function that finds the original dimension pattern name in an SL4 or HAR dataset 
+#' @description A helper function that finds the original dimension pattern name in an SL4 or HAR dataset 
 #' that matches a given pattern. Used internally in `get_data_by_dims()`.
 #'
 #' @details
@@ -152,9 +152,9 @@ get_original_pattern <- function(pattern, data_obj, mix_patterns = FALSE) {
 }
 
 
-#' **Extract and Process Pattern-Matched Variables (Internal)**
+#' @title Extract and Process Pattern-Matched Variables (Internal)
 #'
-#' A helper function that extracts and processes variables matching a specified pattern 
+#' @description A helper function that extracts and processes variables matching a specified pattern 
 #' within an SL4 or HAR data object. Used internally in `get_data_by_dims()`.
 #'
 #' @details
@@ -229,9 +229,9 @@ process_pattern <- function(pattern, data_obj, exp_name, pattern_mix = FALSE) {
 }
 
 
-#' **Process Decomposition Levels in Data Frames (Internal)**
+#' @title Process Decomposition Levels in Data Frames (Internal)
 #' 
-#' A helper function that filters data based on decomposition levels in the `"Subtotal"` column.
+#' @description A helper function that filters data based on decomposition levels in the `"Subtotal"` column.
 #' Used internally in `get_data_by_var()`, `get_data_by_dims()`, and `group_data_by_dims()`.
 #'
 #' @details

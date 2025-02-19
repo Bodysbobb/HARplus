@@ -1,6 +1,6 @@
-#' **Load and Process HAR Files with Header Selection**
+#' @title Load and Process HAR Files with Header Selection
 #'
-#' Reads a GEMPACK HAR file and extracts structured data while maintaining compatibility 
+#' @description Reads a GEMPACK HAR file and extracts structured data while maintaining compatibility 
 #' with standard HAR formats. Provides flexibility in naming conventions and header selection.
 #'
 #' @details

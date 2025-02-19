@@ -1,6 +1,6 @@
-#' **Extract Variable Data from SL4 or HAR Objects**
+#' @title Extract Variable Data from SL4 or HAR Objects
 #' 
-#' Extracts structured data for one or more variables from SL4 or HAR objects, 
+#' @description Extracts structured data for one or more variables from SL4 or HAR objects, 
 #' transforming array-like data into a tidy format.
 #'
 #' @details
@@ -187,9 +187,9 @@ get_data_by_var <- function(var_names = NULL, ..., experiment_names = NULL,
 
 
 
-#' **Extract Data by Dimension Patterns from SL4 or HAR Objects**
+#' @title Extract Data by Dimension Patterns from SL4 or HAR Objects
 #' 
-#' Retrieves structured data from SL4 or HAR objects based on specified dimension patterns.
+#' @description Retrieves structured data from SL4 or HAR objects based on specified dimension patterns.
 #' Supports multiple experiments and merging datasets while maintaining structured dimension metadata.
 #'
 #' @details
@@ -507,9 +507,9 @@ get_data_by_dims <- function(patterns = NULL, ..., experiment_names = NULL,
 }
 
 
-#' **Group Data by Dimension Patterns in SL4 or HAR Objects**
+#' @title Group Data by Dimension Patterns in SL4 or HAR Objects
 #' 
-#' Groups extracted SL4 or HAR data based on specified dimension structures and priority rules.
+#' @description Groups extracted SL4 or HAR data based on specified dimension structures and priority rules.
 #' Supports automatic renaming, merging, subtotal filtering, and structured metadata handling.
 #'
 #' @details

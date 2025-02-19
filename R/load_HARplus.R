@@ -1,6 +1,6 @@
-#' Load and Process GEMPACK HAR Files (Internal)
+#' @title Load and Process GEMPACK HAR Files (Internal)
 #'
-#' Reads a GEMPACK HAR file and efficiently extracts structured data while maintaining 
+#' @description Reads a GEMPACK HAR file and efficiently extracts structured data while maintaining 
 #' compatibility with standard HAR formats. This implementation builds upon the foundational 
 #' work of the **HARr** package, reorganizing the process for improved execution speed, 
 #' memory management, and handling of sparse data structures.

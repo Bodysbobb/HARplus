@@ -1,6 +1,6 @@
-#' **Get Variable Structure Summary from SL4 and HAR Objects**
+#' @title Get Variable Structure Summary from SL4 and HAR Objects
 #'
-#' Generates a summary of the variables within one or more SL4 or HAR objects, listing their 
+#' @description Generates a summary of the variables within one or more SL4 or HAR objects, listing their 
 #' dimension sizes, structures, and optionally, column and observation counts.
 #'
 #' @details
@@ -101,9 +101,9 @@ get_var_structure <- function(variables = NULL, ..., include_col_size = FALSE) {
 }
 
 
-#' **Compare Variable Structures Across SL4 and HAR Objects**
+#' @title Compare Variable Structures Across SL4 and HAR Objects
 #' 
-#' Compares variable structures across multiple SL4 and HAR datasets to ensure compatibility.
+#' @description Compares variable structures across multiple SL4 and HAR datasets to ensure compatibility.
 #' Identifies matching and mismatched variable structures, helping users diagnose inconsistencies.
 #'
 #' @details
@@ -274,9 +274,9 @@ compare_var_structure <- function(variables = NULL, ..., keep_unique = FALSE) {
 
 # Dimension Summary ------------------------------------------------------------
 
-#' **Get Dimension Patterns from SL4 and HAR Objects**
+#' @title Get Dimension Patterns from SL4 and HAR Objects
 #' 
-#' Extracts and lists unique dimension patterns (e.g., `REG*COMM`, `REG*REG*ACTS`) from one or more datasets.
+#' @description Extracts and lists unique dimension patterns (e.g., `REG*COMM`, `REG*REG*ACTS`) from one or more datasets.
 #'
 #' @details
 #' - Extracts dimension structure details from the dataset.
@@ -331,9 +331,9 @@ get_dim_patterns <- function(..., keep_unique = FALSE) {
 }
 
 
-#' **Get Dimension Elements from SL4 and HAR Objects**
+#' @title Get Dimension Elements from SL4 and HAR Objects
 #' 
-#' Extracts and lists unique dimension elements (e.g., `REG`, `COMM`, `ACTS`) from one or more datasets.
+#' @description Extracts and lists unique dimension elements (e.g., `REG`, `COMM`, `ACTS`) from one or more datasets.
 #'
 #' @param ... One or more structured SL4 or HAR objects containing dimension information.
 #' @param keep_unique Logical. If `TRUE`, returns only unique dimension elements across inputs. Default is `FALSE`.

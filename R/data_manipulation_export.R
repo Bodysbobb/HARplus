@@ -1,6 +1,5 @@
-#' **Rename Dimensions in SL4 or HAR Objects**
-#' 
-#' Renames dimension names in structured SL4 or HAR objects.
+#' @title Rename Dimensions in SL4 or HAR Objects
+#' @description Renames dimension and list names in structured SL4 or HAR objects.
 #'
 #' @details
 #' - Replaces old dimension names with new ones as specified in `mapping_df`.
@@ -90,9 +89,9 @@ rename_dims <- function(data_obj, mapping_df, rename_list_names = FALSE) {
 }
 
 
-#' **Pivot Data from SL4 or HAR Objects**
+#' @title Pivot Data from SL4 or HAR Objects
 #' 
-#' Transforms long-format SL4 or HAR data into wide format by pivoting selected columns.
+#' @description Transforms long-format SL4 or HAR data into wide format by pivoting selected columns.
 #' Supports both single data frames and nested lists.
 #'
 #' @details
@@ -160,9 +159,9 @@ pivot_data <- function(data_obj, pivot_cols, name_repair = "unique") {
 }
 
 
-#' **Export Data to Various Formats (CSV/STATA/TEXT/RDS/XLSX)**
+#' @title Export Data to Various Formats (CSV/STATA/TEXT/RDS/XLSX)
 #' 
-#' Exports structured SL4 or HAR data to multiple file formats, including CSV, Stata, TXT, RDS, and XLSX.
+#' @description Exports structured SL4 or HAR data to multiple file formats, including CSV, Stata, TXT, RDS, and XLSX.
 #' Supports nested lists, automatic subfolder creation, and multi-sheet Excel exports.
 #'
 #' @details
@@ -338,9 +337,9 @@ export_data <- function(data, output_path, format = "csv", prefix = "",
 
 # Pivot Data Hirarchy -----------------------------------------------------
 
-#' **Create Hierarchical Pivot Table from SL4 or HAR Objects**
+#' @title Create Hierarchical Pivot Table from SL4 or HAR Objects
 #' 
-#' Creates hierarchical pivot tables from structured SL4 or HAR data, with optional Excel export.
+#' @description Creates hierarchical pivot tables from structured SL4 or HAR data, with optional Excel export.
 #' Supports both single data frames and nested lists, preserving dimension hierarchies.
 #'
 #' @details
@@ -475,9 +474,9 @@ pivot_data_hierarchy <- function(data_obj, pivot_cols, name_repair = "unique",
 }
 
 
-#' Export Hierarchical Pivot Table to Excel (Internal)
+#' @title Export Hierarchical Pivot Table to Excel (Internal)
 #'
-#' Internal function to export hierarchical pivot tables to Excel with formatted headers.
+#' @description Internal function to export hierarchical pivot tables to Excel with formatted headers.
 #'
 #' @param pivot_df A hierarchical pivot object created by pivot_data_hierarchy().
 #' @param file_path Character. The file path for Excel export.
