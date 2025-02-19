@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{process_decomp_level}
 \alias{process_decomp_level}
-\title{\strong{Process Decomposition Levels in Data Frames (Internal)}}
+\title{Process Decomposition Levels in Data Frames (Internal)}
 \usage{
 process_decomp_level(df, subtotal_level)
 }

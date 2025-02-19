@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_sl4x.R
 \name{load_sl4x}
 \alias{load_sl4x}
-\title{\strong{Load and Process SL4 Files with Enhanced Options}}
+\title{Load and Process SL4 Files with Enhanced Options}
 \usage{
 load_sl4x(file_path, lowercase = FALSE, select_header = NULL)
 }

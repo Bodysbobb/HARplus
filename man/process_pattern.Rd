@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{process_pattern}
 \alias{process_pattern}
-\title{\strong{Extract and Process Pattern-Matched Variables (Internal)}}
+\title{Extract and Process Pattern-Matched Variables (Internal)}
 \usage{
 process_pattern(pattern, data_obj, exp_name, pattern_mix = FALSE)
 }

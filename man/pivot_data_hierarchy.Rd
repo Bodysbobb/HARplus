@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_manipulation_export.R
 \name{pivot_data_hierarchy}
 \alias{pivot_data_hierarchy}
-\title{\strong{Create Hierarchical Pivot Table from SL4 or HAR Objects}}
+\title{Create Hierarchical Pivot Table from SL4 or HAR Objects}
 \usage{
 pivot_data_hierarchy(
   data_obj,

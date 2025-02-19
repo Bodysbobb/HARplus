@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_original_pattern}
 \alias{get_original_pattern}
-\title{\strong{Retrieve the Original Dimension Pattern (Internal)}}
+\title{Retrieve the Original Dimension Pattern (Internal)}
 \usage{
 get_original_pattern(pattern, data_obj, mix_patterns = FALSE)
 }

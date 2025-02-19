@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_data.R
 \name{get_data_by_dims}
 \alias{get_data_by_dims}
-\title{\strong{Extract Data by Dimension Patterns from SL4 or HAR Objects}}
+\title{Extract Data by Dimension Patterns from SL4 or HAR Objects}
 \usage{
 get_data_by_dims(
   patterns = NULL,

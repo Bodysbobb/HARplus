@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_summary.R
 \name{get_dim_patterns}
 \alias{get_dim_patterns}
-\title{\strong{Get Dimension Patterns from SL4 and HAR Objects}}
+\title{Get Dimension Patterns from SL4 and HAR Objects}
 \usage{
 get_dim_patterns(..., keep_unique = FALSE)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{rename_col}
 \alias{rename_col}
-\title{\strong{Rename Columns in a Data Frame (Internal)}}
+\title{Rename Columns in a Data Frame (Internal)}
 \usage{
 rename_col(df, rename_cols)
 }

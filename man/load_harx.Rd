@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_harx.R
 \name{load_harx}
 \alias{load_harx}
-\title{\strong{Load and Process HAR Files with Header Selection}}
+\title{Load and Process HAR Files with Header Selection}
 \usage{
 load_harx(
   file_path,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_data.R
 \name{group_data_by_dims}
 \alias{group_data_by_dims}
-\title{\strong{Group Data by Dimension Patterns in SL4 or HAR Objects}}
+\title{Group Data by Dimension Patterns in SL4 or HAR Objects}
 \usage{
 group_data_by_dims(
   patterns = NULL,

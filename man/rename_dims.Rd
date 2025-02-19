@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_manipulation_export.R
 \name{rename_dims}
 \alias{rename_dims}
-\title{\strong{Rename Dimensions in SL4 or HAR Objects}}
+\title{Rename Dimensions in SL4 or HAR Objects}
 \usage{
 rename_dims(data_obj, mapping_df, rename_list_names = FALSE)
 }
@@ -18,7 +18,7 @@ and the second column (\code{new}) contains the new names.}
 The modified SL4 or HAR object with updated dimension names and, optionally, updated list names.
 }
 \description{
-Renames dimension names in structured SL4 or HAR objects.
+Renames dimension and list names in structured SL4 or HAR objects.
 }
 \details{
 \itemize{

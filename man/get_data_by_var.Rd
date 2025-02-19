@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_data.R
 \name{get_data_by_var}
 \alias{get_data_by_var}
-\title{\strong{Extract Variable Data from SL4 or HAR Objects}}
+\title{Extract Variable Data from SL4 or HAR Objects}
 \usage{
 get_data_by_var(
   var_names = NULL,

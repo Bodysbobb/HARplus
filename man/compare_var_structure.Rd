@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_summary.R
 \name{compare_var_structure}
 \alias{compare_var_structure}
-\title{\strong{Compare Variable Structures Across SL4 and HAR Objects}}
+\title{Compare Variable Structures Across SL4 and HAR Objects}
 \usage{
 compare_var_structure(variables = NULL, ..., keep_unique = FALSE)
 }

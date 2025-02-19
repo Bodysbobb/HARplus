@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_manipulation_export.R
 \name{export_data}
 \alias{export_data}
-\title{\strong{Export Data to Various Formats (CSV/STATA/TEXT/RDS/XLSX)}}
+\title{Export Data to Various Formats (CSV/STATA/TEXT/RDS/XLSX)}
 \usage{
 export_data(
   data,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_manipulation_export.R
 \name{pivot_data}
 \alias{pivot_data}
-\title{\strong{Pivot Data from SL4 or HAR Objects}}
+\title{Pivot Data from SL4 or HAR Objects}
 \usage{
 pivot_data(data_obj, pivot_cols, name_repair = "unique")
 }

@@ -61,7 +61,7 @@ Below is a categorized reference of the main functions in HARplus.
 
 ## Package Manual
 
-All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[HARplus Package Manual](docs/Ref.HARplus.pdf)** and **[Vignette](https://rpubs.com/Bodysbob/1273998)**
+All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[HARplus Package Manual](docs/Referene%20Manual%20-%20HARplus.pdf)** and **[Vignette](https://rpubs.com/Bodysbob/1273998)**
 
 
 ## License

@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_dim_info}
 \alias{get_dim_info}
-\title{\strong{Extract and Organize Dimension Metadata (Internal)}}
+\title{Extract and Organize Dimension Metadata (Internal)}
 \usage{
 get_dim_info(dim_info)
 }

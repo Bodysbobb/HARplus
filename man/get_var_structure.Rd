@@ -2,7 +2,7 @@
 % Please edit documentation in R/data_summary.R
 \name{get_var_structure}
 \alias{get_var_structure}
-\title{\strong{Get Variable Structure Summary from SL4 and HAR Objects}}
+\title{Get Variable Structure Summary from SL4 and HAR Objects}
 \usage{
 get_var_structure(variables = NULL, ..., include_col_size = FALSE)
 }
