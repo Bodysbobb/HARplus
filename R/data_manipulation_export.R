@@ -324,11 +324,16 @@ export_data <- function(data, output_path, format = "csv", prefix = "",
     
     result <- process_list(data)
     if (!is.null(result)) {
-      exported_files[[fmt]] <- result
-      message(sprintf("Exported %d file(s) to %s format in %s", 
-                      length(result), fmt, normalizePath(format_dir)))
+      if (fmt == "xlsx" && multi_sheet_xlsx) {
+        message(sprintf("Exported multi-sheet Excel file '%s.xlsx' to %s", 
+                        default_filename, normalizePath(format_dir)))
+      } else {
+        exported_files[[fmt]] <- result
+        message(sprintf("Exported %d file(s) to %s format in %s", 
+                        length(result), fmt, normalizePath(format_dir)))
+      }
     }
-  }
+  }  
   
   invisible(exported_files)
 }
@@ -490,66 +495,50 @@ pivot_data_hierarchy <- function(data_obj, pivot_cols, name_repair = "unique",
 #'
 #' @keywords internal
 #'
-export_hierarchy_to_excel <- function(pivot_df, file_path, xlsx_filename = NULL) {
-  if (is.null(xlsx_filename)) {
-    xlsx_filename <- basename(tools::file_path_sans_ext(file_path))
-  }
-  
-  wb <- openxlsx::createWorkbook()
-  
-  write_sheet <- function(df, sheet_name) {
-    sheet_name <- make.names(substr(gsub("[^[:alnum:]]", "", sheet_name), 1, 31))
+  export_hierarchy_to_excel <- function(pivot_df, file_path, xlsx_filename = NULL) {
+    wb <- openxlsx::createWorkbook()
     
-    openxlsx::addWorksheet(wb, sheet_name)
-    
-    if (inherits(df, "hierarchical_pivot")) {
-      header_matrix <- attr(df, "header_matrix")
-      if (!is.null(header_matrix)) {
-        openxlsx::writeData(wb, sheet_name, header_matrix, startRow = 1, colNames = FALSE)
-        openxlsx::writeData(wb, sheet_name, df, 
-                            startRow = nrow(header_matrix) + 1, 
-                            colNames = FALSE)
-        
-        header_style <- openxlsx::createStyle(textDecoration = "bold")
-        openxlsx::addStyle(wb, sheet_name, style = header_style,
-                           rows = 1:nrow(header_matrix),
-                           cols = 1:ncol(header_matrix),
-                           gridExpand = TRUE)
+    write_sheet <- function(df, sheet_name) {
+      sheet_name <- make.names(substr(gsub("[^[:alnum:]]", "", sheet_name), 1, 31))
+      
+      openxlsx::addWorksheet(wb, sheet_name)
+      
+      if (inherits(df, "hierarchical_pivot")) {
+        header_matrix <- attr(df, "header_matrix")
+        if (!is.null(header_matrix)) {
+          openxlsx::writeData(wb, sheet_name, header_matrix, startRow = 1, colNames = FALSE)
+          openxlsx::writeData(wb, sheet_name, df, 
+                              startRow = nrow(header_matrix) + 1, 
+                              colNames = FALSE)
+          
+          header_style <- openxlsx::createStyle(textDecoration = "bold")
+          openxlsx::addStyle(wb, sheet_name, style = header_style,
+                             rows = 1:nrow(header_matrix),
+                             cols = 1:ncol(header_matrix),
+                             gridExpand = TRUE)
+        } else {
+          openxlsx::writeData(wb, sheet_name, df)
+        }
       } else {
         openxlsx::writeData(wb, sheet_name, df)
       }
+    }
+    
+    process_list(pivot_df)
+    
+    # Construct the file path and filename
+    actual_filename <- paste0(xlsx_filename, ".xlsx")
+    if (!grepl("\\.xlsx$", file_path)) {
+      final_path <- file.path(file_path, actual_filename)
     } else {
-      openxlsx::writeData(wb, sheet_name, df)
+      final_path <- file_path
     }
+    
+    openxlsx::saveWorkbook(wb, final_path, overwrite = TRUE)
+    
+    # Add informative message
+    message(sprintf("Exported hierarchical pivot Excel file '%s' to %s", 
+                    actual_filename, normalizePath(dirname(final_path))))
+    
+    invisible(NULL)
   }
-  
-  process_list <- function(lst, prefix = "") {
-    for (name in names(lst)) {
-      current_obj <- lst[[name]]
-      current_name <- if (prefix == "") name else paste(prefix, name, sep = "_")
-      
-      if (inherits(current_obj, "hierarchical_pivot")) {
-        write_sheet(current_obj, current_name)
-      } else if (is.list(current_obj)) {
-        for (subname in names(current_obj)) {
-          if (inherits(current_obj[[subname]], "hierarchical_pivot")) {
-            sheet_name <- paste(current_name, subname, sep = "_")
-            write_sheet(current_obj[[subname]], sheet_name)
-          }
-        }
-      }
-    }
-  }
-  
-  process_list(pivot_df)
-  
-  if (!grepl("\\.xlsx$", file_path)) {
-    file_path <- paste0(file_path, "/", xlsx_filename, ".xlsx")
-  } else {
-    file_path <- gsub("data\\.xlsx$", paste0(xlsx_filename, ".xlsx"), file_path)
-  }
-  
-  openxlsx::saveWorkbook(wb, file_path, overwrite = TRUE)
-  
-  invisible(NULL)
-}
