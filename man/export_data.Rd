@@ -10,7 +10,8 @@ export_data(
   format = "csv",
   prefix = "",
   create_subfolder = FALSE,
-  multi_sheet_xlsx = FALSE
+  multi_sheet_xlsx = FALSE,
+  xlsx_filename = NULL
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ export_data(
 \item{create_subfolder}{Logical. If \code{TRUE}, creates a subfolder for each format. Default is \code{FALSE}.}
 
 \item{multi_sheet_xlsx}{Logical. \strong{Only applicable when \code{format = "xlsx"}}. If \code{TRUE}, stores all data in a \strong{single Excel workbook with multiple sheets}. Default is \code{FALSE}.}
+
+\item{xlsx_filename}{Character. The name for the Excel file when using multi_sheet_xlsx. If NULL, uses the name of the dataset. Default is \code{NULL}.}
 }
 \value{
 A vector of file paths for the exported data.

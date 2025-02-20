@@ -177,7 +177,8 @@ pivot_data <- function(data_obj, pivot_cols, name_repair = "unique") {
 #' @param prefix Character. An optional prefix added to exported file names. Default is `""` (empty).
 #' @param create_subfolder Logical. If `TRUE`, creates a subfolder for each format. Default is `FALSE`.
 #' @param multi_sheet_xlsx Logical. **Only applicable when `format = "xlsx"`**. If `TRUE`, stores all data in a **single Excel workbook with multiple sheets**. Default is `FALSE`.
-#'
+#' @param xlsx_filename Character. The name for the Excel file when using multi_sheet_xlsx. If NULL, uses the name of the dataset. Default is `NULL`.
+#' 
 #' @return A vector of file paths for the exported data.
 #' 
 #' @importFrom utils write.csv write.table
@@ -207,15 +208,19 @@ pivot_data <- function(data_obj, pivot_cols, name_repair = "unique") {
 #' }
 #' 
 export_data <- function(data, output_path, format = "csv", prefix = "", 
-                        create_subfolder = FALSE, multi_sheet_xlsx = FALSE) {
+                        create_subfolder = FALSE, multi_sheet_xlsx = FALSE,
+                        xlsx_filename = NULL) {
+  
+  default_filename <- if (is.null(xlsx_filename)) {
+    basename(tools::file_path_sans_ext(output_path))
+  } else {
+    xlsx_filename
+  }
+  
   supported_formats <- c("csv", "stata", "txt", "rds", "xlsx")
   if (!all(format %in% supported_formats)) {
     invalid_formats <- format[!format %in% supported_formats]
     stop("Unsupported format(s): ", paste(invalid_formats, collapse = ", "))
-  }
-  
-  if (!multi_sheet_xlsx && "xlsx" %in% format) {
-    warning("XLSX format is recommended only for pivot-style data. Consider using csv for large datasets.")
   }
   
   output_dir <- if (tools::file_ext(output_path) == "") {
@@ -240,7 +245,6 @@ export_data <- function(data, output_path, format = "csv", prefix = "",
     }
     
     export_single <- function(df, name) {
-      # Set correct file extension for Stata
       ext <- if(fmt == "stata") "dta" else fmt
       file_path <- file.path(format_dir, paste0(prefix, name, ".", ext))
       
@@ -269,7 +273,6 @@ export_data <- function(data, output_path, format = "csv", prefix = "",
       
       if (fmt == "xlsx" && multi_sheet_xlsx) {
         wb <- openxlsx::createWorkbook()
-        # Track whether any worksheets were added
         sheets_added <- FALSE
         
         for (name in names(lst)) {
@@ -284,7 +287,6 @@ export_data <- function(data, output_path, format = "csv", prefix = "",
             openxlsx::writeData(wb, current_name, item)
             sheets_added <- TRUE
           } else if (is.list(item)) {
-            # Recursively process nested lists
             for (subname in names(item)) {
               if (is.data.frame(item[[subname]])) {
                 sheet_name <- make.names(substr(paste(current_name, subname, sep = "_"), 1, 31))
@@ -297,7 +299,7 @@ export_data <- function(data, output_path, format = "csv", prefix = "",
         }
         
         if (sheets_added) {
-          file_path <- file.path(format_dir, paste0(prefix, "data.xlsx"))
+          file_path <- file.path(format_dir, paste0(prefix, default_filename, ".xlsx"))
           openxlsx::saveWorkbook(wb, file_path, overwrite = TRUE)
           return(file_path)
         }
@@ -323,16 +325,14 @@ export_data <- function(data, output_path, format = "csv", prefix = "",
     result <- process_list(data)
     if (!is.null(result)) {
       exported_files[[fmt]] <- result
-      
       message(sprintf("Exported %d file(s) to %s format in %s", 
-                      length(result), 
-                      fmt,
-                      normalizePath(format_dir)))
+                      length(result), fmt, normalizePath(format_dir)))
     }
   }
   
   invisible(exported_files)
 }
+
 
 
 # Pivot Data Hirarchy -----------------------------------------------------
@@ -355,7 +355,8 @@ export_data <- function(data, output_path, format = "csv", prefix = "",
 #'        (`"unique"`, `"minimal"`, `"universal"`). Default is `"unique"`.
 #' @param export Logical. If `TRUE`, exports result to Excel. Default is `FALSE`.
 #' @param file_path Character. Required if export = TRUE. The path for Excel export.
-#'
+#' @param xlsx_filename Character. The name for the Excel file when using multi_sheet_xlsx. If NULL, uses the name of the dataset. Default is `NULL`.
+#' 
 #' @return A pivoted data object with hierarchical structure:
 #' - If input is a data frame: Returns a hierarchical pivot table.
 #' - If input is a list: Returns a nested list of hierarchical pivot tables.
@@ -391,8 +392,11 @@ export_data <- function(data, output_path, format = "csv", prefix = "",
 #' }
 #' 
 pivot_data_hierarchy <- function(data_obj, pivot_cols, name_repair = "unique", 
-                                 export = FALSE, file_path = NULL) {
-  # Input validation
+                                 export = FALSE, file_path = NULL,
+                                 xlsx_filename = NULL) {
+  if (export && is.null(xlsx_filename)) {
+    xlsx_filename <- basename(tools::file_path_sans_ext(file_path))
+  }
   if (!is.list(data_obj) && !is.data.frame(data_obj)) {
     stop("data_obj must be a list or data frame")
   }
@@ -480,16 +484,20 @@ pivot_data_hierarchy <- function(data_obj, pivot_cols, name_repair = "unique",
 #'
 #' @param pivot_df A hierarchical pivot object created by pivot_data_hierarchy().
 #' @param file_path Character. The file path for Excel export.
-#'
+#' @param xlsx_filename Character. The name for the Excel file when using multi_sheet_xlsx. If NULL, uses the name of the dataset. Default is `NULL`.
+#' 
 #' @return Invisibly returns NULL.
 #'
 #' @keywords internal
 #'
-export_hierarchy_to_excel <- function(pivot_df, file_path) {
+export_hierarchy_to_excel <- function(pivot_df, file_path, xlsx_filename = NULL) {
+  if (is.null(xlsx_filename)) {
+    xlsx_filename <- basename(tools::file_path_sans_ext(file_path))
+  }
+  
   wb <- openxlsx::createWorkbook()
   
   write_sheet <- function(df, sheet_name) {
-    # Clean sheet name per Excel restrictions
     sheet_name <- make.names(substr(gsub("[^[:alnum:]]", "", sheet_name), 1, 31))
     
     openxlsx::addWorksheet(wb, sheet_name)
@@ -502,7 +510,6 @@ export_hierarchy_to_excel <- function(pivot_df, file_path) {
                             startRow = nrow(header_matrix) + 1, 
                             colNames = FALSE)
         
-        # Apply header formatting
         header_style <- openxlsx::createStyle(textDecoration = "bold")
         openxlsx::addStyle(wb, sheet_name, style = header_style,
                            rows = 1:nrow(header_matrix),
@@ -516,7 +523,6 @@ export_hierarchy_to_excel <- function(pivot_df, file_path) {
     }
   }
   
-  # Process nested structure
   process_list <- function(lst, prefix = "") {
     for (name in names(lst)) {
       current_obj <- lst[[name]]
@@ -536,6 +542,13 @@ export_hierarchy_to_excel <- function(pivot_df, file_path) {
   }
   
   process_list(pivot_df)
+  
+  if (!grepl("\\.xlsx$", file_path)) {
+    file_path <- paste0(file_path, "/", xlsx_filename, ".xlsx")
+  } else {
+    file_path <- gsub("data\\.xlsx$", paste0(xlsx_filename, ".xlsx"), file_path)
+  }
+  
   openxlsx::saveWorkbook(wb, file_path, overwrite = TRUE)
   
   invisible(NULL)

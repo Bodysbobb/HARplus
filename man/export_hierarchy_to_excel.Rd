@@ -4,12 +4,14 @@
 \alias{export_hierarchy_to_excel}
 \title{Export Hierarchical Pivot Table to Excel (Internal)}
 \usage{
-export_hierarchy_to_excel(pivot_df, file_path)
+export_hierarchy_to_excel(pivot_df, file_path, xlsx_filename = NULL)
 }
 \arguments{
 \item{pivot_df}{A hierarchical pivot object created by pivot_data_hierarchy().}
 
 \item{file_path}{Character. The file path for Excel export.}
+
+\item{xlsx_filename}{Character. The name for the Excel file when using multi_sheet_xlsx. If NULL, uses the name of the dataset. Default is \code{NULL}.}
 }
 \value{
 Invisibly returns NULL.

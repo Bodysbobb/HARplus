@@ -9,7 +9,8 @@ pivot_data_hierarchy(
   pivot_cols,
   name_repair = "unique",
   export = FALSE,
-  file_path = NULL
+  file_path = NULL,
+  xlsx_filename = NULL
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ pivot_data_hierarchy(
 \item{export}{Logical. If \code{TRUE}, exports result to Excel. Default is \code{FALSE}.}
 
 \item{file_path}{Character. Required if export = TRUE. The path for Excel export.}
+
+\item{xlsx_filename}{Character. The name for the Excel file when using multi_sheet_xlsx. If NULL, uses the name of the dataset. Default is \code{NULL}.}
 }
 \value{
 A pivoted data object with hierarchical structure:
