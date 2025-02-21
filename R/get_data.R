@@ -296,7 +296,7 @@ get_data_by_var <- function(var_names = NULL, ..., experiment_names = NULL,
 #' )
 #' 
 get_data_by_dims <- function(patterns = NULL, ..., experiment_names = NULL,
-                             subtotal_level  = FALSE, rename_cols = NULL,
+                             subtotal_level = FALSE, rename_cols = NULL,
                              merge_data = FALSE, pattern_mix = FALSE) {
   data_list <- list(...)
   
@@ -304,7 +304,9 @@ get_data_by_dims <- function(patterns = NULL, ..., experiment_names = NULL,
     stop("At least one data object is required.")
   }
   
-  if (is.null(experiment_names)) {
+  if (is.null(experiment_names) && !is.null(names(data_list))) {
+    experiment_names <- names(data_list)
+  } else if (is.null(experiment_names)) {
     dots <- match.call(expand.dots = FALSE)$...
     experiment_names <- if (length(dots) == 1) {
       deparse(dots[[1]])
@@ -321,33 +323,42 @@ get_data_by_dims <- function(patterns = NULL, ..., experiment_names = NULL,
     merge_data <- FALSE
   }
   
-  if (is.null(patterns) || (length(patterns) == 1 && patterns == "ALL")) {
-    all_patterns <- lapply(data_list, function(x) {
+  if (is.null(patterns) || identical(patterns, "ALL")) {
+    patterns <- unique(unlist(lapply(data_list, function(x) {
       sapply(x$dimension_info, function(y) y$dimension_string)
-    })
-    patterns <- unique(unlist(all_patterns))
+    })))
   }
   
-  process_pattern <- function(pattern, data_obj, exp_name, pattern_mix = FALSE) {
-    matching_vars <- names(data_obj$dimension_info)[
-      sapply(data_obj$dimension_info, function(x) 
-        pattern_match(x$dimension_string, pattern, pattern_mix)
-      )
-    ]
-    
-    if (length(matching_vars) == 0) {
-      warning(sprintf("No variables found with pattern '%s' in experiment '%s'", 
-                      pattern, exp_name))
-      return(NULL)
+  extract_data <- function(data_obj, pattern, exp_name) {
+    matching_vars <- character(0)
+    for (var_name in names(data_obj$dimension_info)) {
+      x <- data_obj$dimension_info[[var_name]]
+      if (!is.null(x$dimension_string)) {
+        if (pattern_mix) {
+          p1 <- sort(strsplit(tolower(x$dimension_string), "\\*")[[1]])
+          p2 <- sort(strsplit(tolower(pattern), "\\*")[[1]])
+          if (identical(p1, p2)) matching_vars <- c(matching_vars, var_name)
+        } else {
+          if (tolower(x$dimension_string) == tolower(pattern)) {
+            matching_vars <- c(matching_vars, var_name)
+          }
+        }
+      }
     }
     
-    var_data_list <- lapply(matching_vars, function(var_name) {
+    if (length(matching_vars) == 0) return(NULL)
+    
+    df_list <- lapply(matching_vars, function(var_name) {
       var_data <- data_obj$data[[var_name]]
       if (length(dim(var_data)) == 0) return(NULL)
       
       dim_info <- data_obj$dimension_info[[var_name]]
       df <- as.data.frame.table(var_data, stringsAsFactors = FALSE, responseName = "Value")
-      setNames(df, c(dim_info$dimension_names))
+      
+      dim_names <- dim_info$dimension_names
+      if (length(dim_names) > 0) {
+        names(df)[1:length(dim_names)] <- dim_names
+      }
       
       if ("type" %in% tolower(names(df))) {
         names(df)[tolower(names(df)) == "type"] <- "Subtotal"
@@ -359,127 +370,87 @@ get_data_by_dims <- function(patterns = NULL, ..., experiment_names = NULL,
       df$Dimension <- dim_info$dimension_string
       df$Experiment <- exp_name
       
+      if (!is.logical(subtotal_level) && !subtotal_level %in% c("all", "total", "decomposed")) {
+        stop("subtotal_level must be either logical (TRUE/FALSE) or one of: 'all', 'total', 'decomposed'")
+      }
+      
       if ("Subtotal" %in% names(df)) {
-        level <- if (is.logical(subtotal_level )) {
-          if (subtotal_level ) "total" else "all"
-        } else {
-          subtotal_level 
-        }
-        
-        if (level == "total") {
-          df <- df[df$Subtotal == "TOTAL", ]
-        } else if (level == "decomposed") {
-          df <- df[df$Subtotal != "TOTAL", ]
+        df <- switch(
+          if(is.logical(subtotal_level)) if(subtotal_level) "all" else "total" else subtotal_level,
+          "total" = df[df$Subtotal == "TOTAL", ],
+          "decomposed" = df[df$Subtotal != "TOTAL", ],
+          df
+        )
+      }
+      
+      if (!is.null(rename_cols)) {
+        for (old_name in names(rename_cols)) {
+          matches <- which(names(df) == old_name)
+          if (length(matches) > 0) {
+            for (i in seq_along(matches)) {
+              names(df)[matches[i]] <- if(i == 1) rename_cols[old_name] else paste0(rename_cols[old_name], i-1)
+            }
+          }
         }
       }
       
-      df <- df[!is.na(df$Value), ]
-      return(df)
+      df[!is.na(df$Value), ]
     })
     
-    var_data_list <- Filter(Negate(is.null), var_data_list)
-    if (length(var_data_list) > 0) {
-      result <- do.call(rbind, var_data_list)
-      rownames(result) <- NULL
-      return(result)
-    }
-    return(NULL)
+    df_list <- Filter(Negate(is.null), df_list)
+    if (length(df_list) == 0) return(NULL)
+    
+    result <- do.call(rbind, df_list)
+    rownames(result) <- NULL
+    result
   }
   
   if (merge_data) {
-    result_list <- list()
+    result <- lapply(patterns, function(pattern) {
+      pattern_data <- lapply(seq_along(data_list), function(i) {
+        extract_data(data_list[[i]], pattern, experiment_names[i])
+      })
+      pattern_data <- Filter(Negate(is.null), pattern_data)
+      if (length(pattern_data) == 0) return(NULL)
+      do.call(rbind, pattern_data)
+    })
+    names(result) <- patterns
+    result <- Filter(Negate(is.null), result)
     
-    for (pattern in patterns) {
-      pattern_results <- list()
-      
-      for (i in seq_along(data_list)) {
-        tryCatch({
-          df <- process_pattern(pattern, data_list[[i]], experiment_names[i], pattern_mix)
-          if (!is.null(df)) {
-            pattern_results[[experiment_names[i]]] <- df
-          }
-        }, error = function(e) {
-          warning(sprintf("Error processing pattern '%s' for experiment '%s': %s",
-                          pattern, experiment_names[i], conditionMessage(e)))
-        })
-      }
-      
-      if (length(pattern_results) > 0) {
-        merged_df <- do.call(rbind, pattern_results)
-        rownames(merged_df) <- NULL
-        
-        if (!is.null(rename_cols)) {
-          merged_df <- rename_col(merged_df, rename_cols)
-        }
-        
-        original_pattern <- NULL
-        for (data_obj in data_list) {
-          potential_pattern <- get_original_pattern(pattern, data_obj, pattern_mix)
-          if (!is.null(potential_pattern)) {
-            original_pattern <- potential_pattern
-            break
-          }
-        }
-        
-        if (!is.null(original_pattern)) {
-          result_list[[original_pattern]] <- merged_df
-        }
-      }
-    }
-    
-    if (length(result_list) == 0) {
+    if (length(result) == 0) {
       stop("No patterns could be processed")
     }
     
-    attr(result_list, "n_patterns") <- length(result_list)
-    attr(result_list, "patterns") <- names(result_list)
+    attr(result, "n_patterns") <- length(result)
+    attr(result, "patterns") <- names(result)
     if (length(data_list) > 1) {
-      attr(result_list, "experiments") <- experiment_names
+      attr(result, "experiments") <- experiment_names
     }
-    class(result_list) <- c("grouped_multi_data", class(result_list))
-    
-    return(result_list)
+    class(result) <- c("grouped_multi_data", class(result))
     
   } else {
-    result_by_experiment <- list()
-    
-    for (i in seq_along(data_list)) {
-      pattern_results <- list()
-      
-      for (pattern in patterns) {
-        tryCatch({
-          df <- process_pattern(pattern, data_list[[i]], experiment_names[i], pattern_mix)
-          if (!is.null(df)) {
-            if (!is.null(rename_cols)) {
-              df <- rename_col(df, rename_cols)
-            }
-            
-            original_pattern <- get_original_pattern(pattern, data_list[[i]], pattern_mix)
-            if (!is.null(original_pattern)) {
-              pattern_results[[original_pattern]] <- df
-            }
-          }
-        }, error = function(e) {
-          warning(sprintf("Error processing pattern '%s' for experiment '%s': %s",
-                          pattern, experiment_names[i], conditionMessage(e)))
-        })
-      }
-      
-      if (length(pattern_results) > 0) {
-        result_by_experiment[[experiment_names[i]]] <- pattern_results
-      }
-    }
+    result <- lapply(seq_along(data_list), function(i) {
+      pattern_data <- lapply(patterns, function(pattern) {
+        extract_data(data_list[[i]], pattern, experiment_names[i])
+      })
+      pattern_data <- Filter(Negate(is.null), pattern_data)
+      if (length(pattern_data) == 0) return(NULL)
+      names(pattern_data) <- vapply(pattern_data, function(x) unique(x$Dimension)[1], character(1))
+      pattern_data
+    })
+    names(result) <- experiment_names
+    result <- Filter(Negate(is.null), result)
     
     if (length(data_list) == 1) {
-      return(result_by_experiment[[experiment_names[1]]])
+      return(result[[1]])
     }
     
-    if (length(result_by_experiment) == 0) {
+    if (length(result) == 0) {
       stop("No patterns could be processed for any experiment")
     }
-    
-    return(result_by_experiment)
   }
+  
+  return(result)
 }
 
 
