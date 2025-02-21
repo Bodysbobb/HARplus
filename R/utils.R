@@ -276,3 +276,86 @@ process_decomp_level <- function(df, subtotal_level) {
   }
   return(df)
 }
+
+
+
+#' @title Process and Export Report (Internal)
+#'
+#' @description Generates a summary report of variables and their corresponding output files
+#' from structured SL4 or HAR data. The report is saved as an Excel file.
+#'
+#' @details
+#' - Extracts unique variable names and their associated export filenames.
+#' - Handles nested list structures by recursively traversing them.
+#' - The output report is saved as an Excel file named `"Report_<data_name>.xlsx"`.
+#'
+#' @param data A structured SL4 or HAR object or a nested list of data frames.
+#' @param output_path A character string specifying the output directory or file path.
+#' @param prefix A character string to prepend to the exported filenames.
+#'
+#' @importFrom openxlsx createWorkbook addWorksheet writeData createStyle addStyle saveWorkbook
+#' @importFrom tools file_ext file_path_sans_ext
+#'
+#' @author Pattawee Puangchit
+#' 
+#' @seealso \code{\link{export_data}}
+#' 
+#' @keywords internal
+#'
+process_export_report <- function(data, output_path, prefix = "", data_name = "data") {
+  report_data <- data.frame(
+    Variable = character(),
+    OutputFile = character(),
+    stringsAsFactors = FALSE
+  )
+  
+  stack <- list(list(data = data, name = ""))
+  
+  while (length(stack) > 0) {
+    current <- stack[[length(stack)]]
+    stack <- stack[-length(stack)]
+    
+    if (is.data.frame(current$data) && "Variable" %in% names(current$data)) {
+      output_file <- if (current$name == "") "data" else gsub("\\*", "_", current$name)
+      output_file <- paste0(prefix, output_file)
+      
+      new_rows <- data.frame(
+        Variable = unique(current$data$Variable),
+        OutputFile = output_file,
+        stringsAsFactors = FALSE
+      )
+      report_data <- rbind(report_data, new_rows)
+      
+    } else if (is.list(current$data)) {
+      for (name in rev(names(current$data))) {
+        if (name != "report") {
+          new_name <- if (current$name == "") name else paste(current$name, name, sep = "_")
+          stack[[length(stack) + 1]] <- list(data = current$data[[name]], name = new_name)
+        }
+      }
+    }
+  }
+  
+  if (nrow(report_data) > 0) {
+    report_data <- unique(report_data[order(report_data$Variable), ])
+    
+    wb <- openxlsx::createWorkbook()
+    openxlsx::addWorksheet(wb, "Variables")
+    openxlsx::writeData(wb, "Variables", report_data, startRow = 1, colNames = TRUE)
+    
+    header_style <- openxlsx::createStyle(
+      textDecoration = "bold",
+      border = "Bottom",
+      borderStyle = "medium"
+    )
+    openxlsx::addStyle(wb, "Variables", style = header_style, 
+                       rows = 1, cols = 1:ncol(report_data))
+    
+    output_dir <- if (tools::file_ext(output_path) == "") output_path else dirname(output_path)
+    report_filename <- paste0("Report_", data_name, ".xlsx")
+    report_path <- file.path(output_dir, report_filename)
+    openxlsx::saveWorkbook(wb, report_path, overwrite = TRUE)
+    
+    message(sprintf("Created %s in %s", report_filename, normalizePath(output_dir)))
+  }
+}

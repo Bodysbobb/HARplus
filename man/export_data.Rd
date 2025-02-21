@@ -11,7 +11,8 @@ export_data(
   prefix = "",
   create_subfolder = FALSE,
   multi_sheet_xlsx = FALSE,
-  xlsx_filename = NULL
+  xlsx_filename = NULL,
+  report_output = FALSE
 )
 }
 \arguments{
@@ -25,12 +26,14 @@ export_data(
 
 \item{create_subfolder}{Logical. If \code{TRUE}, creates a subfolder for each format. Default is \code{FALSE}.}
 
-\item{multi_sheet_xlsx}{Logical. \strong{Only applicable when \code{format = "xlsx"}}. If \code{TRUE}, stores all data in a \strong{single Excel workbook with multiple sheets}. Default is \code{FALSE}.}
+\item{multi_sheet_xlsx}{Logical. If TRUE, exports lists as multi-sheet XLSX files.}
 
-\item{xlsx_filename}{Character. The name for the Excel file when using multi_sheet_xlsx. If NULL, uses the name of the dataset. Default is \code{NULL}.}
+\item{xlsx_filename}{An optional filename for the XLSX file (used when \code{multi_sheet_xlsx = TRUE}).}
+
+\item{report_output}{Logical. If TRUE, generates an export report.}
 }
 \value{
-A vector of file paths for the exported data.
+A list containing the file paths of the exported data.
 }
 \description{
 Exports structured SL4 or HAR data to multiple file formats, including CSV, Stata, TXT, RDS, and XLSX.
@@ -43,6 +46,12 @@ Supports nested lists, automatic subfolder creation, and multi-sheet Excel expor
 \item Optionally creates subfolders for each format (\code{create_subfolder = TRUE}).
 \item Customizes file names using \code{prefix}.
 \item When multi_sheet_xlsx = TRUE, all exported data is stored in a \strong{single Excel workbook}, with each dataset as a separate sheet.
+}
+
+\itemize{
+\item If exporting to Stata (\code{"stata"} format), column names containing \code{.} will be replaced with \verb{_} to ensure compatibility.
+\item If \code{multi_sheet_xlsx = TRUE}, list elements are exported as separate sheets in a single XLSX file.
+\item The function creates necessary directories if they do not exist.
 }
 }
 \examples{
