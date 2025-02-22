@@ -37,7 +37,7 @@ dimension sizes, structures, and optionally, column and observation counts.
 }
 }
 \examples{
-# Import data sample: 
+# Import data sample:
 sl4_data <- load_sl4x(system.file("extdata", "TAR10.sl4", package = "HARplus"))
 sl4_data1 <- load_sl4x(system.file("extdata", "SUBT10.sl4", package = "HARplus"))
 
