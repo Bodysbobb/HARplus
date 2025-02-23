@@ -3,4 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   introduction: introduction.html
-last_built: 2025-02-23T06:04Z
+last_built: 2025-02-23T05:52Z
+template:
+  includes:
+    in_header: extra-head.html
