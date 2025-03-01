@@ -592,6 +592,21 @@ group_data_by_dims <- function(patterns = NULL, ..., priority,
     return(list(mergeable = TRUE, reason = NULL))
   }
 
+  handle_duplicate_cols <- function(df) {
+    col_counts <- table(colnames(df))
+    duplicate_cols <- names(col_counts[col_counts > 1])
+
+    if (length(duplicate_cols) > 0) {
+      for (col in duplicate_cols) {
+        col_indices <- which(colnames(df) == col)
+        for (i in seq_along(col_indices)[-1]) {
+          colnames(df)[col_indices[i]] <- paste0(col, ".", i-1)
+        }
+      }
+    }
+    return(df)
+  }
+
   process_dimension <- function(dim_size, patterns, priority_list) {
     current_patterns <- patterns[dim_sizes == dim_size]
     if (length(current_patterns) == 0) return(list())
@@ -640,7 +655,9 @@ group_data_by_dims <- function(patterns = NULL, ..., priority,
                   }
                 }
               }
-              df
+
+              df <- handle_duplicate_cols(df)
+              return(df)
             })
 
             common_cols <- Reduce(intersect, lapply(df_list, colnames))
@@ -673,7 +690,8 @@ group_data_by_dims <- function(patterns = NULL, ..., priority,
                     }
                   }
                 }
-                df
+                df <- handle_duplicate_cols(df)
+                return(df)
               })
 
               common_cols <- Reduce(intersect, lapply(df_list, colnames))
@@ -688,7 +706,9 @@ group_data_by_dims <- function(patterns = NULL, ..., priority,
         }
       } else {
         for (pattern in current_patterns) {
-          dimension_groups[[pattern]] <- extracted_data[[pattern]]
+          df <- extracted_data[[pattern]]
+          df <- handle_duplicate_cols(df)
+          dimension_groups[[pattern]] <- df
         }
       }
       return(dimension_groups)
@@ -734,7 +754,9 @@ group_data_by_dims <- function(patterns = NULL, ..., priority,
                   }
                 }
               }
-              df
+              # Handle duplicates in column names
+              df <- handle_duplicate_cols(df)
+              return(df)
             })
 
             col_names_list <- lapply(df_list, colnames)
@@ -754,12 +776,14 @@ group_data_by_dims <- function(patterns = NULL, ..., priority,
         }
 
         if (length(unmerged_patterns) > 0) {
-          dimension_groups$unmerged <- extracted_data[unmerged_patterns]
+          dimension_groups$unmerged <- lapply(extracted_data[unmerged_patterns], handle_duplicate_cols)
         }
 
       } else {
         for (pattern in current_patterns) {
-          dimension_groups[[pattern]] <- extracted_data[[pattern]]
+          df <- extracted_data[[pattern]]
+          df <- handle_duplicate_cols(df)
+          dimension_groups[[pattern]] <- df
         }
       }
 
