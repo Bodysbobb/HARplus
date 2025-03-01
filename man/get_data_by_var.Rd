@@ -71,21 +71,21 @@ data_merged <- get_data_by_var(NULL, sl4_data, sl4_data1, merge_data = TRUE)
 
 # Retain only "TOTAL" values, removing decomposed components (subtotal_level = "total" or FALSE)
 data_total_only <- get_data_by_var("qo", sl4_data, subtotal_level = "total")
-data_total_only_alt <- get_data_by_var("qo", sl4_data, subtotal_level = FALSE) 
+data_total_only_alt <- get_data_by_var("qo", sl4_data, subtotal_level = FALSE)
 
 # Retain only decomposed components, removing "TOTAL" (subtotal_level = "decomposed")
 data_decomposed_only <- get_data_by_var("qo", sl4_data, subtotal_level = "decomposed")
 
 # Retain all value levels (subtotal_level = "all" or TRUE)
 data_all_decomp <- get_data_by_var("qo", sl4_data, subtotal_level = "all")
-data_all_decomp_alt <- get_data_by_var("qo", sl4_data, subtotal_level = TRUE) 
+data_all_decomp_alt <- get_data_by_var("qo", sl4_data, subtotal_level = TRUE)
 
 # Rename specific columns
 data_renamed <- get_data_by_var("qo", sl4_data, rename_cols = c(REG = "Region", COMM = "Commodity"))
 
 # Merge data across multiple datasets with custom experiment names
-data_merged_experiments <- get_data_by_var("qo", sl4_data, sl4_data1, 
-experiment_names = c("EXP1", "EXP2"), 
+data_merged_experiments <- get_data_by_var("qo", sl4_data, sl4_data1,
+experiment_names = c("EXP1", "EXP2"),
 merge_data = TRUE)
 
 }

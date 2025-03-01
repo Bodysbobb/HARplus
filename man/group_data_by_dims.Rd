@@ -68,7 +68,7 @@ priority_list <- list(
   "Region" = c("REG")
 )
 grouped_data_multiple <- group_data_by_dims(
-  patterns = "ALL", 
+  patterns = "ALL",
   sl4_data1,
   priority = priority_list,
   auto_rename = TRUE
