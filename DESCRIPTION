@@ -1,6 +1,6 @@
 Package: HARplus
 Title: Enhanced Processing of GEMPACK .HAR and .SL4 Files
-Version: 1.0.0
+Version: 1.0.1
 Author: Pattawee Puangchit <ppuangch@purdue.edu>
 Authors@R: 
     person("Pattawee", "Puangchit", , "ppuangch@purdue.edu", role = c("aut", "cre"))
