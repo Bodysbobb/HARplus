@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Processing of HAR and SL4 Files in R: Tools for GEMPACK and GTAP">
-<meta name="description" content="HARplus is an advanced package for processing GEMPACK `.HAR` and `.SL4` files, designed to streamline large-scale economic modeling workflows. It extends beyond traditional `.HAR` readers by offering efficient data extraction, structured metadata management, and flexible data transformations. The package supports multi-file analysis, subtotal level handling, dimension renaming, and optimized memory usage to ensure seamless handling of complex datasets. Unlike standard `.HAR` readers, HARplus enables advanced manipulations such as pivoting, renaming dimensions, exporting to multiple formats, and cross-comparing structured data across different sources. The package is fully independent and does not require the HARr package.">
-<meta property="og:description" content="HARplus is an advanced package for processing GEMPACK `.HAR` and `.SL4` files, designed to streamline large-scale economic modeling workflows. It extends beyond traditional `.HAR` readers by offering efficient data extraction, structured metadata management, and flexible data transformations. The package supports multi-file analysis, subtotal level handling, dimension renaming, and optimized memory usage to ensure seamless handling of complex datasets. Unlike standard `.HAR` readers, HARplus enables advanced manipulations such as pivoting, renaming dimensions, exporting to multiple formats, and cross-comparing structured data across different sources. The package is fully independent and does not require the HARr package.">
+<meta name="description" content="HARplus is an R package designed to process and analyze .HAR and .SL4 files, making it easier for GEMPACK users and GTAP model researchers to handle large economic datasets. It simplifies the management of multiple experiment results, enabling faster and more efficient comparisons without complexity. With HARplus, users can extract, restructure, and merge data seamlessly, ensuring compatibility across different tools. The processed data can be exported and used in R, Stata, Python, Julia, or any software that supports .txt, CSV, or Excel formats.">
+<meta property="og:description" content="HARplus is an R package designed to process and analyze .HAR and .SL4 files, making it easier for GEMPACK users and GTAP model researchers to handle large economic datasets. It simplifies the management of multiple experiment results, enabling faster and more efficient comparisons without complexity. With HARplus, users can extract, restructure, and merge data seamlessly, ensuring compatibility across different tools. The processed data can be exported and used in R, Stata, Python, Julia, or any software that supports .txt, CSV, or Excel formats.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -35,7 +35,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/introduction.html">Enhanced Processing of GEMPACK .HAR and .SL4 Files</a></li>
+<li><a class="dropdown-item" href="articles/introduction.html">R Package for Processing .HAR and .SL4 Files – Tools for GEMPACK and GTAP</a></li>
   </ul>
 </li>
       </ul>
@@ -52,12 +52,13 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="harplus-enhanced-processing-of-gempack-har-and-sl4-files">HARplus: Enhanced Processing of GEMPACK <code>.HAR</code> and <code>.SL4</code> Files<a class="anchor" aria-label="anchor" href="#harplus-enhanced-processing-of-gempack-har-and-sl4-files"></a>
+<div class="page-header"><h1 id="harplus-r-package-for-processing-har-and-sl4-files--tools-for-gempack-and-gtap">HARplus: R Package for Processing .HAR and .SL4 Files – Tools for GEMPACK and GTAP<a class="anchor" aria-label="anchor" href="#harplus-r-package-for-processing-har-and-sl4-files--tools-for-gempack-and-gtap"></a>
 </h1></div>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>HARplus provides an efficient way to handle <code>.HAR</code> and <code>.SL4</code> files, especially when working with multiple input files. It helps extract, structure, and transform data while maintaining flexibility and consistency across datasets.</p>
+<p>HARplus is an R package designed to process and analyze .HAR and .SL4 files, making it easier for GEMPACK users and GTAP model researchers to handle large economic datasets. It simplifies the management of multiple experiment results, enabling faster and more efficient comparisons without complexity.</p>
+<p>With HARplus, users can extract, restructure, and merge data seamlessly, ensuring compatibility across different tools. The processed data can be exported and used in R, Stata, Python, Julia, or any software that supports .txt, CSV, or Excel formats.</p>
 </div>
 <div class="section level2">
 <h2 id="key-features">Key Features<a class="anchor" aria-label="anchor" href="#key-features"></a>
@@ -83,6 +84,11 @@
 </ul>
 </div>
 <div class="section level2">
+<h2 id="how-it-works">How It Works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
+</h2>
+<p>HARplus simplifies <code>.HAR</code> and <code>.SL4</code> file processing. You can: - Load files and selectively extract headers. - Extract data by variable name or dimension patterns. - Group, merge, and restructure data with ease. - Pivot and export data into structured formats. - Filter subtotals and rename dimensions for clarity.</p>
+</div>
+<div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>HARplus is currently under <strong>CRAN review</strong> and will be available there soon. In the meantime, install it directly from GitHub using the following command:</p>
@@ -90,14 +96,10 @@
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Bodysbobb/HARplus"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="how-it-works">How It Works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
-</h2>
-<p>HARplus simplifies <code>.HAR</code> and <code>.SL4</code> file processing. You can: - Load files and selectively extract headers. - Extract data by variable name or dimension patterns. - Group, merge, and restructure data with ease. - Pivot and export data into structured formats. - Filter subtotals and rename dimensions for clarity.</p>
-</div>
-<div class="section level2">
 <h2 id="quick-guide-to-harplus">Quick Guide to HARplus<a class="anchor" aria-label="anchor" href="#quick-guide-to-harplus"></a>
 </h2>
-<p>Below is a categorized reference of the main functions in HARplus.</p>
+<p>All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the <strong><a href="inst/docs/HARplus_1.0.1">HARplus Package Manual</a></strong> and <strong><a href="https://rpubs.com/Bodysbob/1273998" class="external-link">Vignette</a></strong> or <strong><a href="https://bodysbobb.github.io/HARplus">GitHub Vignette</a></strong></p>
+<p>Below is a categorized reference of the main functions in HARplus:</p>
 <div class="section level3">
 <h3 id="data-importing">Data Importing<a class="anchor" aria-label="anchor" href="#data-importing"></a>
 </h3>
@@ -169,19 +171,10 @@
 </div>
 </div>
 <div class="section level2">
-<h2 id="package-manual">Package Manual<a class="anchor" aria-label="anchor" href="#package-manual"></a>
+<h2 id="license--author">License &amp; Author<a class="anchor" aria-label="anchor" href="#license--author"></a>
 </h2>
-<p>All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the <strong><a href="inst/docs/HARplus_1.0.0.pdf">HARplus Package Manual</a></strong> and <strong><a href="https://rpubs.com/Bodysbob/1273998" class="external-link">Vignette</a></strong></p>
-</div>
-<div class="section level2">
-<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
-</h2>
-<p>HARplus is released under the <strong>MIT License</strong>. See the full license <a href="LICENSE">here</a>.</p>
-</div>
-<div class="section level2">
-<h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a>
-</h2>
-<p><strong>Pattawee Puangchit</strong><br>
+<p>HARplus is released under the <strong>MIT License</strong>. See the full <strong><a href="LICENSE">license</a></strong>.</p>
+<p><strong>Author:</strong><br><strong>Pattawee Puangchit</strong><br>
 Ph.D. Candidate, Agricultural Economics<br>
 Purdue University<br>
 Research Assistant at GTAP</p>
@@ -192,7 +185,12 @@ Research Assistant at GTAP</p>
 <p>Acknowledgement is due to <strong>Maros Ivanic</strong> for his work on the <code>HARr</code> package, which served as the foundation for HARplus. This package would not have been possible without his contributions.</p>
 </div>
 <div class="section level2">
-<h2 id="note">Note<a class="anchor" aria-label="anchor" href="#note"></a>
+<h2 id="gtapviz-an-extension-of-harplus-for-visualization">GTAPViz: An Extension of HARplus for Visualization<a class="anchor" aria-label="anchor" href="#gtapviz-an-extension-of-harplus-for-visualization"></a>
+</h2>
+<p>I have developed another package specifically for visualization, particularly for GTAP users: <strong><a href="https://bodysbobb.github.io/GTAPViz" class="external-link">GTAPViz</a></strong></p>
+</div>
+<div class="section level2">
+<h2 id="gtap-database">GTAP Database<a class="anchor" aria-label="anchor" href="#gtap-database"></a>
 </h2>
 <p>Sample data used in this <a href="https://rpubs.com/Bodysbob/1273998" class="external-link">vignette</a> is obtained from the GTAPv7 model and utilizes publicly available data from the <a href="https://www.gtap.agecon.purdue.edu/databases/archives.asp" class="external-link">GTAP 9 database</a>. For more details about the GTAP database and model, refer to the <strong><a href="https://www.gtap.agecon.purdue.edu/" class="external-link">GTAP Database</a></strong>.</p>
 </div>
