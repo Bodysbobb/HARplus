@@ -4,6 +4,6 @@ inst/doc
 .RData
 .Ruserdata
 docs
-.Rproj
+*.Rproj
 LICENSE
 *tar.gz
