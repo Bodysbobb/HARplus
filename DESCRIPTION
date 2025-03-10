@@ -1,15 +1,13 @@
 Package: HARplus
-Title: Enhanced R Package for GEMPACK .HAR and .SL4 File - Processing Tools for GEMPACK and GTAP
+Title: Enhanced R Package for GEMPACK .HAR and .SL4 Files
 Version: 1.0.1
-Author: Pattawee Puangchit <ppuangch@purdue.edu>
 Authors@R: 
-    person("Pattawee", "Puangchit", , "ppuangch@purdue.edu", role = c("aut", "cre"))
-Description: HARplus is an R package designed to process and analyze .HAR and .SL4 files, making it easier 
+    person("Pattawee", "Puangchit", email = "ppuangch@purdue.edu", role = c("aut", "cre"))
+Description: Provides tools for processing and analyzing .HAR and .SL4 files, making it easier 
     for GEMPACK users and GTAP model researchers to handle large economic datasets. 
     It simplifies the management of multiple experiment results, enabling faster 
-    and more efficient comparisons without complexity. With HARplus, 
-    users can extract, restructure, and merge data seamlessly, 
-    ensuring compatibility across different tools. 
+    and more efficient comparisons without complexity. Users can extract, restructure, 
+    and merge data seamlessly, ensuring compatibility across different tools. 
     The processed data can be exported and used in R, Stata, Python, Julia, or 
     any software that supports .txt, CSV, or Excel formats.
 License: MIT + file LICENSE

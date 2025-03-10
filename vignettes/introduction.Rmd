@@ -45,11 +45,7 @@ I have developed another package specifically for visualization, particularly fo
 Before proceeding, ensure that `HARplus` is installed and loaded:
 
 ```{r load package}
-if (!requireNamespace("HARplus", quietly = TRUE)) {
-  devtools::install_github("Bodysbobb/HARplus")
-}
-
-require(HARplus)
+library(HARplus)
 ```
 
 # Loading Data `.HAR` and `.SL4` 
