@@ -1,10 +1,10 @@
 ---
-title: "R Package for Processing .HAR and .SL4 Files – Tools for GEMPACK and GTAP"
+title: "Enhanced R Package for GEMPACK .HAR and .SL4 File Processing"
 author: "Pattawee Puangchit"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{HARplus: Enhanced Tools for GEMPACK File Processing}
+  %\VignetteIndexEntry{HARplus: Enhanced R Package for GEMPACK .HAR and .SL4 File Processing}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

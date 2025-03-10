@@ -1,5 +1,5 @@
 Package: HARplus
-Title: Processing of HAR and SL4 Files in R: Tools for GEMPACK and GTAP
+Title: Enhanced R Package for GEMPACK .HAR and .SL4 File - Processing Tools for GEMPACK and GTAP
 Version: 1.0.1
 Author: Pattawee Puangchit <ppuangch@purdue.edu>
 Authors@R: 
