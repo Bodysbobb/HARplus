@@ -1,5 +1,5 @@
 Package: HARplus
-Title: Processing of HAR and SL4 Files in R: Tools for GEMPACK and GTAP
+Title: Enhanced Processing of GEMPACK .HAR and .SL4 Files
 Version: 1.0.1
 Author: Pattawee Puangchit <ppuangch@purdue.edu>
 Authors@R: 
@@ -18,16 +18,11 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 BugReports: https://github.com/bodysbobb/HARplus/issues
-URL: https://github.com/bodysbobb/HARplus, https://bodysbobb.github.io/HARplus/
-Imports:
-    openxlsx,
-    haven,
-    stats,
-    utils,
-    tidyr,
-    tools,
-    tidyselect
-Suggests: 
-    knitr,
-    rmarkdown
+URL: https://github.com/bodysbobb/HARplus,
+        https://bodysbobb.github.io/HARplus/
+Imports: openxlsx, haven, stats, utils, tidyr, tools, tidyselect
+Suggests: knitr, rmarkdown
 VignetteBuilder: knitr
+NeedsCompilation: no
+Packaged: 2025-03-10 02:13:19 UTC; b_pat
+Maintainer: Pattawee Puangchit <ppuangch@purdue.edu>
