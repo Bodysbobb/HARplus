@@ -1,4 +1,4 @@
-# HARplus: Enhanced R Package for GEMPACK .HAR and .SL4 File - Processing Tools for GEMPACK and GTAP
+# HARplus: Enhanced R Package for GEMPACK .har and .sl4 Files
 
 ## Overview
 
@@ -34,7 +34,7 @@ devtools::install_github("Bodysbobb/HARplus")
 
 ## Quick Guide to HARplus
 
-All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[HARplus Package Manual](inst/docs/HARplus_1.0.1)** and **[Vignette](https://rpubs.com/Bodysbob/1273998)** or **[GitHub Vignette](https://bodysbobb.github.io/HARplus)**
+All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[HARplus Package Manual](inst/docs/HARplus_1.0.1.pdf)** and **[Vignette](https://rpubs.com/Bodysbob/1273998/)** or **[GitHub Vignette](https://bodysbobb.github.io/HARplus/)**
 
 Below is a categorized reference of the main functions in HARplus:
 
@@ -79,7 +79,7 @@ Acknowledgement is due to **Maros Ivanic** for his work on the `HARr` package, w
 
 ## GTAPViz: An Extension of HARplus for Visualization
 
-I have developed another package specifically for visualization, particularly for GTAP users: **[GTAPViz](https://bodysbobb.github.io/GTAPViz)**
+I have developed another package specifically for visualization, particularly for GTAP users: **[GTAPViz](https://bodysbobb.github.io/GTAPViz/)**
 
 ## GTAP Database
 

@@ -1,5 +1,5 @@
 Package: HARplus
-Title: Enhanced R Package for GEMPACK .HAR and .SL4 Files
+Title: Enhanced R Package for GEMPACK .har and .sl4 Files
 Version: 1.0.1
 Authors@R: 
     person("Pattawee", "Puangchit", email = "ppuangch@purdue.edu", role = c("aut", "cre"))
@@ -9,13 +9,13 @@ Description: Provides tools for processing and analyzing .HAR and .SL4 files, ma
     and more efficient comparisons without complexity. Users can extract, restructure, 
     and merge data seamlessly, ensuring compatibility across different tools. 
     The processed data can be exported and used in R, Stata, Python, Julia, or 
-    any software that supports .txt, CSV, or Excel formats.
+    any software that supports Text, CSV, or Excel formats.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-BugReports: https://github.com/bodysbobb/HARplus/issues
-URL: https://github.com/bodysbobb/HARplus, https://bodysbobb.github.io/HARplus/
+BugReports: https://github.com/bodysbobb/HARplus/issues/
+URL: https://github.com/bodysbobb/HARplus/, https://bodysbobb.github.io/HARplus/
 Imports:
     openxlsx,
     haven,
