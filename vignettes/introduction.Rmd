@@ -1,5 +1,5 @@
 ---
-title: "Enhanced Processing of GEMPACK .HAR and .SL4 Files"
+title: "R Package for Processing .HAR and .SL4 Files – Tools for GEMPACK and GTAP"
 author: "Pattawee Puangchit"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -35,12 +35,21 @@ Sample data used in this vignette is obtained from the GTAPv7 model and utilizes
 
 The development of `HARplus` builds upon the foundational work of the `HARr` package. I sincerely acknowledge and appreciate the contributions of Maros Ivanic, whose `HARr` package served as the baseline for this development, advancing efficient data handling for GEMPACK users.
 
+# GTAPViz: An Extension of HARplus for Visualization
+
+I have developed another package specifically for visualization, particularly for GTAP users: **[GTAPViz](https://bodysbobb.github.io/GTAPViz)**
+
+---
 
 # Installation and Loading Example Data  
 Before proceeding, ensure that `HARplus` is installed and loaded:
 
 ```{r load package}
-library(HARplus)
+if (!requireNamespace("HARplus", quietly = TRUE)) {
+  devtools::install_github("Bodysbobb/HARplus")
+}
+
+require(HARplus)
 ```
 
 # Loading Data `.HAR` and `.SL4` 

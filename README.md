@@ -1,8 +1,10 @@
-# HARplus: Enhanced Processing of GEMPACK `.HAR` and `.SL4` Files
+# HARplus: R Package for Processing .HAR and .SL4 Files – Tools for GEMPACK and GTAP
 
 ## Overview
 
-HARplus provides an efficient way to handle `.HAR` and `.SL4` files, especially when working with multiple input files. It helps extract, structure, and transform data while maintaining flexibility and consistency across datasets.
+HARplus is an R package designed to process and analyze .HAR and .SL4 files, making it easier for GEMPACK users and GTAP model researchers to handle large economic datasets. It simplifies the management of multiple experiment results, enabling faster and more efficient comparisons without complexity.
+
+With HARplus, users can extract, restructure, and merge data seamlessly, ensuring compatibility across different tools. The processed data can be exported and used in R, Stata, Python, Julia, or any software that supports .txt, CSV, or Excel formats.
 
 ## Key Features
 
@@ -13,14 +15,6 @@ HARplus provides an efficient way to handle `.HAR` and `.SL4` files, especially 
 - **Designed for GEMPACK** – Ensures smooth integration with `.HAR` and `.SL4` files while offering additional flexibility.  
 - **Ideal for GTAP Model Users** – Built specifically to process and analyze GTAP model results efficiently.  
 
-## Installation
-
-HARplus is currently under **CRAN review** and will be available there soon. In the meantime, install it directly from GitHub using the following command:
-
-```r
-devtools::install_github("Bodysbobb/HARplus")
-```
-
 ## How It Works
 
 HARplus simplifies `.HAR` and `.SL4` file processing. You can:
@@ -30,9 +24,19 @@ HARplus simplifies `.HAR` and `.SL4` file processing. You can:
 - Pivot and export data into structured formats.
 - Filter subtotals and rename dimensions for clarity.
 
+## Installation
+
+HARplus is currently under **CRAN review** and will be available there soon. In the meantime, install it directly from GitHub using the following command:
+
+```r
+devtools::install_github("Bodysbobb/HARplus")
+```
+
 ## Quick Guide to HARplus
 
-Below is a categorized reference of the main functions in HARplus.
+All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[HARplus Package Manual](inst/docs/HARplus_1.0.1)** and **[Vignette](https://rpubs.com/Bodysbob/1273998)** or **[GitHub Vignette](https://bodysbobb.github.io/HARplus)**
+
+Below is a categorized reference of the main functions in HARplus:
 
 ### Data Importing
 - **`load_harx()`** – Loads `.HAR` files with selective header extraction and structured metadata.  
@@ -59,17 +63,11 @@ Below is a categorized reference of the main functions in HARplus.
 ### Data Export
 - **`export_data()`** – Exports extracted data to CSV, Stata, TXT, RDS, or XLSX, with support for multi-sheet exports.
 
-## Package Manual
+## License & Author  
 
-All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[HARplus Package Manual](inst/docs/HARplus_1.0.0.pdf)** and **[Vignette](https://rpubs.com/Bodysbob/1273998)**
+HARplus is released under the **MIT License**. See the full **[license](LICENSE)**.  
 
-
-## License
-
-HARplus is released under the **MIT License**. See the full license [here](LICENSE).
-
-## Author
-
+**Author:**  
 **Pattawee Puangchit**  
 Ph.D. Candidate, Agricultural Economics  
 Purdue University  
@@ -79,6 +77,10 @@ Research Assistant at GTAP
 
 Acknowledgement is due to **Maros Ivanic** for his work on the `HARr` package, which served as the foundation for HARplus. This package would not have been possible without his contributions.
 
-## Note
+## GTAPViz: An Extension of HARplus for Visualization
+
+I have developed another package specifically for visualization, particularly for GTAP users: **[GTAPViz](https://bodysbobb.github.io/GTAPViz)**
+
+## GTAP Database
 
 Sample data used in this [vignette](https://rpubs.com/Bodysbob/1273998) is obtained from the GTAPv7 model and utilizes publicly available data from the [GTAP 9 database](https://www.gtap.agecon.purdue.edu/databases/archives.asp). For more details about the GTAP database and model, refer to the **[GTAP Database](https://www.gtap.agecon.purdue.edu/)**.
