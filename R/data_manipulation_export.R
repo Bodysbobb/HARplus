@@ -199,7 +199,7 @@ pivot_data <- function(data_obj, pivot_cols, name_repair = "unique") {
 #' @export
 #' 
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Import sample data:
 #' sl4_data <- load_sl4x(system.file("extdata", "TAR10.sl4", package = "HARplus"))
 #' 
@@ -393,7 +393,7 @@ export_data <- function(data, output_path, format = "csv", prefix = "",
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Import sample data:
 #' sl4_data <- load_sl4x(system.file("extdata", "TAR10.sl4", package = "HARplus"))
 #' 

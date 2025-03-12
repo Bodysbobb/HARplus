@@ -49,7 +49,7 @@ Supports both single data frames and nested lists, preserving dimension hierarch
 }
 }
 \examples{
-\dontrun{
+\donttest{
 # Import sample data:
 sl4_data <- load_sl4x(system.file("extdata", "TAR10.sl4", package = "HARplus"))
 

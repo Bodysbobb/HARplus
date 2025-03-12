@@ -34,7 +34,7 @@ devtools::install_github("Bodysbobb/HARplus")
 
 ## Quick Guide to HARplus
 
-All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[HARplus Package Manual](inst/docs/HARplus_1.0.1.pdf)** and **[Vignette](https://rpubs.com/Bodysbob/1273998/)** or **[GitHub Vignette](https://bodysbobb.github.io/HARplus/)**
+All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[Vignette](https://rpubs.com/Bodysbob/1273998/)** or **[GitHub Vignette](https://bodysbobb.github.io/HARplus/)**
 
 Below is a categorized reference of the main functions in HARplus:
 
@@ -83,4 +83,4 @@ I have developed another package specifically for visualization, particularly fo
 
 ## GTAP Database
 
-Sample data used in this [vignette](https://rpubs.com/Bodysbob/1273998) is obtained from the GTAPv7 model and utilizes publicly available data from the [GTAP 9 database](https://www.gtap.agecon.purdue.edu/databases/archives.asp). For more details about the GTAP database and model, refer to the **[GTAP Database](https://www.gtap.agecon.purdue.edu/)**.
+Sample data used in this [vignette](https://rpubs.com/Bodysbob/1273998/) is obtained from the GTAPv7 model and utilizes publicly available data from the [GTAP 9 database](https://www.gtap.agecon.purdue.edu/databases/archives.asp). For more details about the GTAP database and model, refer to the **[GTAP Database](https://www.gtap.agecon.purdue.edu/)**.
