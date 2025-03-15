@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Pattawee Puangchit" />
+
+<meta name="date" content="2025-03-09" />
+
+<title>Enhanced Processing of GEMPACK .HAR and .SL4 Files</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Enhanced Processing of GEMPACK .HAR and
+.SL4 Files</h1>
+<h4 class="author">Pattawee Puangchit</h4>
+<h4 class="date">2025-03-09</h4>
+
+
+
+<div id="overview-of-harplus" class="section level1">
+<h1>Overview of HARplus</h1>
+<p>The <code>HARplus</code> package enhances GEMPACK users’ experience
+by streamlining <code>.har</code> and <code>.sl4</code> file processing.
+It efficiently extracts, organizes, and manages dimension structures,
+ensuring consistency, optimized memory usage, and simplified data
+manipulation. The package enables fast data merging, aggregation, and
+transformation while maintaining a consistent interface across GEMPACK
+file types. Users can easily pivot data into familiar formats and export
+results in various formats.</p>
+<p>A key feature of <code>HARplus</code> is its <strong>flexible
+subtotal level handling</strong>, allowing users to selectively retain
+<code>&quot;TOTAL&quot;</code> values, decomposed components, or both. This
+ensures precise data extraction for various economic modeling needs
+without unnecessary redundancy.</p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>This vignette covers key functions of <code>HARplus</code>,
+highlighting its ability to handle multiple inputs for efficient data
+processing. Designed for economic modelers and GEMPACK practitioners, it
+simplifies working with multiple datasets and enhances analytical
+workflows.</p>
+<p>Sample data used in this vignette is obtained from the GTAPv7 model
+and utilizes publicly available data from the GTAP 9 database. For more
+details, refer to the <a href="https://www.gtap.agecon.purdue.edu/databases/archives.asp">GTAP
+Database Archive</a>.</p>
+</div>
+<div id="acknowledgement" class="section level1">
+<h1>Acknowledgement</h1>
+<p>The development of <code>HARplus</code> builds upon the foundational
+work of the <code>HARr</code> package. I sincerely acknowledge and
+appreciate the contributions of Maros Ivanic, whose <code>HARr</code>
+package served as the baseline for this development, advancing efficient
+data handling for GEMPACK users.</p>
+</div>
+<div id="installation-and-loading-example-data" class="section level1">
+<h1>Installation and Loading Example Data</h1>
+<p>Before proceeding, ensure that <code>HARplus</code> is installed and
+loaded:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(HARplus)</span></code></pre></div>
+</div>
+<div id="loading-data-.har-and-.sl4" class="section level1">
+<h1>Loading Data <code>.HAR</code> and <code>.SL4</code></h1>
+<p>First, load the example data using the following commands
+<code>&lt;load_harx&gt;</code> and <code>&lt;load_sl4x&gt;</code>:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co"># Paths to the .har files</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>har_path1 <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;TAR10-WEL.har&quot;</span>, <span class="at">package =</span> <span class="st">&quot;HARplus&quot;</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>har_path2 <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SUBT10-WEL.har&quot;</span>, <span class="at">package =</span> <span class="st">&quot;HARplus&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co"># Paths to the .sl4 files</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a>sl4_path1 <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;TAR10.sl4&quot;</span>, <span class="at">package =</span> <span class="st">&quot;HARplus&quot;</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a>sl4_path2 <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;SUBT10.sl4&quot;</span>, <span class="at">package =</span> <span class="st">&quot;HARplus&quot;</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co"># Load the .har files using load_harx()</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a>har_data1 <span class="ot">&lt;-</span> <span class="fu">load_harx</span>(har_path1)</span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>har_data2 <span class="ot">&lt;-</span> <span class="fu">load_harx</span>(har_path2)</span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co"># Load the .sl4 files using load_sl4x()</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>sl4_data1 <span class="ot">&lt;-</span> <span class="fu">load_sl4x</span>(sl4_path1)</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>sl4_data2 <span class="ot">&lt;-</span> <span class="fu">load_sl4x</span>(sl4_path2)</span></code></pre></div>
+</div>
+<div id="extracting-data" class="section level1">
+<h1>Extracting Data</h1>
+<p>This package allows two main ways to enhance the GEMPACK user
+experience and improve user-friendliness when extracting data:<br />
+1. By selecting the variable/header name using
+<code>&lt;get_data_by_var&gt;</code>.<br />
+2. By using dimension patterns (e.g., <code>REG*COMM</code>) with
+<code>&lt;get_data_by_dims&gt;</code>.</p>
+<p>Both functions have similar options:<br />
+- Extract a single variable, multiple variables, or all variables (NULL
+or “ALL”) from the datasets.<br />
+- Extract data from a single dataset or multiple datasets.<br />
+- Rename the experiment (i.e., dataset) name, which is displayed in the
+<strong>Experiment</strong> column (this column is automatically added
+to handle multiple dataset merges). By default, the name is the dataset
+name.<br />
+- Reporting data level (all, only total, only subtotals). - Rename
+dimension names, which will be used as column names.<br />
+- Merge data across multiple datasets within the same patterns.<br />
+- For <code>&lt;get_data_by_var&gt;</code>, variables with the same name
+(e.g., <code>&quot;qo&quot;</code>) from different experiments (<code>exp1</code>
+and <code>exp2</code>) will be merged into a single final dataframe,
+with the input source identified in the <strong>Experiment</strong>
+column.<br />
+- Similarly, for <code>&lt;get_data_by_dims&gt;</code>, data with
+matching dimension patterns (e.g., <code>REG*COMM</code>) will be
+merged.</p>
+<p>Let’s start with the simplest example as follows:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Extract data for a single variable</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>data_qo <span class="ot">&lt;-</span> <span class="fu">get_data_by_var</span>(<span class="st">&quot;qo&quot;</span>, sl4_data1)</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(data_qo[[<span class="st">&quot;sl4_data1&quot;</span>]][[<span class="st">&quot;qo&quot;</span>]], <span class="dv">4</span>))</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&gt;          ACTS     REG Subtotal     Value Variable Dimension Experiment</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; 1 GrainsCrops Oceania    TOTAL -5.283822       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; 2    MeatLstk Oceania    TOTAL -8.473134       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; 3  Extraction Oceania    TOTAL -1.617209       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; 4    ProcFood Oceania    TOTAL -3.570224       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co"># Extract multiple variables from multiple datasets</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>data_multiple <span class="ot">&lt;-</span> <span class="fu">get_data_by_var</span>(<span class="fu">c</span>(<span class="st">&quot;qo&quot;</span>, <span class="st">&quot;qgdp&quot;</span>), sl4_data1, sl4_data2)</span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(data_multiple[[<span class="st">&quot;sl4_data1&quot;</span>]][[<span class="st">&quot;qo&quot;</span>]], <span class="dv">4</span>))</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt;          ACTS     REG Subtotal     Value Variable Dimension Experiment</span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; 1 GrainsCrops Oceania    TOTAL -5.283822       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; 2    MeatLstk Oceania    TOTAL -8.473134       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt; 3  Extraction Oceania    TOTAL -1.617209       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt; 4    ProcFood Oceania    TOTAL -3.570224       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(data_multiple[[<span class="st">&quot;sl4_data2&quot;</span>]][[<span class="st">&quot;qo&quot;</span>]], <span class="dv">4</span>))</span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a><span class="co">#&gt;          ACTS     REG Subtotal     Value Variable Dimension Experiment</span></span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a><span class="co">#&gt; 1 GrainsCrops Oceania    TOTAL -5.283822       qo  ACTS*REG  sl4_data2</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a><span class="co">#&gt; 2    MeatLstk Oceania    TOTAL -8.473134       qo  ACTS*REG  sl4_data2</span></span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a><span class="co">#&gt; 3  Extraction Oceania    TOTAL -1.617209       qo  ACTS*REG  sl4_data2</span></span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a><span class="co">#&gt; 4    ProcFood Oceania    TOTAL -3.570224       qo  ACTS*REG  sl4_data2</span></span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a></span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a><span class="co"># Extract all variables separately from multiple datasets</span></span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>data_list <span class="ot">&lt;-</span> <span class="fu">get_data_by_var</span>(<span class="cn">NULL</span>, sl4_data1, sl4_data2)</span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(data_list))</span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a><span class="co">#&gt; [1] &quot;sl4_data1&quot; &quot;sl4_data2&quot;</span></span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a></span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a><span class="co"># Extract all variables and merge the same variable from multiple datasets</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a>data_all <span class="ot">&lt;-</span> <span class="fu">get_data_by_var</span>(<span class="cn">NULL</span>, sl4_data1, sl4_data2, <span class="at">merge_data =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(data_all))</span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a><span class="co">#&gt;   [1] &quot;pds&quot;            &quot;qfd&quot;            &quot;pms&quot;            &quot;qfm&quot;           </span></span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a><span class="co">#&gt;   [5] &quot;pfd&quot;            &quot;pfm&quot;            &quot;pes&quot;            &quot;qes&quot;           </span></span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a><span class="co">#&gt;   [9] &quot;peb&quot;            &quot;qfe&quot;            &quot;pfe&quot;            &quot;ps&quot;            </span></span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a><span class="co">#&gt;  [13] &quot;qca&quot;            &quot;pca&quot;            &quot;qgd&quot;            &quot;qgm&quot;           </span></span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a><span class="co">#&gt;  [17] &quot;pgd&quot;            &quot;pgm&quot;            &quot;qpd&quot;            &quot;qpm&quot;           </span></span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a><span class="co">#&gt;  [21] &quot;ppd&quot;            &quot;ppm&quot;            &quot;qid&quot;            &quot;qim&quot;           </span></span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a><span class="co">#&gt;  [25] &quot;pid&quot;            &quot;pim&quot;            &quot;psave&quot;          &quot;qsave&quot;         </span></span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a><span class="co">#&gt;  [29] &quot;pinv&quot;           &quot;kb&quot;             &quot;qxs&quot;            &quot;pfob&quot;          </span></span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a><span class="co">#&gt;  [33] &quot;pcif&quot;           &quot;pmds&quot;           &quot;qst&quot;            &quot;y&quot;             </span></span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a><span class="co">#&gt;  [37] &quot;pop&quot;            &quot;pgov&quot;           &quot;yg&quot;             &quot;ug&quot;            </span></span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a><span class="co">#&gt;  [41] &quot;ppriv&quot;          &quot;yp&quot;             &quot;uepriv&quot;         &quot;up&quot;            </span></span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a><span class="co">#&gt;  [45] &quot;to&quot;             &quot;tinc&quot;           &quot;endwslack&quot;      &quot;qms&quot;           </span></span>
+<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a><span class="co">#&gt;  [49] &quot;globalcgds&quot;     &quot;pcgdswld&quot;       &quot;po&quot;             &quot;qo&quot;            </span></span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a><span class="co">#&gt;  [53] &quot;ao&quot;             &quot;pint&quot;           &quot;qint&quot;           &quot;aint&quot;          </span></span>
+<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a><span class="co">#&gt;  [57] &quot;pva&quot;            &quot;qva&quot;            &quot;ava&quot;            &quot;pfa&quot;           </span></span>
+<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a><span class="co">#&gt;  [61] &quot;qfa&quot;            &quot;afa&quot;            &quot;afe&quot;            &quot;profitslack&quot;   </span></span>
+<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a><span class="co">#&gt;  [65] &quot;aosec&quot;          &quot;aoreg&quot;          &quot;aoall&quot;          &quot;afcom&quot;         </span></span>
+<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a><span class="co">#&gt;  [69] &quot;afsec&quot;          &quot;afreg&quot;          &quot;afall&quot;          &quot;avasec&quot;        </span></span>
+<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a><span class="co">#&gt;  [73] &quot;avareg&quot;         &quot;avaall&quot;         &quot;afecom&quot;         &quot;afesec&quot;        </span></span>
+<span id="cb3-52"><a href="#cb3-52" tabindex="-1"></a><span class="co">#&gt;  [77] &quot;afereg&quot;         &quot;afeall&quot;         &quot;aintsec&quot;        &quot;aintreg&quot;       </span></span>
+<span id="cb3-53"><a href="#cb3-53" tabindex="-1"></a><span class="co">#&gt;  [81] &quot;aintall&quot;        &quot;pb&quot;             &quot;qc&quot;             &quot;fincome&quot;       </span></span>
+<span id="cb3-54"><a href="#cb3-54" tabindex="-1"></a><span class="co">#&gt;  [85] &quot;incomeslack&quot;    &quot;del_indtaxr&quot;    &quot;uelas&quot;          &quot;dpsave&quot;        </span></span>
+<span id="cb3-55"><a href="#cb3-55" tabindex="-1"></a><span class="co">#&gt;  [89] &quot;dpgov&quot;          &quot;dppriv&quot;         &quot;dpav&quot;           &quot;p&quot;             </span></span>
+<span id="cb3-56"><a href="#cb3-56" tabindex="-1"></a><span class="co">#&gt;  [93] &quot;au&quot;             &quot;dpsum&quot;          &quot;u&quot;              &quot;ppa&quot;           </span></span>
+<span id="cb3-57"><a href="#cb3-57" tabindex="-1"></a><span class="co">#&gt;  [97] &quot;qpa&quot;            &quot;pga&quot;            &quot;qga&quot;            &quot;pia&quot;           </span></span>
+<span id="cb3-58"><a href="#cb3-58" tabindex="-1"></a><span class="co">#&gt; [101] &quot;qia&quot;            &quot;qinv&quot;           &quot;ams&quot;            &quot;ptrans&quot;        </span></span>
+<span id="cb3-59"><a href="#cb3-59" tabindex="-1"></a><span class="co">#&gt; [105] &quot;qtmfsd&quot;         &quot;pt&quot;             &quot;qtm&quot;            &quot;atmfsd&quot;        </span></span>
+<span id="cb3-60"><a href="#cb3-60" tabindex="-1"></a><span class="co">#&gt; [109] &quot;atm&quot;            &quot;atf&quot;            &quot;ats&quot;            &quot;atd&quot;           </span></span>
+<span id="cb3-61"><a href="#cb3-61" tabindex="-1"></a><span class="co">#&gt; [113] &quot;atall&quot;          &quot;tx&quot;             &quot;txs&quot;            &quot;tm&quot;            </span></span>
+<span id="cb3-62"><a href="#cb3-62" tabindex="-1"></a><span class="co">#&gt; [117] &quot;tms&quot;            &quot;pr&quot;             &quot;qds&quot;            &quot;tradslack&quot;     </span></span>
+<span id="cb3-63"><a href="#cb3-63" tabindex="-1"></a><span class="co">#&gt; [121] &quot;tfd&quot;            &quot;tfm&quot;            &quot;tpd&quot;            &quot;tpm&quot;           </span></span>
+<span id="cb3-64"><a href="#cb3-64" tabindex="-1"></a><span class="co">#&gt; [125] &quot;tgd&quot;            &quot;tgm&quot;            &quot;tid&quot;            &quot;tim&quot;           </span></span>
+<span id="cb3-65"><a href="#cb3-65" tabindex="-1"></a><span class="co">#&gt; [129] &quot;tpdall&quot;         &quot;tpmall&quot;         &quot;tpreg&quot;          &quot;pe&quot;            </span></span>
+<span id="cb3-66"><a href="#cb3-66" tabindex="-1"></a><span class="co">#&gt; [133] &quot;qe&quot;             &quot;qesf&quot;           &quot;tfe&quot;            &quot;ke&quot;            </span></span>
+<span id="cb3-67"><a href="#cb3-67" tabindex="-1"></a><span class="co">#&gt; [137] &quot;rore&quot;           &quot;rorc&quot;           &quot;rental&quot;         &quot;rorg&quot;          </span></span>
+<span id="cb3-68"><a href="#cb3-68" tabindex="-1"></a><span class="co">#&gt; [141] &quot;cgdslack&quot;       &quot;expand&quot;         &quot;psaveslack&quot;     &quot;del_taxrout&quot;   </span></span>
+<span id="cb3-69"><a href="#cb3-69" tabindex="-1"></a><span class="co">#&gt; [145] &quot;del_taxrfu&quot;     &quot;del_taxriu&quot;     &quot;del_taxrpc&quot;     &quot;del_taxrgc&quot;    </span></span>
+<span id="cb3-70"><a href="#cb3-70" tabindex="-1"></a><span class="co">#&gt; [149] &quot;del_taxric&quot;     &quot;del_taxrexp&quot;    &quot;del_taxrimp&quot;    &quot;del_taxrinc&quot;   </span></span>
+<span id="cb3-71"><a href="#cb3-71" tabindex="-1"></a><span class="co">#&gt; [153] &quot;del_ttaxr&quot;      &quot;pfactor&quot;        &quot;pfactwld&quot;       &quot;walras_sup&quot;    </span></span>
+<span id="cb3-72"><a href="#cb3-72" tabindex="-1"></a><span class="co">#&gt; [157] &quot;walras_dem&quot;     &quot;walraslack&quot;     &quot;vxwfob&quot;         &quot;vmwcif&quot;        </span></span>
+<span id="cb3-73"><a href="#cb3-73" tabindex="-1"></a><span class="co">#&gt; [161] &quot;vxwreg&quot;         &quot;vmwreg&quot;         &quot;pfactreal&quot;      &quot;pebfactreal&quot;   </span></span>
+<span id="cb3-74"><a href="#cb3-74" tabindex="-1"></a><span class="co">#&gt; [165] &quot;pefactreal&quot;     &quot;psw&quot;            &quot;pdw&quot;            &quot;tot&quot;           </span></span>
+<span id="cb3-75"><a href="#cb3-75" tabindex="-1"></a><span class="co">#&gt; [169] &quot;vgdp&quot;           &quot;pgdp&quot;           &quot;qgdp&quot;           &quot;contgdpexp&quot;    </span></span>
+<span id="cb3-76"><a href="#cb3-76" tabindex="-1"></a><span class="co">#&gt; [173] &quot;qgdpwld&quot;        &quot;pgdpwld&quot;        &quot;vgdpwld&quot;        &quot;compvalad&quot;     </span></span>
+<span id="cb3-77"><a href="#cb3-77" tabindex="-1"></a><span class="co">#&gt; [177] &quot;pxw&quot;            &quot;vxwcom&quot;         &quot;vxwwld&quot;         &quot;vmwcom&quot;        </span></span>
+<span id="cb3-78"><a href="#cb3-78" tabindex="-1"></a><span class="co">#&gt; [181] &quot;valuew&quot;         &quot;valuewu&quot;        &quot;pxwreg&quot;         &quot;pxwcom&quot;        </span></span>
+<span id="cb3-79"><a href="#cb3-79" tabindex="-1"></a><span class="co">#&gt; [185] &quot;pxwwld&quot;         &quot;pmw&quot;            &quot;pmwreg&quot;         &quot;pmwcom&quot;        </span></span>
+<span id="cb3-80"><a href="#cb3-80" tabindex="-1"></a><span class="co">#&gt; [189] &quot;pw&quot;             &quot;pwu&quot;            &quot;qxw&quot;            &quot;qxwreg&quot;        </span></span>
+<span id="cb3-81"><a href="#cb3-81" tabindex="-1"></a><span class="co">#&gt; [193] &quot;qxwcom&quot;         &quot;qxwwld&quot;         &quot;qmw&quot;            &quot;qmwreg&quot;        </span></span>
+<span id="cb3-82"><a href="#cb3-82" tabindex="-1"></a><span class="co">#&gt; [197] &quot;qmwcom&quot;         &quot;qow&quot;            &quot;qowu&quot;           &quot;del_tbalc&quot;     </span></span>
+<span id="cb3-83"><a href="#cb3-83" tabindex="-1"></a><span class="co">#&gt; [201] &quot;del_tbal&quot;       &quot;ywld&quot;           &quot;del_tbalry&quot;     &quot;pm_cr&quot;         </span></span>
+<span id="cb3-84"><a href="#cb3-84" tabindex="-1"></a><span class="co">#&gt; [205] &quot;c1_cr&quot;          &quot;c2_cr&quot;          &quot;c3_cr&quot;          &quot;c1_r&quot;          </span></span>
+<span id="cb3-85"><a href="#cb3-85" tabindex="-1"></a><span class="co">#&gt; [209] &quot;c2_r&quot;           &quot;c3_r&quot;           &quot;tot2&quot;           &quot;uelasev&quot;       </span></span>
+<span id="cb3-86"><a href="#cb3-86" tabindex="-1"></a><span class="co">#&gt; [213] &quot;ueprivev&quot;       &quot;ugev&quot;           &quot;upev&quot;           &quot;qsaveev&quot;       </span></span>
+<span id="cb3-87"><a href="#cb3-87" tabindex="-1"></a><span class="co">#&gt; [217] &quot;yev&quot;            &quot;ypev&quot;           &quot;ygev&quot;           &quot;qpev&quot;          </span></span>
+<span id="cb3-88"><a href="#cb3-88" tabindex="-1"></a><span class="co">#&gt; [221] &quot;ysaveev&quot;        &quot;dpavev&quot;         &quot;EV&quot;             &quot;WEV&quot;           </span></span>
+<span id="cb3-89"><a href="#cb3-89" tabindex="-1"></a><span class="co">#&gt; [225] &quot;EV_ALT&quot;         &quot;WEV_ALT&quot;        &quot;CNTdpar&quot;        &quot;CNTpop&quot;        </span></span>
+<span id="cb3-90"><a href="#cb3-90" tabindex="-1"></a><span class="co">#&gt; [229] &quot;CNTqor&quot;         &quot;CNTqo&quot;          &quot;CNTqca&quot;         &quot;CNTqe&quot;         </span></span>
+<span id="cb3-91"><a href="#cb3-91" tabindex="-1"></a><span class="co">#&gt; [233] &quot;CNTqea&quot;         &quot;CNTqfer&quot;        &quot;CNTqfeer&quot;       &quot;CNTqfe&quot;        </span></span>
+<span id="cb3-92"><a href="#cb3-92" tabindex="-1"></a><span class="co">#&gt; [237] &quot;CNTqfr&quot;         &quot;CNTqfm&quot;         &quot;CNTqfd&quot;         &quot;CNTqpm&quot;        </span></span>
+<span id="cb3-93"><a href="#cb3-93" tabindex="-1"></a><span class="co">#&gt; [241] &quot;CNTqpd&quot;         &quot;CNTqpr&quot;         &quot;CNTqia&quot;         &quot;CNTqim&quot;        </span></span>
+<span id="cb3-94"><a href="#cb3-94" tabindex="-1"></a><span class="co">#&gt; [245] &quot;CNTqid&quot;         &quot;CNTqgr&quot;         &quot;CNTqgm&quot;         &quot;CNTqgd&quot;        </span></span>
+<span id="cb3-95"><a href="#cb3-95" tabindex="-1"></a><span class="co">#&gt; [249] &quot;CNTqxsr&quot;        &quot;CNTqxs&quot;         &quot;CNTqmsr&quot;        &quot;CNTqms&quot;        </span></span>
+<span id="cb3-96"><a href="#cb3-96" tabindex="-1"></a><span class="co">#&gt; [253] &quot;CNTalleffr&quot;     &quot;CNTalleffcr&quot;    &quot;CNTtotr&quot;        &quot;CNTpinv&quot;       </span></span>
+<span id="cb3-97"><a href="#cb3-97" tabindex="-1"></a><span class="co">#&gt; [257] &quot;CNTendwr&quot;       &quot;CNTendw&quot;        &quot;CNTtechr&quot;       &quot;CNTtech_ao&quot;    </span></span>
+<span id="cb3-98"><a href="#cb3-98" tabindex="-1"></a><span class="co">#&gt; [261] &quot;CNTtech_afe&quot;    &quot;CNTtech_ava&quot;    &quot;CNTtech_aint&quot;   &quot;CNTtech_af&quot;    </span></span>
+<span id="cb3-99"><a href="#cb3-99" tabindex="-1"></a><span class="co">#&gt; [265] &quot;CNTtech_atmfsd&quot; &quot;CNTtech_ams&quot;    &quot;CNTkb&quot;          &quot;qpriv&quot;</span></span>
+<span id="cb3-100"><a href="#cb3-100" tabindex="-1"></a></span>
+<span id="cb3-101"><a href="#cb3-101" tabindex="-1"></a><span class="co"># Return all value levels</span></span>
+<span id="cb3-102"><a href="#cb3-102" tabindex="-1"></a>data_all <span class="ot">&lt;-</span> <span class="fu">get_data_by_var</span>(<span class="st">&quot;qo&quot;</span>, sl4_data1, sl4_data2, <span class="at">subtotal_level =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-103"><a href="#cb3-103" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(data_all[[<span class="st">&quot;sl4_data1&quot;</span>]][[<span class="st">&quot;qo&quot;</span>]], <span class="dv">4</span>))</span>
+<span id="cb3-104"><a href="#cb3-104" tabindex="-1"></a><span class="co">#&gt;          ACTS     REG Subtotal     Value Variable Dimension Experiment</span></span>
+<span id="cb3-105"><a href="#cb3-105" tabindex="-1"></a><span class="co">#&gt; 1 GrainsCrops Oceania    TOTAL -5.283822       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-106"><a href="#cb3-106" tabindex="-1"></a><span class="co">#&gt; 2    MeatLstk Oceania    TOTAL -8.473134       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-107"><a href="#cb3-107" tabindex="-1"></a><span class="co">#&gt; 3  Extraction Oceania    TOTAL -1.617209       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-108"><a href="#cb3-108" tabindex="-1"></a><span class="co">#&gt; 4    ProcFood Oceania    TOTAL -3.570224       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-109"><a href="#cb3-109" tabindex="-1"></a></span>
+<span id="cb3-110"><a href="#cb3-110" tabindex="-1"></a><span class="co"># Return only TOTAL, drop subtotal</span></span>
+<span id="cb3-111"><a href="#cb3-111" tabindex="-1"></a>data_total <span class="ot">&lt;-</span> <span class="fu">get_data_by_var</span>(<span class="st">&quot;qo&quot;</span>, sl4_data1, sl4_data2, <span class="at">subtotal_level =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-112"><a href="#cb3-112" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(data_total[[<span class="st">&quot;sl4_data1&quot;</span>]][[<span class="st">&quot;qo&quot;</span>]], <span class="dv">4</span>))</span>
+<span id="cb3-113"><a href="#cb3-113" tabindex="-1"></a><span class="co">#&gt;          ACTS     REG Subtotal     Value Variable Dimension Experiment</span></span>
+<span id="cb3-114"><a href="#cb3-114" tabindex="-1"></a><span class="co">#&gt; 1 GrainsCrops Oceania    TOTAL -5.283822       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-115"><a href="#cb3-115" tabindex="-1"></a><span class="co">#&gt; 2    MeatLstk Oceania    TOTAL -8.473134       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-116"><a href="#cb3-116" tabindex="-1"></a><span class="co">#&gt; 3  Extraction Oceania    TOTAL -1.617209       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-117"><a href="#cb3-117" tabindex="-1"></a><span class="co">#&gt; 4    ProcFood Oceania    TOTAL -3.570224       qo  ACTS*REG  sl4_data1</span></span>
+<span id="cb3-118"><a href="#cb3-118" tabindex="-1"></a></span>
+<span id="cb3-119"><a href="#cb3-119" tabindex="-1"></a><span class="co"># Return only subtotal, drop TOTAL (result is empty if there in subtotal)</span></span>
+<span id="cb3-120"><a href="#cb3-120" tabindex="-1"></a>data_decomp <span class="ot">&lt;-</span> <span class="fu">get_data_by_var</span>(<span class="st">&quot;qo&quot;</span>, sl4_data1, sl4_data2, <span class="at">subtotal_level =</span> <span class="st">&quot;decomposed&quot;</span>)</span>
+<span id="cb3-121"><a href="#cb3-121" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(data_decomp[[<span class="st">&quot;sl4_data2&quot;</span>]][[<span class="st">&quot;qo&quot;</span>]], <span class="dv">4</span>))</span>
+<span id="cb3-122"><a href="#cb3-122" tabindex="-1"></a><span class="co">#&gt;            ACTS     REG   Subtotal Value Variable Dimension Experiment</span></span>
+<span id="cb3-123"><a href="#cb3-123" tabindex="-1"></a><span class="co">#&gt; 101 GrainsCrops Oceania to changes     0       qo  ACTS*REG  sl4_data2</span></span>
+<span id="cb3-124"><a href="#cb3-124" tabindex="-1"></a><span class="co">#&gt; 102    MeatLstk Oceania to changes     0       qo  ACTS*REG  sl4_data2</span></span>
+<span id="cb3-125"><a href="#cb3-125" tabindex="-1"></a><span class="co">#&gt; 103  Extraction Oceania to changes     0       qo  ACTS*REG  sl4_data2</span></span>
+<span id="cb3-126"><a href="#cb3-126" tabindex="-1"></a><span class="co">#&gt; 104    ProcFood Oceania to changes     0       qo  ACTS*REG  sl4_data2</span></span>
+<span id="cb3-127"><a href="#cb3-127" tabindex="-1"></a></span>
+<span id="cb3-128"><a href="#cb3-128" tabindex="-1"></a><span class="co"># Rename specific columns</span></span>
+<span id="cb3-129"><a href="#cb3-129" tabindex="-1"></a>data_col_renamed <span class="ot">&lt;-</span> <span class="fu">get_data_by_var</span>(<span class="st">&quot;qo&quot;</span>, sl4_data1, </span>
+<span id="cb3-130"><a href="#cb3-130" tabindex="-1"></a>                             <span class="at">rename_cols =</span> <span class="fu">c</span>(<span class="at">REG =</span> <span class="st">&quot;Region&quot;</span>, <span class="at">COMM =</span> <span class="st">&quot;Commodity&quot;</span>))</span>
+<span id="cb3-131"><a href="#cb3-131" tabindex="-1"></a><span class="fu">str</span>(data_col_renamed)</span>
+<span id="cb3-132"><a href="#cb3-132" tabindex="-1"></a><span class="co">#&gt; List of 1</span></span>
+<span id="cb3-133"><a href="#cb3-133" tabindex="-1"></a><span class="co">#&gt;  $ sl4_data1:List of 1</span></span>
+<span id="cb3-134"><a href="#cb3-134" tabindex="-1"></a><span class="co">#&gt;   ..$ qo:&#39;data.frame&#39;:   100 obs. of  7 variables:</span></span>
+<span id="cb3-135"><a href="#cb3-135" tabindex="-1"></a><span class="co">#&gt;   .. ..$ ACTS      : chr [1:100] &quot;GrainsCrops&quot; &quot;MeatLstk&quot; &quot;Extraction&quot; &quot;ProcFood&quot; ...</span></span>
+<span id="cb3-136"><a href="#cb3-136" tabindex="-1"></a><span class="co">#&gt;   .. ..$ Region    : chr [1:100] &quot;Oceania&quot; &quot;Oceania&quot; &quot;Oceania&quot; &quot;Oceania&quot; ...</span></span>
+<span id="cb3-137"><a href="#cb3-137" tabindex="-1"></a><span class="co">#&gt;   .. ..$ Subtotal  : chr [1:100] &quot;TOTAL&quot; &quot;TOTAL&quot; &quot;TOTAL&quot; &quot;TOTAL&quot; ...</span></span>
+<span id="cb3-138"><a href="#cb3-138" tabindex="-1"></a><span class="co">#&gt;   .. ..$ Value     : num [1:100] -5.28 -8.47 -1.62 -3.57 8.39 ...</span></span>
+<span id="cb3-139"><a href="#cb3-139" tabindex="-1"></a><span class="co">#&gt;   .. ..$ Variable  : chr [1:100] &quot;qo&quot; &quot;qo&quot; &quot;qo&quot; &quot;qo&quot; ...</span></span>
+<span id="cb3-140"><a href="#cb3-140" tabindex="-1"></a><span class="co">#&gt;   .. ..$ Dimension : chr [1:100] &quot;ACTS*REG&quot; &quot;ACTS*REG&quot; &quot;ACTS*REG&quot; &quot;ACTS*REG&quot; ...</span></span>
+<span id="cb3-141"><a href="#cb3-141" tabindex="-1"></a><span class="co">#&gt;   .. ..$ Experiment: chr [1:100] &quot;sl4_data1&quot; &quot;sl4_data1&quot; &quot;sl4_data1&quot; &quot;sl4_data1&quot; ...</span></span>
+<span id="cb3-142"><a href="#cb3-142" tabindex="-1"></a></span>
+<span id="cb3-143"><a href="#cb3-143" tabindex="-1"></a><span class="co"># Rename experiment names</span></span>
+<span id="cb3-144"><a href="#cb3-144" tabindex="-1"></a>data_exp_renamed <span class="ot">&lt;-</span> <span class="fu">get_data_by_var</span>(<span class="st">&quot;qo&quot;</span>, sl4_data1, sl4_data2, </span>
+<span id="cb3-145"><a href="#cb3-145" tabindex="-1"></a>                             <span class="at">experiment_names =</span> <span class="fu">c</span>(<span class="st">&quot;EXP1&quot;</span>, <span class="st">&quot;EXP2&quot;</span>))</span>
+<span id="cb3-146"><a href="#cb3-146" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(data_exp_renamed))</span>
+<span id="cb3-147"><a href="#cb3-147" tabindex="-1"></a><span class="co">#&gt; [1] &quot;EXP1&quot; &quot;EXP2&quot;</span></span>
+<span id="cb3-148"><a href="#cb3-148" tabindex="-1"></a></span>
+<span id="cb3-149"><a href="#cb3-149" tabindex="-1"></a><span class="co"># Merge variable data across multiple datasets with custom experiment names</span></span>
+<span id="cb3-150"><a href="#cb3-150" tabindex="-1"></a>data_merged <span class="ot">&lt;-</span> <span class="fu">get_data_by_var</span>(, sl4_data1, sl4_data2,</span>
+<span id="cb3-151"><a href="#cb3-151" tabindex="-1"></a>                            <span class="at">experiment_names =</span> <span class="fu">c</span>(<span class="st">&quot;EXP1&quot;</span>, <span class="st">&quot;EXP2&quot;</span>), </span>
+<span id="cb3-152"><a href="#cb3-152" tabindex="-1"></a>                            <span class="at">merge_data =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-153"><a href="#cb3-153" tabindex="-1"></a>                            <span class="at">rename_cols =</span> <span class="fu">c</span>(<span class="at">REG =</span> <span class="st">&quot;Region&quot;</span>, <span class="at">COMM =</span> <span class="st">&quot;Commodity&quot;</span>))</span>
+<span id="cb3-154"><a href="#cb3-154" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(data_merged<span class="sc">$</span>merged[[<span class="dv">1</span>]], <span class="dv">4</span>))</span>
+<span id="cb3-155"><a href="#cb3-155" tabindex="-1"></a><span class="co">#&gt; NULL</span></span></code></pre></div>
+<p>Now, let’s delve into <code>&lt;get_data_by_dims&gt;</code>. This
+command offers an additional feature compared to
+<code>&lt;get_data_by_var&gt;</code>: it allows for
+<code>patter_mix</code>. For instance, REG<em>COMM and COMM</em>REG can
+be treated as equivalent when merging data (this only applies if
+merge_data = TRUE). You can experiment with the following commands:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Merge data by dimensions (e.g., REG*COMM != COMM*REG)</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>data_no_mix <span class="ot">&lt;-</span> <span class="fu">get_data_by_dims</span>(<span class="cn">NULL</span>, sl4_data1, sl4_data2, </span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>                                <span class="at">merge_data =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>                                <span class="at">pattern_mix =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a><span class="co"># Merge data while allowing interchangeable dimensions (e.g., REG*COMM = COMM*REG)</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>data_pattern_mixed <span class="ot">&lt;-</span> <span class="fu">get_data_by_dims</span>(<span class="cn">NULL</span>, sl4_data1, sl4_data2, </span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>                                       <span class="at">merge_data =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>                                       <span class="at">pattern_mix =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>This flexibility is particularly useful when working with datasets
+where dimension order does not affect the interpretation of the
+data.</p>
+</div>
+<div id="grouping-data-by-dimension" class="section level1">
+<h1>Grouping Data By Dimension</h1>
+<p>The <code>&lt;group_data_by_dims&gt;</code> function is a powerful
+tool that <strong>categorizes extracted data into meaningful
+dimension-based groups</strong>. This is a key feature of this package,
+as it allows GEMPACK users (particularly those working with GTAP model
+results) to merge data into a structured and useful dataframe.</p>
+<p>For example, if users want to retrieve all variables defined by
+<code>REG</code>, they can simply set <code>REG</code> as a priority
+while also assigning a new column name for <code>REG</code>, such as
+<code>REG = &quot;Region&quot;</code>. The function will then <strong>merge all
+datasets that contain <code>REG</code> as a dimension element into a
+single dataframe</strong>, ensuring that all relevant data is
+consolidated.</p>
+<p>Unlike <code>&lt;get_data_by_dims&gt;</code>, which focuses on
+extracting data, <code>&lt;group_data_by_dims&gt;</code>
+<strong>organizes and merges data dynamically</strong> based on the
+structure and priority defined by the user.</p>
+<p>It is particularly useful because: - It <strong>groups extracted data
+by dimension levels</strong> (<code>1D</code>, <code>2D</code>,
+<code>3D</code>, …). - Users can <strong>define priority-based
+merging</strong> (e.g., prioritizing <code>REG</code> first, then
+<code>COMM</code>). The function first attempts to merge all datasets
+containing <code>REG</code>, then moves on to merge datasets containing
+<code>COMM</code>. If a dataset contains <code>REG*COMM</code>, it will
+be included in the <code>REG</code> output. - It <strong>automatically
+renames dimensions</strong> (<code>auto_rename = TRUE</code>) to improve
+dataset compatibility while preserving all variable information. - It
+<strong>transforms data into a structured long format</strong>,
+simplifying further analysis. - It <strong>supports merging grouped data
+across multiple datasets</strong>. - It <strong>filters subtotal
+levels</strong>, allowing users to retain <code>&quot;TOTAL&quot;</code> values or
+decomposed components as needed. - If certain datasets cannot be merged,
+the function generates a <strong>detailed report identifying the root of
+the issue</strong>, enabling users to manually manipulate the data if
+necessary. - This function primarily focuses on <strong>1D and 2D
+data</strong>, ensuring that <strong>higher-dimension data (&gt;2D) is
+merged only with datasets that share the same pattern</strong>.</p>
+<div id="understanding-priority-list-in-group_data_by_dims" class="section level2">
+<h2><strong>Understanding Priority List in
+<code>group_data_by_dims</code></strong></h2>
+<p>The <strong>priority list</strong> in
+<code>&lt;group_data_by_dims&gt;</code> allows users to control
+<strong>how dimensions are grouped and merged</strong>.<br />
+By defining priorities, the function ensures that <strong>datasets
+containing high-priority dimensions are merged as much as
+possible</strong>, but <strong>only if they share the same
+structure</strong>.</p>
+<div id="single-priority-example-reg-only" class="section level3">
+<h3><strong>1. Single Priority Example (<code>REG</code>
+only)</strong></h3>
+<p>If we prioritize only <code>REG</code>, the function will
+<strong>attempt to merge all datasets containing <code>REG</code> as
+much as possible</strong>, while ensuring that datasets with different
+structures remain separate.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Define single priority (Only Region-based grouping)</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>priority_list <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">&quot;Region&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;REG&quot;</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a><span class="co"># Grouping data with a single priority</span></span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>grouped_data_single <span class="ot">&lt;-</span> <span class="fu">group_data_by_dims</span>(<span class="st">&quot;ALL&quot;</span>, sl4_data1, sl4_data2,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>                                          <span class="at">priority =</span> priority_list, <span class="at">auto_rename =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co"># Print structure</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(grouped_data_single))</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1D&quot; &quot;2D&quot; &quot;3D&quot; &quot;4D&quot;</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(grouped_data_single[[<span class="st">&quot;1D&quot;</span>]]))</span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Region&quot; &quot;Other&quot;</span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(grouped_data_single[[<span class="st">&quot;2D&quot;</span>]]))</span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Region&quot;</span></span></code></pre></div>
+<p>What happens here? - The function tries to merge all datasets
+containing REG, but only if they share the same data structure. - If
+some datasets have different structures, they will remain separate. -
+The merging happens separately in each data dimension (e.g., 1D, 2D,
+etc.).</p>
+</div>
+<div id="multiple-priorities-example-comm-before-reg" class="section level3">
+<h3><strong>2. Multiple Priorities Example (<code>COMM</code> before
+<code>REG</code>)</strong></h3>
+<p>If we prioritize <strong><code>COMM</code> first and <code>REG</code>
+second</strong>, datasets containing <code>COMM</code> will be
+<strong>merged first</strong>, followed by <code>REG</code>, <strong>as
+much as possible</strong> while ensuring datasets with different
+structures remain separate.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Define multiple priority levels: Sector first, then Region</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>priority_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="st">&quot;Sector&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;COMM&quot;</span>, <span class="st">&quot;ACTS&quot;</span>),</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="st">&quot;Region&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;REG&quot;</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>)</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="co"># Grouping data with multiple priorities</span></span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>grouped_data_multiple <span class="ot">&lt;-</span> <span class="fu">group_data_by_dims</span>(<span class="st">&quot;ALL&quot;</span>, sl4_data1, </span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>                                            <span class="at">priority =</span> priority_list, </span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>                                            <span class="at">auto_rename =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co"># Print structure</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(grouped_data_multiple))</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1D&quot; &quot;2D&quot; &quot;3D&quot; &quot;4D&quot;</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(grouped_data_multiple[[<span class="st">&quot;1D&quot;</span>]]))</span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Sector&quot; &quot;Region&quot; &quot;Other&quot;</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(grouped_data_multiple[[<span class="st">&quot;2D&quot;</span>]]))</span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Sector&quot; &quot;Region&quot;</span></span></code></pre></div>
+<p>What happens here?<br />
+- The function attempts to merge all datasets containing
+<code>COMM</code> and <code>ACTS</code> first, both of which are merged
+into the <strong>Sector</strong> column before attempting to merge other
+datasets with <code>REG</code>, as long as they share the same
+structure.<br />
+- Therefore, if datasets contain <code>REG*COMM</code> and
+<code>REG*ACTS</code>, they will be merged into the
+<strong>Sector</strong> dataframe, <strong>not the REG
+dataframe</strong>. - If datasets cannot be merged due to structural
+differences, they are kept separate in their respective dimension
+groups.</p>
+</div>
+</div>
+<div id="understanding-auto_rename-in-group_data_by_dims" class="section level2">
+<h2><strong>Understanding <code>auto_rename</code> in
+<code>group_data_by_dims</code></strong></h2>
+<p>The <code>auto_rename</code> option in
+<code>&lt;group_data_by_dims&gt;</code> plays a crucial role in ensuring
+<strong>successful and smooth merging</strong> of datasets.<br />
+When enabled, it <strong>automatically renames lower-priority
+dimensions</strong> to <code>&quot;Dim1&quot;</code>, <code>&quot;Dim2&quot;</code>, etc.,
+which allows datasets with slightly different dimension names to be
+merged, while still preserving the original dimension structure.</p>
+<p>Without <code>auto_rename</code>, datasets with similar but
+non-identical dimension names <strong>may fail to merge</strong>,
+leading to separate outputs instead of a unified dataset.</p>
+<div id="example-grouping-without-auto_rename" class="section level3">
+<h3><strong>Example: Grouping Without
+<code>auto_rename</code></strong></h3>
+<p>By default (<code>auto_rename = FALSE</code>), the function
+<strong>keeps all original dimension names</strong>.<br />
+This means datasets that contain <strong>similar but not identical
+dimensions</strong> (e.g., <code>REG*ENDW</code> and
+<code>REG*END</code>) <strong>cannot be merged</strong>.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Define priority: First by Sector (COMM, ACTS), then by Region (REG)</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>priority_list <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="st">&quot;Sector&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;COMM&quot;</span>, <span class="st">&quot;ACTS&quot;</span>),</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="st">&quot;Region&quot;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">&quot;REG&quot;</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a><span class="co"># Grouping data without auto_rename</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>grouped_data_no_rename <span class="ot">&lt;-</span> <span class="fu">group_data_by_dims</span>(<span class="st">&quot;ALL&quot;</span>, sl4_data1, </span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>                                             <span class="at">priority =</span> priority_list, </span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a>                                             <span class="at">auto_rename =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a><span class="co"># Print structure</span></span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(grouped_data_no_rename))</span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a><span class="co">#&gt; [1] &quot;1D&quot;     &quot;2D&quot;     &quot;3D&quot;     &quot;4D&quot;     &quot;report&quot;</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(grouped_data_no_rename[[<span class="st">&quot;1D&quot;</span>]]))</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Sector&quot;   &quot;Region&quot;   &quot;unmerged&quot;</span></span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">names</span>(grouped_data_no_rename[[<span class="st">&quot;2D&quot;</span>]]))</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Sector&quot;   &quot;unmerged&quot;</span></span></code></pre></div>
+<p>Without <code>auto_rename</code>, the number of mergeable dataframes
+will be <strong>less</strong> compared to when
+<code>auto_rename = TRUE</code>, as it <strong>does not allow merging
+across different dimension names</strong>, even if their structures are
+otherwise compatible.</p>
+</div>
+</div>
+</div>
+<div id="reshaping-and-renaming-data" class="section level1">
+<h1>Reshaping and Renaming Data</h1>
+<div id="pivoting-data" class="section level2">
+<h2>Pivoting Data</h2>
+<p>The <code>&lt;pivot_data&gt;</code> function transforms long-format
+data from SL4 or HAR objects into a wide format, making it more suitable
+for analysis and visualization. This transformation is particularly
+useful when working with GEMPACK outputs that need to be reshaped for
+reporting or further processing.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Extract data to pivot</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>data_multiple <span class="ot">&lt;-</span> <span class="fu">get_data_by_var</span>(<span class="fu">c</span>(<span class="st">&quot;qo&quot;</span>, <span class="st">&quot;pca&quot;</span>), sl4_data1)</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a><span class="co"># Pivot a single column</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>pivoted_single <span class="ot">&lt;-</span> <span class="fu">pivot_data</span>(data_multiple, </span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>                             <span class="at">pivot_cols =</span> <span class="st">&quot;REG&quot;</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a><span class="co"># Pivot multiple columns</span></span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>pivoted_multi <span class="ot">&lt;-</span> <span class="fu">pivot_data</span>(data_multiple, </span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>                            <span class="at">pivot_cols =</span> <span class="fu">c</span>(<span class="st">&quot;COMM&quot;</span>, <span class="st">&quot;REG&quot;</span>))</span></code></pre></div>
+</div>
+<div id="pivot-data-hierarchy" class="section level2">
+<h2>Pivot Data Hierarchy</h2>
+<p>While <code>pivot_data</code> provides basic pivoting functionality,
+<code>pivot_data_hierarchy</code> offers enhanced capabilities for
+creating hierarchical pivot tables similar to those found in spreadsheet
+applications. This function is particularly useful when you need to
+maintain dimensional hierarchies in your output or create Excel-ready
+pivot tables.</p>
+<p>Key differences from regular pivoting:</p>
+<ul>
+<li>Maintains hierarchical relationships between pivot columns</li>
+<li>Supports direct Excel export with properly formatted headers</li>
+<li>Preserves dimension order as specified in pivot_cols</li>
+<li>Creates nested column headers reflecting the hierarchy</li>
+<li><strong>Must be exported to XLSX only using the command option
+<code>&lt;export = TRUE, file_path = &quot;./path/to/output&quot;&gt;</code>. This
+pivot table cannot be exported with the <export> command.</strong></li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Create hierarchical pivot without export</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>pivot_hier <span class="ot">&lt;-</span> <span class="fu">pivot_data_hierarchy</span>(data_multiple, </span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a>                                  <span class="at">pivot_cols =</span> <span class="fu">c</span>(<span class="st">&quot;REG&quot;</span>, <span class="st">&quot;COMM&quot;</span>))</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a><span class="co"># Create and export to Excel in one step</span></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>pivot_export <span class="ot">&lt;-</span> <span class="fu">pivot_data_hierarchy</span>(data_multiple, </span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>                                   <span class="at">pivot_cols =</span> <span class="fu">c</span>(<span class="st">&quot;REG&quot;</span>, <span class="st">&quot;COMM&quot;</span>),</span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>                                   <span class="at">export =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>                                   <span class="at">file_path =</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;pivot_output.xlsx&quot;</span>))</span></code></pre></div>
+<p>The hierarchy in the resulting pivot table follows the order
+specified in <code>pivot_cols</code>. For example, when using
+<code>c(&quot;REG&quot;, &quot;COMM&quot;)</code>, the output will show:</p>
+<ul>
+<li>First level: Region (REG)<br />
+</li>
+<li>Second level: Commodity (COMM) nested under each region</li>
+<li>Values arranged according to this hierarchy</li>
+</ul>
+<p>When exported to Excel, the hierarchical structure is automatically
+formatted with:</p>
+<ul>
+<li>Properly aligned multi-level column headers</li>
+<li>Bold formatting for header levels<br />
+</li>
+<li>Clean sheet names for multiple variables</li>
+</ul>
+</div>
+<div id="rename-dimensions" class="section level2">
+<h2>Rename Dimensions</h2>
+<p>The <code>rename_dims</code> function provides flexible renaming
+capabilities for dimensions in SL4 or HAR objects. You can rename either
+dimension names, list names, or both.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Define a renaming map</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>mapping_df <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a> <span class="at">old =</span> <span class="fu">c</span>(<span class="st">&quot;REG&quot;</span>, <span class="st">&quot;COMM&quot;</span>),</span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a> <span class="at">new =</span> <span class="fu">c</span>(<span class="st">&quot;Region&quot;</span>, <span class="st">&quot;Commodity&quot;</span>)</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>)</span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co"># Rename dimensions only</span></span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>renamed_dims <span class="ot">&lt;-</span> <span class="fu">rename_dims</span>(sl4_data1, mapping_df)</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co"># Rename both dimensions and list names</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>renamed_both <span class="ot">&lt;-</span> <span class="fu">rename_dims</span>(sl4_data1, mapping_df, <span class="at">rename_list_names =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>The mapping dataframe must have two columns: the first for current
+names and the second for new names. The function preserves data
+structure while updating dimension labels according to the specified
+mapping.</p>
+</div>
+</div>
+<div id="exporting-data-to-csvstatatextrdsxlsx" class="section level1">
+<h1>Exporting Data to CSV/STATA/TEXT/RDS/XLSX</h1>
+<p>The <code>export_data</code> function allows you to export SL4 and
+HAR data into various formats. Supported formats include:
+<code>&quot;csv&quot;</code>, <code>&quot;xlsx&quot;</code>, <code>&quot;stata&quot;</code>,
+<code>&quot;txt&quot;</code>, and <code>&quot;rds&quot;</code>. You can export single data
+frames or multi-variable results while preserving their structure.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Extract data</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>data_multiple <span class="ot">&lt;-</span> <span class="fu">get_data_by_var</span>(<span class="fu">c</span>(<span class="st">&quot;qo&quot;</span>, <span class="st">&quot;pca&quot;</span>), sl4_data1)</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co"># Export </span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="fu">export_data</span>(data_multiple, <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="st">&quot;output_directory&quot;</span>), </span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>           <span class="at">format =</span> <span class="fu">c</span>(<span class="st">&quot;csv&quot;</span>, <span class="st">&quot;xlsx&quot;</span>, <span class="st">&quot;stata&quot;</span>, <span class="st">&quot;txt&quot;</span>, <span class="st">&quot;rds&quot;</span>),</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>           <span class="at">create_subfolder =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>           <span class="at">multi_sheet_xlsx =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+</div>
+<div id="exploring-data-structure" class="section level1">
+<h1>Exploring Data Structure</h1>
+<p>Since this package is designed to handle multiple inputs with a
+similar structure, such as simulation outputs from the GTAP model with
+different shocks or experiments, the first important step is to
+understand the data structure. This process can also be useful even with
+a single input, as it helps in analyzing the data shape and dimension
+size of each variable.</p>
+<p>There are a couple of commands available to illustrate the data
+structure, all of which can be applied to both <code>.har</code> and
+<code>.sl4</code> files in the same manner.</p>
+<div id="variable-structure" class="section level2">
+<h2>Variable Structure</h2>
+<p>To get a summary of variable names, dimension counts, dimension
+patterns, and optionally the column and observation counts for one or
+multiple variables from a single or multiple datasets (return as
+separate lists):</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co"># (1) Getting all variables from the input file</span></span>
+<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>vars_har_sum <span class="ot">&lt;-</span> <span class="fu">get_var_structure</span>(<span class="st">&quot;ALL&quot;</span>, har_data1)</span>
+<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>vars_sl4_sum <span class="ot">&lt;-</span> <span class="fu">get_var_structure</span>(, har_data1)</span>
+<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a><span class="co"># (2) Getting selected variables</span></span>
+<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>var_sl4_sum <span class="ot">&lt;-</span> <span class="fu">get_var_structure</span>(<span class="fu">c</span>(<span class="st">&quot;pds&quot;</span>,<span class="st">&quot;pfd&quot;</span>,<span class="st">&quot;pms&quot;</span>), sl4_data1)</span>
+<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(var_sl4_sum[[<span class="st">&quot;sl4_data1&quot;</span>]], <span class="dv">4</span>))</span>
+<span id="cb12-8"><a href="#cb12-8" tabindex="-1"></a><span class="co">#&gt;   Variable    Dimensions DimSize DataShape</span></span>
+<span id="cb12-9"><a href="#cb12-9" tabindex="-1"></a><span class="co">#&gt; 1      pds      COMM*REG       2     10x10</span></span>
+<span id="cb12-10"><a href="#cb12-10" tabindex="-1"></a><span class="co">#&gt; 2      pfd COMM*ACTS*REG       3  10x10x10</span></span>
+<span id="cb12-11"><a href="#cb12-11" tabindex="-1"></a><span class="co">#&gt; 3      pms      COMM*REG       2     10x10</span></span>
+<span id="cb12-12"><a href="#cb12-12" tabindex="-1"></a></span>
+<span id="cb12-13"><a href="#cb12-13" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" tabindex="-1"></a><span class="co"># (3) Including column size and number of observation in the summary</span></span>
+<span id="cb12-15"><a href="#cb12-15" tabindex="-1"></a>var_sl4_sum <span class="ot">&lt;-</span> <span class="fu">get_var_structure</span>(<span class="fu">c</span>(<span class="st">&quot;pds&quot;</span>,<span class="st">&quot;pfd&quot;</span>,<span class="st">&quot;pms&quot;</span>), sl4_data1, sl4_data2, </span>
+<span id="cb12-16"><a href="#cb12-16" tabindex="-1"></a>                                 <span class="at">include_col_size =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">head</span>(var_sl4_sum[[<span class="st">&quot;sl4_data1&quot;</span>]], <span class="dv">4</span>))</span>
+<span id="cb12-18"><a href="#cb12-18" tabindex="-1"></a><span class="co">#&gt;   Variable    Dimensions DimSize DataShape No.Col No.Obs</span></span>
+<span id="cb12-19"><a href="#cb12-19" tabindex="-1"></a><span class="co">#&gt; 1      pds      COMM*REG       2     10x10     10     10</span></span>
+<span id="cb12-20"><a href="#cb12-20" tabindex="-1"></a><span class="co">#&gt; 2      pfd COMM*ACTS*REG       3  10x10x10    100     10</span></span>
+<span id="cb12-21"><a href="#cb12-21" tabindex="-1"></a><span class="co">#&gt; 3      pms      COMM*REG       2     10x10     10     10</span></span></code></pre></div>
+<p>Understanding the data structure is crucial for aggregating data
+across multiple experiments (inputs). Even when using the same
+variables, different experiments may have varying column sizes or data
+structures due to factors such as subtotal effects and other
+experimental settings. These discrepancies can lead to errors if the
+merging process relies solely on variable names without accounting for
+structural differences.</p>
+<p>To compare data structures across multiple experiments, use the
+following command:</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co"># (1) Comparing all variable structures across experiments </span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a>vars_comparison <span class="ot">&lt;-</span> <span class="fu">compare_var_structure</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a>  <span class="at">variables =</span> <span class="st">&quot;ALL&quot;</span>, sl4_data1, sl4_data2</span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a>)</span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="fu">print</span>(vars_comparison<span class="sc">$</span>match[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, ])</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a><span class="co">#&gt;      Variable Dimensions DataShape input1_ColSize input2_ColSize</span></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#&gt; 1 CNTalleffcr   COMM*REG     10x10             10             10</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="co">#&gt; 2  CNTalleffr   REG*CTAX      10x9              9              9</span></span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co"># (2) Comparing selected variable structures across experiments </span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a>var_comparison <span class="ot">&lt;-</span> <span class="fu">compare_var_structure</span>(</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a>  <span class="at">variables =</span> <span class="fu">c</span>(<span class="st">&quot;pds&quot;</span>, <span class="st">&quot;pms&quot;</span>), sl4_data1, sl4_data2</span>
+<span id="cb13-13"><a href="#cb13-13" tabindex="-1"></a>)</span>
+<span id="cb13-14"><a href="#cb13-14" tabindex="-1"></a><span class="fu">print</span>(var_comparison<span class="sc">$</span>match[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>, ])</span>
+<span id="cb13-15"><a href="#cb13-15" tabindex="-1"></a><span class="co">#&gt;   Variable Dimensions DataShape input1_ColSize input2_ColSize</span></span>
+<span id="cb13-16"><a href="#cb13-16" tabindex="-1"></a><span class="co">#&gt; 1      pds   COMM*REG     10x10             10             10</span></span>
+<span id="cb13-17"><a href="#cb13-17" tabindex="-1"></a><span class="co">#&gt; 2      pms   COMM*REG     10x10             10             10</span></span></code></pre></div>
+<p>This function returns a list containing: - <strong>match</strong>: A
+data frame of variables with identical dimension names and structures
+across inputs. - <strong>diff</strong> (if any): A data frame listing
+variables with structural mismatches. Note: If this list appears, you
+may need to focus on handling these variables. It is designed to report
+potential issue-causing variables when merging datasets.</p>
+<p>Additionally, the function includes the
+<code>&lt;keep_unique&gt;</code> option (default: <code>FALSE</code>)
+which allows users to extract variables with unique names and structures
+across all inputs. This is particularly useful when inputs contain
+different sets of variables that need to be combined into a final
+dataset.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="co"># (3) Extracting unique variable structures</span></span>
+<span id="cb14-2"><a href="#cb14-2" tabindex="-1"></a>unique_vars <span class="ot">&lt;-</span> <span class="fu">compare_var_structure</span>(, </span>
+<span id="cb14-3"><a href="#cb14-3" tabindex="-1"></a>                                     sl4_data1, sl4_data2,</span>
+<span id="cb14-4"><a href="#cb14-4" tabindex="-1"></a>  <span class="at">keep_unique =</span> <span class="cn">TRUE</span></span>
+<span id="cb14-5"><a href="#cb14-5" tabindex="-1"></a>)</span>
+<span id="cb14-6"><a href="#cb14-6" tabindex="-1"></a><span class="fu">print</span>(unique_vars<span class="sc">$</span>match[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, ])</span>
+<span id="cb14-7"><a href="#cb14-7" tabindex="-1"></a><span class="co">#&gt;       Variable    Dimensions DimSize DataShape</span></span>
+<span id="cb14-8"><a href="#cb14-8" tabindex="-1"></a><span class="co">#&gt; 1  CNTalleffcr      COMM*REG       2     10x10</span></span>
+<span id="cb14-9"><a href="#cb14-9" tabindex="-1"></a><span class="co">#&gt; 2   CNTalleffr      REG*CTAX       2      10x9</span></span>
+<span id="cb14-10"><a href="#cb14-10" tabindex="-1"></a><span class="co">#&gt; 3      CNTdpar           REG       1        10</span></span>
+<span id="cb14-11"><a href="#cb14-11" tabindex="-1"></a><span class="co">#&gt; 4      CNTendw      ENDW*REG       2      5x10</span></span>
+<span id="cb14-12"><a href="#cb14-12" tabindex="-1"></a><span class="co">#&gt; 5     CNTendwr           REG       1        10</span></span>
+<span id="cb14-13"><a href="#cb14-13" tabindex="-1"></a><span class="co">#&gt; 6        CNTkb           REG       1        10</span></span>
+<span id="cb14-14"><a href="#cb14-14" tabindex="-1"></a><span class="co">#&gt; 7      CNTpinv           REG       1        10</span></span>
+<span id="cb14-15"><a href="#cb14-15" tabindex="-1"></a><span class="co">#&gt; 8       CNTpop           REG       1        10</span></span>
+<span id="cb14-16"><a href="#cb14-16" tabindex="-1"></a><span class="co">#&gt; 9       CNTqca COMM*ACTS*REG       3  10x10x10</span></span>
+<span id="cb14-17"><a href="#cb14-17" tabindex="-1"></a><span class="co">#&gt; 10       CNTqe      ENDW*REG       2      5x10</span></span></code></pre></div>
+<p>This function returns a list containing: - <strong>match</strong>: A
+data frame displaying distinct variable structures found across inputs.
+- <strong>diff</strong> (if any): A data frame detailing how structures
+differ between inputs.</p>
+<p>To sum up, - <code>keep_unique = FALSE</code> → Checks whether
+variables match across inputs. - <code>keep_unique = TRUE</code> →
+Extracts all unique variable structures, regardless of whether they
+match, while reports any variables that do not align.</p>
+</div>
+<div id="dimension-structure" class="section level2">
+<h2>Dimension Structure</h2>
+<p>The following commands can be used to retrieve unique dimension names
+as patterns and their corresponding elements:</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># (1) Extracting dimension patterns (e.g., REG*COMM*ACTS)</span></span>
+<span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a>dims_strg_har <span class="ot">&lt;-</span> <span class="fu">get_dim_patterns</span>(har_data1, har_data2)</span>
+<span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a><span class="fu">print</span>(dims_strg_har[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, ])</span>
+<span id="cb15-4"><a href="#cb15-4" tabindex="-1"></a><span class="co">#&gt; [1] &quot;scalar&quot;     &quot;scalar&quot;     &quot;scalar&quot;     &quot;REG*COLUMN&quot;</span></span>
+<span id="cb15-5"><a href="#cb15-5" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" tabindex="-1"></a><span class="co"># (2) Extracting unique dimension patterns (e.g., REG*COMM*ACTS)</span></span>
+<span id="cb15-7"><a href="#cb15-7" tabindex="-1"></a>dims_strg_har <span class="ot">&lt;-</span> <span class="fu">get_dim_patterns</span>(har_data1, har_data2,</span>
+<span id="cb15-8"><a href="#cb15-8" tabindex="-1"></a>                                  <span class="at">keep_unique =</span><span class="cn">TRUE</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" tabindex="-1"></a><span class="fu">print</span>(dims_strg_har[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, ])</span>
+<span id="cb15-10"><a href="#cb15-10" tabindex="-1"></a><span class="co">#&gt; [1] &quot;scalar&quot;       &quot;REG*COLUMN&quot;   &quot;ALLOCEFF*REG&quot; &quot;REG*CTAX&quot;</span></span>
+<span id="cb15-11"><a href="#cb15-11" tabindex="-1"></a></span>
+<span id="cb15-12"><a href="#cb15-12" tabindex="-1"></a><span class="co"># (2) Extracting dimension elements e.g., REG, COMM, ACTS</span></span>
+<span id="cb15-13"><a href="#cb15-13" tabindex="-1"></a>dims_strg_har_uniq <span class="ot">&lt;-</span> <span class="fu">get_dim_elements</span>(har_data1, har_data2, </span>
+<span id="cb15-14"><a href="#cb15-14" tabindex="-1"></a>                                       <span class="at">keep_unique =</span><span class="cn">TRUE</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" tabindex="-1"></a><span class="fu">print</span>(dims_strg_har_uniq[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, ])</span>
+<span id="cb15-16"><a href="#cb15-16" tabindex="-1"></a><span class="co">#&gt; [1] &quot;REG&quot;      &quot;COLUMN&quot;   &quot;ALLOCEFF&quot; &quot;CTAX&quot;</span></span></code></pre></div>
+<div id="patterns-vs.-elements" class="section level3">
+<h3>Patterns vs. Elements</h3>
+<p>Patterns represent structured dimension names (e.g.,
+<code>&quot;REG*COMM*ACTS&quot;</code>), while elements extract individual
+dimension elements (e.g., <code>&quot;REG&quot;</code>, <code>&quot;COMM&quot;</code>,
+<code>&quot;ACTS&quot;</code>).</p>
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
