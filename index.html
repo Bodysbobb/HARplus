@@ -11,8 +11,8 @@
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Enhanced R Package for GEMPACK .har and .sl4 Files">
-<meta name="description" content="Provides tools for processing and analyzing .HAR and .SL4 files, making it easier for GEMPACK users and GTAP model researchers to handle large economic datasets. It simplifies the management of multiple experiment results, enabling faster and more efficient comparisons without complexity. Users can extract, restructure, and merge data seamlessly, ensuring compatibility across different tools. The processed data can be exported and used in R, Stata, Python, Julia, or any software that supports Text, CSV, or Excel formats.">
-<meta property="og:description" content="Provides tools for processing and analyzing .HAR and .SL4 files, making it easier for GEMPACK users and GTAP model researchers to handle large economic datasets. It simplifies the management of multiple experiment results, enabling faster and more efficient comparisons without complexity. Users can extract, restructure, and merge data seamlessly, ensuring compatibility across different tools. The processed data can be exported and used in R, Stata, Python, Julia, or any software that supports Text, CSV, or Excel formats.">
+<meta name="description" content="Provides tools for processing and analyzing .har and .sl4 files, making it easier for GEMPACK users and GTAP researchers to handle large economic datasets. It simplifies the management of multiple experiment results, enabling faster and more efficient comparisons without complexity. Users can extract, restructure, and merge data seamlessly, ensuring compatibility across different tools. The processed data can be exported and used in R, Stata, Python, Julia, or any software that supports Text, CSV, or Excel formats.">
+<meta property="og:description" content="Provides tools for processing and analyzing .har and .sl4 files, making it easier for GEMPACK users and GTAP researchers to handle large economic datasets. It simplifies the management of multiple experiment results, enabling faster and more efficient comparisons without complexity. Users can extract, restructure, and merge data seamlessly, ensuring compatibility across different tools. The processed data can be exported and used in R, Stata, Python, Julia, or any software that supports Text, CSV, or Excel formats.">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -91,14 +91,14 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>HARplus is currently under <strong>CRAN review</strong> and will be available there soon. In the meantime, install it directly from GitHub using the following command:</p>
+<p>HARplus (version 1.0.1) can be installed directly in R using:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Bodysbobb/HARplus"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"HARplus"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="quick-guide-to-harplus">Quick Guide to HARplus<a class="anchor" aria-label="anchor" href="#quick-guide-to-harplus"></a>
 </h2>
-<p>All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the <strong><a href="inst/docs/HARplus_1.0.1.pdf">HARplus Package Manual</a></strong> and <strong><a href="https://rpubs.com/Bodysbob/1273998/" class="external-link">Vignette</a></strong> or <strong><a href="https://bodysbobb.github.io/HARplus/">GitHub Vignette</a></strong></p>
+<p>All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the <strong><a href="https://rpubs.com/Bodysbob/1273998/" class="external-link">Vignette</a></strong> or <strong><a href="https://bodysbobb.github.io/HARplus/">GitHub Vignette</a></strong></p>
 <p>Below is a categorized reference of the main functions in HARplus:</p>
 <div class="section level3">
 <h3 id="data-importing">Data Importing<a class="anchor" aria-label="anchor" href="#data-importing"></a>
@@ -192,12 +192,13 @@ Research Assistant at GTAP</p>
 <div class="section level2">
 <h2 id="gtap-database">GTAP Database<a class="anchor" aria-label="anchor" href="#gtap-database"></a>
 </h2>
-<p>Sample data used in this <a href="https://rpubs.com/Bodysbob/1273998" class="external-link">vignette</a> is obtained from the GTAPv7 model and utilizes publicly available data from the <a href="https://www.gtap.agecon.purdue.edu/databases/archives.asp" class="external-link">GTAP 9 database</a>. For more details about the GTAP database and model, refer to the <strong><a href="https://www.gtap.agecon.purdue.edu/" class="external-link">GTAP Database</a></strong>.</p>
+<p>Sample data used in this <a href="https://rpubs.com/Bodysbob/1273998/" class="external-link">vignette</a> is obtained from the GTAPv7 model and utilizes publicly available data from the <a href="https://www.gtap.agecon.purdue.edu/databases/archives.asp" class="external-link">GTAP 9 database</a>. For more details about the GTAP database and model, refer to the <strong><a href="https://www.gtap.agecon.purdue.edu/" class="external-link">GTAP Database</a></strong>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
+<li><a href="https://cloud.r-project.org/package=HARplus" class="external-link">View on CRAN</a></li>
 <li><a href="https://github.com/bodysbobb/HARplus/" class="external-link">Browse source code</a></li>
 <li><a href="https://github.com/bodysbobb/HARplus/issues/" class="external-link">Report a bug</a></li>
 </ul>
