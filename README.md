@@ -26,10 +26,9 @@ HARplus simplifies `.HAR` and `.SL4` file processing. You can:
 
 ## Installation
 
-HARplus is currently under **CRAN review** and will be available there soon. In the meantime, install it directly from GitHub using the following command:
-
+HARplus (version 1.0.1) can be installed directly in R using:
 ```r
-devtools::install_github("Bodysbobb/HARplus")
+install.packages("HARplus")
 ```
 
 ## Quick Guide to HARplus
