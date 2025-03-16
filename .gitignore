@@ -2,8 +2,8 @@
 .Rhistory
 .RData
 .Ruserdata
-.HARplus.Rcheck
+HARplus.Rcheck
 LICENSE
-.Rproj
+*.Rproj
 .Rbuildignore
 HARplus_1.0.1.tar.gz
