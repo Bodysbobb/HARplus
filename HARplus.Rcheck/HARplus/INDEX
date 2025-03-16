@@ -1,0 +1,21 @@
+compare_var_structure   Compare Variable Structures Across SL4 and HAR
+                        Objects
+export_data             Export Data to Various Formats
+                        (CSV/STATA/TEXT/RDS/XLSX)
+get_data_by_dims        Extract Data by Dimension Patterns from SL4 or
+                        HAR Objects
+get_data_by_var         Extract Variable Data from SL4 or HAR Objects
+get_dim_elements        Get Dimension Elements from SL4 and HAR Objects
+get_dim_patterns        Get Dimension Patterns from SL4 and HAR Objects
+get_var_structure       Get Variable Structure Summary from SL4 and HAR
+                        Objects
+group_data_by_dims      Group Data by Dimension Patterns in SL4 or HAR
+                        Objects
+load_harx               Load and Process HAR Files with Header
+                        Selection
+load_sl4x               Load and Process SL4 Files with Enhanced
+                        Options
+pivot_data              Pivot Data from SL4 or HAR Objects
+pivot_data_hierarchy    Create Hierarchical Pivot Table from SL4 or HAR
+                        Objects
+rename_dims             Rename Dimensions in SL4 or HAR Objects
