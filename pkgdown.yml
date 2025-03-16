@@ -3,7 +3,7 @@ pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   introduction: introduction.html
-last_built: 2025-03-16T07:51Z
+last_built: 2025-03-16T08:00Z
 urls:
   reference: https://bodysbobb.github.io/HARplus/reference
   article: https://bodysbobb.github.io/HARplus/articles
