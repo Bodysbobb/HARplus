@@ -1,4 +1,5 @@
 # HARplus: Enhanced R Package for GEMPACK .har and .sl4 Files
+[![CRAN](https://www.r-pkg.org/badges/version/HARplus)](https://CRAN.R-project.org/package=HARplus)
 
 ## Overview
 
