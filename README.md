@@ -1,8 +1,9 @@
 # HARplus: Enhanced R Package for GEMPACK .har and .sl4 Files
 [![Author](https://img.shields.io/badge/Pattawee.P-blue?label=Author)](https://bodysbobb.github.io/) ![Last Updated](https://img.shields.io/github/last-commit/Bodysbobb/GTAPViz?label=Last%20Updated&color=blue)
 
-[![CRAN](https://www.r-pkg.org/badges/version/HARplus)](https://CRAN.R-project.org/package=HARplus)
-![GTAPViz](https://img.shields.io/badge/GTAPViz-1C3E5D?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHJlY3Qgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjRkZGIiBvcGFjaXR5PSIwIi8+PHRleHQgeD0iNSIgeT0iMTYiIGZvbnQtc2l6ZT0iMTEiIGZpbGw9IndoaXRlIj5HViA8L3RleHQ+PC9zdmc+)
+[![CRAN](https://www.r-pkg.org/badges/version/HARplus)](https://CRAN.R-project.org/package=HARplus/)
+[![GTAPViz](https://img.shields.io/badge/GTAPViz-1C3E5D?style=for-the-badge&logoColor=white)](https://github.com/Bodysbobb/GTAPViz/)
+
 
 ## Overview
 
