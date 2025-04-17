@@ -3,7 +3,8 @@
 
 [![CRAN](https://www.r-pkg.org/badges/version/HARplus)](https://CRAN.R-project.org/package=HARplus/)
 
-**Extensions:** 
+**Extensions:**
+
 [![GTAPViz](https://img.shields.io/badge/GTAPViz-276DC3?style=for-the-badge&logo=r&logoColor=white)](https://bodysbobb.github.io/GTAPViz/)
 
 
