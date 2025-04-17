@@ -2,8 +2,9 @@
 [![Author](https://img.shields.io/badge/Pattawee.P-blue?label=Author)](https://bodysbobb.github.io/) ![Last Updated](https://img.shields.io/github/last-commit/Bodysbobb/GTAPViz?label=Last%20Updated&color=blue)
 
 [![CRAN](https://www.r-pkg.org/badges/version/HARplus)](https://CRAN.R-project.org/package=HARplus/)
-[![GTAPViz](https://img.shields.io/badge/GTAPViz-1C3E5D?style=for-the-badge&logoColor=white)](https://github.com/Bodysbobb/GTAPViz/)
 
+**Extensions**
+[![GTAPViz](https://img.shields.io/badge/GTAPViz-1C3E5D?style=flat-square&logoColor=white)](https://github.com/Bodysbobb/GTAPViz/)
 
 ## Overview
 
