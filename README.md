@@ -4,7 +4,8 @@
 [![CRAN](https://www.r-pkg.org/badges/version/HARplus)](https://CRAN.R-project.org/package=HARplus/)
 
 **Extensions:**  
-[![R](https://img.shields.io/badge/Pattawee.P-blue?label=GTAPViz)](https://img.shields.io/badge/GTAPViz-1C3E5D?style=flat-square&logoColor=white)](https://github.com/Bodysbobb/GTAPViz/) 
+[![GTAPViz](https://img.shields.io/badge/GTAPViz-1C3E5D?style=flat-square&logo=r&logoColor=white)](https://github.com/Bodysbobb/GTAPViz/)
+
 
 ## Overview
 
