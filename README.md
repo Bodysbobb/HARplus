@@ -85,7 +85,7 @@ Acknowledgement is due to **Maros Ivanic** for his work on the `HARr` package, w
 
 ## GTAPViz: An Extension of HARplus for Visualization
 
-I have developed another package specifically for visualization, particularly for GTAP users: **[GTAPViz](https://bodysbobb.github.io/GTAPViz/)**
+I have developed another package specifically for visualization, particularly for GTAP users: **[GTAPViz](https://www.pattawee-pp.com/GTAPViz/)**
 
 ## GTAP Database
 
