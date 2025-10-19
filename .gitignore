@@ -7,3 +7,5 @@ LICENSE
 *.Rproj
 .Rbuildignore
 HARplus_1.0.1.tar.gz
+HARplus_*.tar.gz
+*.Rcheck/
