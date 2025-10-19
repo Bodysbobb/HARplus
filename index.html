@@ -57,11 +57,13 @@
 <p><a href="https://www.pattawee-pp.com/" class="external-link"><img src="https://img.shields.io/badge/Pattawee.P-blue?label=Author" alt="Author"></a> <img src="https://img.shields.io/github/last-commit/Bodysbobb/GTAPViz?label=Last%20Updated&amp;color=blue" alt="Last Updated"><a href="https://github.com/Bodysbobb/HARplus/stargazers" class="external-link"><img src="https://img.shields.io/github/stars/Bodysbobb/HARplus?style=social" alt="Star"></a></p>
 <p><a href="https://CRAN.R-project.org/package=HARplus" class="external-link"><img src="https://www.r-pkg.org/badges/version/HARplus" alt="CRAN"></a> <a href="https://github.com/Bodysbobb/HARplus/releases/latest" class="external-link"><img src="https://img.shields.io/github/v/tag/Bodysbobb/HARplus?label=GitHub%20Version&amp;color=3CB371&amp;sort=semver" alt="GitHub Version"></a> <img src="https://img.shields.io/github/license/Bodysbobb/HARplus?color=3CB371" alt="License"></p>
 <p><strong>Extensions:</strong><br><a href="https://www.pattawee-pp.com/GTAPViz/" class="external-link"><img src="https://img.shields.io/badge/GTAPViz-276DC3?style=flat-square&amp;logo=r&amp;logoColor=white" alt="GTAPViz"></a></p>
+<hr>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
 <p>HARplus is an R package designed to process and analyze .HAR and .SL4 files, making it easier for GEMPACK users and GTAP model researchers to handle large economic datasets. It simplifies the management of multiple experiment results, enabling faster and more efficient comparisons without complexity.</p>
 <p>With HARplus, users can extract, restructure, and merge data seamlessly, ensuring compatibility across different tools. The processed data can be exported and used in R, Stata, Python, Julia, or any software that supports .txt, CSV, or Excel formats.</p>
+<hr>
 </div>
 <div class="section level2">
 <h2 id="key-features">Key Features<a class="anchor" aria-label="anchor" href="#key-features"></a>
@@ -80,23 +82,31 @@
 <strong>Multiple Export Options</strong> – Output extracted data in CSV, Stata, RDS, and Excel formats with structured formatting.<br>
 </li>
 <li>
+<strong>Powerful HAR Writing</strong> – Includes <code><a href="reference/save_har.html">save_har()</a></code> for exporting datasets to GEMPACK <code>.HAR</code> format with full binary compliance.<br>
+</li>
+<li>
 <strong>Designed for GEMPACK</strong> – Ensures smooth integration with <code>.HAR</code> and <code>.SL4</code> files while offering additional flexibility.<br>
 </li>
 <li>
 <strong>Ideal for GTAP Model Users</strong> – Built specifically to process and analyze GTAP model results efficiently.</li>
 </ul>
+<hr>
 </div>
 <div class="section level2">
 <h2 id="how-it-works">How It Works<a class="anchor" aria-label="anchor" href="#how-it-works"></a>
 </h2>
 <p>HARplus simplifies <code>.HAR</code> and <code>.SL4</code> file processing. You can: - Load files and selectively extract headers. - Extract data by variable name or dimension patterns. - Group, merge, and restructure data with ease. - Pivot and export data into structured formats. - Filter subtotals and rename dimensions for clarity.</p>
+<hr>
 </div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>HARplus (version 1.1.0) can be installed directly in R using:</p>
+<p>HARplus (version 1.0.1) can be installed directly in R using:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"HARplus"</span><span class="op">)</span></span></code></pre></div>
+<p>While the latest HARplus (version 1.1.1) can be installed from my GitHub using:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Bodysbobb/HARplus"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="quick-guide-to-harplus">Quick Guide to HARplus<a class="anchor" aria-label="anchor" href="#quick-guide-to-harplus"></a>
@@ -179,6 +189,26 @@
 <li>
 <strong><code><a href="reference/save_har.html">save_har()</a></code></strong> – Saves processed data frames or arrays into GEMPACK-compatible <code>.HAR</code> files, automatically generating 1C set headers and supporting up to seven dimensions.</li>
 </ul>
+<div class="section level4">
+<h4 id="technical-specifications">Technical Specifications<a class="anchor" aria-label="anchor" href="#technical-specifications"></a>
+</h4>
+<ul>
+<li>Supports both <strong>1C (string)</strong> and <strong>RE (real)</strong> headers<br>
+</li>
+<li>Automatically generates 1C dimension sets (e.g., <code>REG</code>, <code>COMM</code>, <code>ENDW</code>)<br>
+</li>
+<li>Accepts data frames or arrays with flexible column naming<br>
+</li>
+<li>Writes associated set headers when <code>export_sets = TRUE</code><br>
+</li>
+<li>Maintains full GEMPACK binary structure with no size limitation<br>
+</li>
+<li>Supports up to seven dimensions and approximately 2 million elements per chunk<br>
+</li>
+<li>Allows <strong>dimension renaming</strong> and supports <strong>duplicate dimension names</strong> (e.g., <code>COMMxREGxREG</code>) during export</li>
+</ul>
+<hr>
+</div>
 </div>
 </div>
 <div class="section level2">
@@ -189,16 +219,19 @@
 Ph.D. Candidate, Agricultural Economics<br>
 Purdue University<br>
 Research Assistant at GTAP</p>
+<hr>
 </div>
 <div class="section level2">
 <h2 id="acknowledgements">Acknowledgements<a class="anchor" aria-label="anchor" href="#acknowledgements"></a>
 </h2>
 <p>Acknowledgement is due to <strong>Maros Ivanic</strong> for his work on the <code>HARr</code> package, which served as the foundation for HARplus. This package would not have been possible without his contributions.</p>
+<hr>
 </div>
 <div class="section level2">
 <h2 id="gtapviz-an-extension-of-harplus-for-visualization">GTAPViz: An Extension of HARplus for Visualization<a class="anchor" aria-label="anchor" href="#gtapviz-an-extension-of-harplus-for-visualization"></a>
 </h2>
 <p>I have developed another package specifically for visualization, particularly for GTAP users: <strong><a href="https://www.pattawee-pp.com/GTAPViz/" class="external-link">GTAPViz</a></strong></p>
+<hr>
 </div>
 <div class="section level2">
 <h2 id="gtap-database">GTAP Database<a class="anchor" aria-label="anchor" href="#gtap-database"></a>

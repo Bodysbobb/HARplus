@@ -646,21 +646,18 @@ limitation<br>
 </li>
 <li>Supports up to seven dimensions and approximately 2 million elements
 per chunk</li>
+<li>Allows <strong>dimension renaming</strong> and supports
+<strong>duplicate dimension names</strong> (e.g.,
+<code>COMMxREGxREG</code>) during export</li>
 </ul>
-<p><strong>Note:</strong><br>
-To rename dimensions, first rename the corresponding column names in
-your data (e.g., using <code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">dplyr::rename()</a></code> or
-<code>data.table::setnames()</code>).<br>
-Each dimension name in a <code>.HAR</code> file must be no longer than
-<strong>four characters</strong>.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load example HAR data</span></span>
 <span><span class="va">har_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"TAR10-WEL.har"</span>, package <span class="op">=</span> <span class="st">"HARplus"</span><span class="op">)</span></span>
 <span><span class="va">har_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_harx.html">load_harx</a></span><span class="op">(</span><span class="va">har_path</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Extract one matrix for demonstration</span></span>
-<span><span class="va">welfare_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_data_by_var.html">get_data_by_var</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="va">har_data</span><span class="op">)</span></span>
-<span><span class="va">welfare_matrix</span> <span class="op">&lt;-</span> <span class="va">welfare_data</span><span class="op">[[</span><span class="st">"har_data"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"A"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">welfare_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_data_by_var.html">get_data_by_var</a></span><span class="op">(</span><span class="st">"C17"</span>, <span class="va">har_data</span><span class="op">)</span></span>
+<span><span class="va">welfare_matrix</span> <span class="op">&lt;-</span> <span class="va">welfare_data</span><span class="op">[[</span><span class="st">"har_data"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"C17"</span><span class="op">]</span><span class="op">]</span></span>
 <span></span>
 <span><span class="co"># Save as a single HAR file</span></span>
 <span><span class="fu"><a href="../reference/save_har.html">save_har</a></span><span class="op">(</span></span>
@@ -669,7 +666,9 @@ Each dimension name in a <code>.HAR</code> file must be no longer than
 <span>  dimensions  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>WELF <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REG"</span>, <span class="st">"COLUMN"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  value_cols  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>WELF <span class="op">=</span> <span class="st">"Value"</span><span class="op">)</span>,</span>
 <span>  long_desc   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>WELF <span class="op">=</span> <span class="st">"Welfare Decomposition"</span><span class="op">)</span>,</span>
+<span>  dim_rename  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>RTMS <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>COMM <span class="op">=</span> <span class="st">"COMM"</span>, SREG <span class="op">=</span> <span class="st">"REG"</span>, DREG <span class="op">=</span> <span class="st">"REG"</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  export_sets <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  dim_order   <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  lowercase   <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
