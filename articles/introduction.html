@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">HARplus</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,7 +59,7 @@
                         <h4 data-toc-skip class="author">Pattawee
 Puangchit</h4>
             
-            <h4 data-toc-skip class="date">2025-04-20</h4>
+            <h4 data-toc-skip class="date">2025-10-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/bodysbobb/HARplus/blob/main/vignettes/introduction.Rmd" class="external-link"><code>vignettes/introduction.Rmd</code></a></small>
       <div class="d-none name"><code>introduction.Rmd</code></div>
@@ -619,6 +619,62 @@ mapping.</p>
 </div>
 </div>
 <div class="section level2">
+<h2 id="saving-data-to-gempack--har-format">Saving Data to GEMPACK <code>.HAR</code> Format<a class="anchor" aria-label="anchor" href="#saving-data-to-gempack--har-format"></a>
+</h2>
+<p>This function is particularly useful when: - Creating custom HAR
+files for simulation inputs or aggregated datasets<br>
+- Converting R-based results into GEMPACK-readable format<br>
+- Exporting modified or merged results from GTAP-style models for use in
+RunDynam or RunGTAP</p>
+<div class="section level3">
+<h3 id="key-features">Key Features<a class="anchor" aria-label="anchor" href="#key-features"></a>
+</h3>
+<ul>
+<li>Supports both <strong>1C (string)</strong> and <strong>RE
+(real)</strong> headers<br>
+</li>
+<li>Automatically generates 1C dimension sets (e.g., <code>REG</code>,
+<code>COMM</code>, <code>ENDW</code>)<br>
+</li>
+<li>Accepts data frames or arrays with flexible column naming<br>
+</li>
+<li>Writes associated set headers when
+<code>export_sets = TRUE</code><br>
+</li>
+<li>Maintains full GEMPACK binary structure with no size
+limitation<br>
+</li>
+<li>Supports up to seven dimensions and approximately 2 million elements
+per chunk</li>
+</ul>
+<p><strong>Note:</strong><br>
+To rename dimensions, first rename the corresponding column names in
+your data (e.g., using <code><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">dplyr::rename()</a></code> or
+<code>data.table::setnames()</code>).<br>
+Each dimension name in a <code>.HAR</code> file must be no longer than
+<strong>four characters</strong>.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Load example HAR data</span></span>
+<span><span class="va">har_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"TAR10-WEL.har"</span>, package <span class="op">=</span> <span class="st">"HARplus"</span><span class="op">)</span></span>
+<span><span class="va">har_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_harx.html">load_harx</a></span><span class="op">(</span><span class="va">har_path</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Extract one matrix for demonstration</span></span>
+<span><span class="va">welfare_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_data_by_var.html">get_data_by_var</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="va">har_data</span><span class="op">)</span></span>
+<span><span class="va">welfare_matrix</span> <span class="op">&lt;-</span> <span class="va">welfare_data</span><span class="op">[[</span><span class="st">"har_data"</span><span class="op">]</span><span class="op">]</span><span class="op">[[</span><span class="st">"A"</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span><span class="co"># Save as a single HAR file</span></span>
+<span><span class="fu"><a href="../reference/save_har.html">save_har</a></span><span class="op">(</span></span>
+<span>  data_list   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>WELF <span class="op">=</span> <span class="va">welfare_matrix</span><span class="op">)</span>,</span>
+<span>  file_path   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output_single.har"</span><span class="op">)</span>,</span>
+<span>  dimensions  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>WELF <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"REG"</span>, <span class="st">"COLUMN"</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  value_cols  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>WELF <span class="op">=</span> <span class="st">"Value"</span><span class="op">)</span>,</span>
+<span>  long_desc   <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span>WELF <span class="op">=</span> <span class="st">"Welfare Decomposition"</span><span class="op">)</span>,</span>
+<span>  export_sets <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  lowercase   <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+<div class="section level2">
 <h2 id="exporting-data-to-csvstatatextrdsxlsx">Exporting Data to CSV/STATA/TEXT/RDS/XLSX<a class="anchor" aria-label="anchor" href="#exporting-data-to-csvstatatextrdsxlsx"></a>
 </h2>
 <p>The <code>export_data</code> function allows you to export SL4 and
@@ -626,7 +682,7 @@ HAR data into various formats. Supported formats include:
 <code>"csv"</code>, <code>"xlsx"</code>, <code>"stata"</code>,
 <code>"txt"</code>, and <code>"rds"</code>. You can export single data
 frames or multi-variable results while preserving their structure.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract data</span></span>
 <span><span class="va">data_multiple</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_data_by_var.html">get_data_by_var</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"qo"</span>, <span class="st">"pca"</span><span class="op">)</span>, <span class="va">sl4_data1</span><span class="op">)</span></span>
 <span></span>
@@ -655,7 +711,7 @@ structure, all of which can be applied to both <code>.har</code> and
 patterns, and optionally the column and observation counts for one or
 multiple variables from a single or multiple datasets (return as
 separate lists):</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># (1) Getting all variables from the input file</span></span>
 <span><span class="va">vars_har_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_var_structure.html">get_var_structure</a></span><span class="op">(</span><span class="st">"ALL"</span>, <span class="va">har_data1</span><span class="op">)</span></span>
 <span><span class="va">vars_sl4_sum</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_var_structure.html">get_var_structure</a></span><span class="op">(</span>, <span class="va">har_data1</span><span class="op">)</span></span>
@@ -686,7 +742,7 @@ merging process relies solely on variable names without accounting for
 structural differences.</p>
 <p>To compare data structures across multiple experiments, use the
 following command:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># (1) Comparing all variable structures across experiments </span></span>
 <span><span class="va">vars_comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compare_var_structure.html">compare_var_structure</a></span><span class="op">(</span></span>
 <span>  variables <span class="op">=</span> <span class="st">"ALL"</span>, <span class="va">sl4_data1</span>, <span class="va">sl4_data2</span></span>
@@ -716,7 +772,7 @@ which allows users to extract variables with unique names and structures
 across all inputs. This is particularly useful when inputs contain
 different sets of variables that need to be combined into a final
 dataset.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># (3) Extracting unique variable structures</span></span>
 <span><span class="va">unique_vars</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/compare_var_structure.html">compare_var_structure</a></span><span class="op">(</span>, </span>
 <span>                                     <span class="va">sl4_data1</span>, <span class="va">sl4_data2</span>,</span>
@@ -748,7 +804,7 @@ match, while reports any variables that do not align.</p>
 </h3>
 <p>The following commands can be used to retrieve unique dimension names
 as patterns and their corresponding elements:</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># (1) Extracting dimension patterns (e.g., REG*COMM*ACTS)</span></span>
 <span><span class="va">dims_strg_har</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_dim_patterns.html">get_dim_patterns</a></span><span class="op">(</span><span class="va">har_data1</span>, <span class="va">har_data2</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">dims_strg_har</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">4</span>, <span class="op">]</span><span class="op">)</span></span>
@@ -786,7 +842,7 @@ dimension elements (e.g., <code>"REG"</code>, <code>"COMM"</code>,
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>
