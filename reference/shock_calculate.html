@@ -55,7 +55,8 @@ automatically aligns dimensions across datasets and exports results in HAR forma
 <span>  <span class="va">output_path</span>,</span>
 <span>  long_desc <span class="op">=</span> <span class="st">"Calculated shock values"</span>,</span>
 <span>  dim_order <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  lowercase <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  lowercase <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  new_baseline <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -101,6 +102,12 @@ automatically aligns dimensions across datasets and exports results in HAR forma
 <dt id="arg-lowercase">lowercase<a class="anchor" aria-label="anchor" href="#arg-lowercase"></a></dt>
 <dd><p>Logical; if TRUE, converts dimension elements to lowercase. Default is FALSE.</p></dd>
 
+
+<dt id="arg-new-baseline">new_baseline<a class="anchor" aria-label="anchor" href="#arg-new-baseline"></a></dt>
+<dd><p>Logical; if TRUE, generates an additional HAR file with the new baseline rates
+(target values where available, initial values otherwise). The output file will have "_baseline"
+appended to the filename. Default is FALSE.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -108,6 +115,7 @@ automatically aligns dimensions across datasets and exports results in HAR forma
 <li><p><code>n_included</code>: records included in shock computation</p></li>
 <li><p><code>n_excluded</code>: records excluded by configuration</p></li>
 <li><p><code>output_path</code>: normalized path to output HAR file</p></li>
+<li><p><code>baseline_path</code>: normalized path to baseline file (if new_baseline = TRUE)</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -117,6 +125,7 @@ automatically aligns dimensions across datasets and exports results in HAR forma
 <li><p>Compatible with HAR, SL4, CSV, or XLSX input formats</p></li>
 <li><p>Excludes self-trade or specified region-sector pairs when configured</p></li>
 <li><p>Exports results as multi-header HAR file (one header per timeline period)</p></li>
+<li><p>Optionally generates new baseline rate file showing post-adjustment values</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -130,7 +139,7 @@ automatically aligns dimensions across datasets and exports results in HAR forma
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example 1: Target-Based Shock Calculation</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Example 1: Target-Based Shock Calculation with New Baseline</span></span></span>
 <span class="r-in"><span><span class="va">har_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"baserate.har"</span>, package <span class="op">=</span> <span class="st">"HARplus"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Sorting Column</span></span></span>
@@ -160,12 +169,14 @@ automatically aligns dimensions across datasets and exports results in HAR forma
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Compute Shock Based on Initial and Target Values</span></span></span>
+<span class="r-in"><span><span class="co"># Also generate new baseline file</span></span></span>
 <span class="r-in"><span><span class="fu">shock_calculate</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  initial_config <span class="op">=</span> <span class="va">initial</span>,</span></span>
 <span class="r-in"><span>  target_config  <span class="op">=</span> <span class="va">target</span>,</span></span>
 <span class="r-in"><span>  calc_config    <span class="op">=</span> <span class="va">calc</span>,</span></span>
 <span class="r-in"><span>  output_path    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"output_target.har"</span><span class="op">)</span>,</span></span>
-<span class="r-in"><span>  dim_order      <span class="op">=</span> <span class="va">mapping</span></span></span>
+<span class="r-in"><span>  dim_order      <span class="op">=</span> <span class="va">mapping</span>,</span></span>
+<span class="r-in"><span>  new_baseline   <span class="op">=</span> <span class="cn">TRUE</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Successfully wrote 7 header(s) to HAR file</span>
@@ -178,9 +189,25 @@ automatically aligns dimensions across datasets and exports results in HAR forma
 <span class="r-out co"><span class="r-pr">#&gt;</span> Dimensions with A-Z sorting (no custom mapping):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   TRAD</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Output file: /tmp/Rtmpbq9F9X/output_target.har</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Output file: /tmp/Rtmpcuqqaf/output_target.har</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> File size: 3,299 bytes</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Successfully wrote 3 header(s) to HAR file</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Set headers (1C type): 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Data headers (RE type): 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimension ordering applied:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   REG: 3 prioritized values, remaining A-Z</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dimensions with A-Z sorting (no custom mapping):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   TRAD</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Output file: /tmp/Rtmpcuqqaf/output_target_baseline.har</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> File size: 935 bytes</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Generated new baseline file: /tmp/Rtmpcuqqaf/output_target_baseline.har</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
