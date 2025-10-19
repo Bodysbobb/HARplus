@@ -73,9 +73,6 @@ automatically aligns dimensions across datasets and exports results in HAR forma
 }
 \examples{
 # Example 1: Target-Based Shock Calculation
-setwd("D:/GitHub/HARplus")
-devtools::load_all()
-
 har_path <- system.file("extdata", "baserate.har", package = "HARplus")
 
 # Sorting Column
@@ -99,7 +96,7 @@ target <- create_target_config(
 
 # Calculation Setup with Column Mapping
 calc <- create_calc_config(
-  column_mapping      = c(COMM = "COMM", REG = "REG", REG.1 = "REG.1"),
+  column_mapping      = c(TRAD_COMM = "TRAD_COMM", REG = "REG", REG.1 = "REG.1"),
   timeline            = "1-5",
   exclude_self_trade  = TRUE
 )

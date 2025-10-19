@@ -188,9 +188,6 @@ create_calc_config <- function(column_mapping = NULL, timeline = 1,
 #'
 #' @examples
 #' # Example 1: Uniform Shock (50% Reduction)
-#' setwd("D:/GitHub/HARplus")
-#' devtools::load_all()
-#'
 #' har_path <- system.file("extdata", "baserate.har", package = "HARplus")
 #'
 #' # Sorting Column
@@ -406,9 +403,6 @@ shock_calculate_uniform <- function(initial_config, adjustment_value,
 #'
 #' @examples
 #' # Example 1: Target-Based Shock Calculation
-#' setwd("D:/GitHub/HARplus")
-#' devtools::load_all()
-#'
 #' har_path <- system.file("extdata", "baserate.har", package = "HARplus")
 #'
 #' # Sorting Column
@@ -432,7 +426,7 @@ shock_calculate_uniform <- function(initial_config, adjustment_value,
 #'
 #' # Calculation Setup with Column Mapping
 #' calc <- create_calc_config(
-#'   column_mapping      = c(COMM = "COMM", REG = "REG", REG.1 = "REG.1"),
+#'   column_mapping      = c(TRAD_COMM = "TRAD_COMM", REG = "REG", REG.1 = "REG.1"),
 #'   timeline            = "1-5",
 #'   exclude_self_trade  = TRUE
 #' )

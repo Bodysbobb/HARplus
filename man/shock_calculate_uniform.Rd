@@ -82,9 +82,6 @@ multiplicative adjustments, single or multi-period configurations, and direct HA
 }
 \examples{
 # Example 1: Uniform Shock (50\% Reduction)
-setwd("D:/GitHub/HARplus")
-devtools::load_all()
-
 har_path <- system.file("extdata", "baserate.har", package = "HARplus")
 
 # Sorting Column
