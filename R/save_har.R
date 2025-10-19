@@ -219,6 +219,7 @@ save_har <- function(data_list,
 #' @keywords internal
 #' @noRd
 #' @author Pattawee Puangchit
+#' @importFrom stats complete.cases
 convert_df_to_array <- function(df, dim_cols, val_col, lowercase) {
   df <- df[complete.cases(df[, c(dim_cols, val_col)]), ]
   
@@ -301,6 +302,7 @@ extract_unique_sets <- function(arrays) {
 }
 
 #' @keywords internal
+#' @importFrom utils read.csv
 #' @noRd
 #' @author Pattawee Puangchit
 process_dim_order <- function(dim_order, lowercase) {
