@@ -131,8 +131,8 @@ save_har(
   lowercase   = FALSE
 )
 
-# Example 4: Exporting HAR file using custom dimension mapping 
-# e.g., COMMxREGxREG
+# Example 4: Rename duplicated dimension names  
+# to export as a single structure (e.g., COMMxREGxREG)
 har_path <- system.file("extdata", "TAR10-WEL.har", package = "HARplus")
 har_data <- load_harx(har_path)
 welfare_data <- get_data_by_var("C17", har_data)
@@ -147,7 +147,7 @@ mapping <- list(
 save_har(
   data_list   = list(TEST = welfare_data),
   file_path   = file.path(tempdir(), "output_single.har"),
-  dimensions  = list(TEST = c("COMM", "SREG", "DREG")),
+  dimensions  = list(TEST = c("COMM", "REG", "REG.1")),
   value_cols  = list(TEST = "Value"),
   long_desc   = list(TEST = "Shock RTMS"),
   dim_rename  = list(TEST = c(COMM = "COMM", SREG = "REG", DREG = "REG.1")),

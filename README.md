@@ -12,6 +12,13 @@
 
 ---
 
+# Update (19-Oct-2025)
+
+- **Writing HAR files without limitations** – The new `save_har()` function fully supports writing `.HAR` files with no size restrictions, allowing up to seven dimensions and approximately two million elements per chunk.  
+- **Shock calculation and HAR export** – Introduced `shock_calculate_uniform()` and `shock_calculate()` to compute and **export shock results directly into GEMPACK-compatible `.HAR` files**, supporting dynamic multi-period calculations (e.g., `ONEY`, `TWOY`, `THRY`, etc.) for recursive-dynamic simulations.
+
+---
+
 ## Overview
 
 HARplus is an R package designed to process and analyze .HAR and .SL4 files, making it easier for GEMPACK users and GTAP model researchers to handle large economic datasets. It simplifies the management of multiple experiment results, enabling faster and more efficient comparisons without complexity.
@@ -50,7 +57,7 @@ HARplus (version 1.0.1) can be installed directly in R using:
 install.packages("HARplus")
 ```
 
-While the latest HARplus (version 1.1.1) can be installed from my GitHub using:
+While the latest HARplus (version 1.1.2) can be installed from my GitHub using:
 ```r
 devtools::install_github("Bodysbobb/HARplus")
 ```
@@ -86,7 +93,7 @@ Below is a categorized reference of the main functions in HARplus:
 ### Data Export
 - **`export_data()`** – Exports extracted data to CSV, Stata, TXT, RDS, or XLSX, with support for multi-sheet exports.
 
-### Data Saving
+### Data Saving (New in v1.1.1)
 - **`save_har()`** – Saves processed data frames or arrays into GEMPACK-compatible `.HAR` files, automatically generating 1C set headers and supporting up to seven dimensions.  
 
 #### Technical Specifications
@@ -97,6 +104,13 @@ Below is a categorized reference of the main functions in HARplus:
 - Maintains full GEMPACK binary structure with no size limitation  
 - Supports up to seven dimensions and approximately 2 million elements per chunk  
 - Allows **dimension renaming** and supports **duplicate dimension names** (e.g., `COMMxREGxREG`) during export  
+
+### Shock Calculation Framework (New in v1.1.2)
+These functions provide a complete workflow to **calculate, structure, and export GEMPACK-compatible shock files** directly from `.HAR`, `.SL4`, `.CSV`, or `.XLSX` datasets—eliminating the need for manual conversion when preparing dynamic simulation shocks.
+
+- **`shock_calculate_uniform()`** – Calculates uniform percentage shocks across all base rates and **exports directly to GEMPACK `.HAR` format**. Supports additive (`+`, `-`) and multiplicative (`*`, `/`) adjustments.  
+- **`shock_calculate()`** – Computes target-based shocks by comparing initial and target datasets, automatically **exporting the resulting shocks to `.HAR` files** with dynamic timeline headers (e.g., `ONEY`, `TWOY`, `THRY`, etc.).  
+- **`create_initial_config()`**, **`create_target_config()`**, and **`create_calc_config()`** – Define input sources, column mappings, and timeline periods for use in both uniform and target-based shock calculations.  
 
 ---
 
