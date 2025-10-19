@@ -105,8 +105,17 @@ load_sl4x <- function(file_path, lowercase = FALSE, select_header = NULL) {
   zero_indices <- which(partials == FALSE & solution$PCUM == 0)
   
   if (length(zero_indices) > 0) {
+    shoc_row <- 1
     for (v in zero_indices) {
-      results[[solution$VARS[v]]][] <- 0
+      if (!is.null(solution$PSHK) && !is.null(solution$SHOC) && solution$PSHK[v] == 1) {
+        shock_values <- solution$SHOC[shoc_row:(shoc_row + solution$OREX[v] - 1), 1]
+        for (st_idx in seq_along(stHeaders)) {
+          results[[solution$VARS[v]]][, st_idx] <- shock_values
+        }
+        shoc_row <- shoc_row + solution$OREX[v]
+      } else {
+        results[[solution$VARS[v]]][] <- 0
+      }
     }
   }
   
