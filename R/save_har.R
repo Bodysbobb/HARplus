@@ -24,6 +24,10 @@
 #'    - a data frame with columns matching dimension names  
 #'    - a named list specifying order for each dimension  
 #'    - a character string giving the path to an Excel or CSV file with order definitions
+#' @param dim_rename Optional named list to rename dimensions in HAR output.
+#'    - Names are original column names, values are desired HAR dimension names
+#'    - Allows duplicate dimension names in HAR (e.g., COMMxREGxREG from COMMxSREGxDREG)
+#'    - Example: list(RTMS = c(COMM = "COMM", SREG = "REG", DREG = "REG"))
 #'
 #' @return Invisibly returns a list containing export metadata, including file path and header summary.
 #'
@@ -38,7 +42,7 @@
 #' har_path <- system.file("extdata", "TAR10-WEL.har", package = "HARplus")
 #' har_data <- load_harx(har_path)
 #' welfare_data <- get_data_by_var("A", har_data)
-#' welfare_data <- welfare_data[["har_data"]][["A"]]
+#' welfare_data_A <- welfare_data[["har_data"]][["A"]]
 #'
 #' save_har(
 #'   data_list   = list(WELF = welfare_data),
@@ -96,6 +100,53 @@
 #'   dim_order   = mapping,
 #'   lowercase   = FALSE
 #' )
+#'
+#' # Example 4: Rename dimensions with duplicate names (COMMxREGxREG)
+#' tax_data <- welfare_data[["C17"]]
+#' names(tax_data)[names(tax_data) == "REG"] <- "SREG"
+#' tax_data$DREG <- tax_data$SREG
+#' 
+#' mapping <- list(
+#'   COMM = c("Wheat", "Rice", "Corn"),
+#'   REG  = c("USA", "EU", "CHN")
+#' )
+#'
+#' save_har(
+#'   data_list   = list(RTMS = tax_data),
+#'   file_path   = file.path(tempdir(), "output_renamed.har"),
+#'   dimensions  = list(RTMS = c("COLUMN", "SREG", "DREG")),
+#'   value_cols  = list(RTMS = "Value"),
+#'   long_desc   = list(RTMS = "Tariff rates"),
+#'   dim_rename  = list(RTMS = c(COLUMN = "COMM", SREG = "REG", DREG = "REG")),
+#'   export_sets = TRUE,
+#'   dim_order   = mapping,
+#'   lowercase   = FALSE
+#' )
+#' 
+#' # Example 5: Exporting HAR file using custom dimension mapping
+#'
+#' har_path <- system.file("extdata", "TAR10-WEL.har", package = "HARplus")
+#' har_data <- load_harx(har_path)
+#' welfare_data <- get_data_by_var("C17", har_data)
+#' welfare_data <- welfare_data[["har_data"]][["C17"]] 
+#'
+#' mapping <- list(
+#'   COMM = c("TransComm", "MeatLstk"),
+#'   REG  = c("SSA", "RestofWorld", "SEAsia")  
+#' )
+#'
+#' # Export HAR
+#' save_har(
+#'   data_list   = list(RTMS = tax),
+#'   file_path   = file.path(tempdir(), "output_single.har"),
+#'   dimensions  = list(RTMS = c("COMM", "SREG", "DREG")),
+#'   value_cols  = list(RTMS = "Value"),
+#'   long_desc   = list(RTMS = "Shock RTMS"),
+#'   dim_rename  = list(RTMS = c(COMM = "COMM", SREG = "REG", DREG = "REG")),
+#'   export_sets = TRUE,
+#'   dim_order   = mapping,
+#'   lowercase   = FALSE
+#' )
 save_har <- function(data_list,
                      file_path,
                      dimensions,
@@ -104,7 +155,8 @@ save_har <- function(data_list,
                      coefficients = NULL,
                      export_sets = TRUE,
                      lowercase = TRUE,
-                     dim_order = NULL) {
+                     dim_order = NULL,
+                     dim_rename = NULL) {
   
   header_names <- toupper(names(data_list))
   names(data_list) <- header_names
@@ -130,6 +182,18 @@ save_har <- function(data_list,
     }
   })
   names(all_arrays) <- header_names
+  
+  if (!is.null(dim_rename)) {
+    all_arrays <- lapply(header_names, function(hdr) {
+      arr <- all_arrays[[hdr]]
+      if (hdr %in% names(dim_rename)) {
+        rename_map <- dim_rename[[hdr]]
+        arr <- rename_array_dims(arr, rename_map)
+      }
+      arr
+    })
+    names(all_arrays) <- header_names
+  }
   
   unique_sets <- if (export_sets) extract_unique_sets(all_arrays) else NULL
   
@@ -169,7 +233,7 @@ save_har <- function(data_list,
   
   for (hdr in header_names) {
     write_matrix(con, hdr, all_arrays[[hdr]], 
-                        long_desc[[hdr]], coefficients[[hdr]])
+                 long_desc[[hdr]], coefficients[[hdr]])
   }
   
   close(con)
@@ -240,6 +304,27 @@ convert_df_to_array <- function(df, dim_cols, val_col, lowercase) {
     arr[matrix(idx, nrow = 1)] <- as.numeric(df[[val_col]][i])
   }
   arr
+}
+
+#' @keywords internal
+#' @noRd
+#' @author Pattawee Puangchit
+rename_array_dims <- function(arr, rename_map) {
+  if (is.null(dimnames(arr)) || is.null(names(dimnames(arr)))) {
+    return(arr)
+  }
+  
+  old_names <- names(dimnames(arr))
+  new_names <- old_names
+  
+  for (i in seq_along(old_names)) {
+    if (old_names[i] %in% names(rename_map)) {
+      new_names[i] <- rename_map[[old_names[i]]]
+    }
+  }
+  
+  names(dimnames(arr)) <- new_names
+  return(arr)
 }
 
 #' @keywords internal
@@ -519,7 +604,8 @@ write_matrix <- function(con, hdr_name, arr, description, coefficient) {
       as.raw(rep(0x00, 4 + 4 * length(dim_names)))
     )
     
-    defined_dims <- length(unique(dim_names))
+    unique_dim_names <- unique(dim_names)
+    defined_dims <- length(unique_dim_names)
     used_dims <- length(dim_names)
   } else {
     set_names <- as.raw(c(0x00, 0x00, 0x00, 0x00))
@@ -541,8 +627,11 @@ write_matrix <- function(con, hdr_name, arr, description, coefficient) {
   writeBin(as.integer(length(rec3)), con, size = 4)
   
   if (!is.null(dimnames(arr)) && length(dimnames(arr)) > 0) {
-    for (ud in unique(names(dimnames(arr)))) {
-      ele <- dimnames(arr)[[ud]]
+    unique_dim_names <- unique(names(dimnames(arr)))
+    
+    for (ud in unique_dim_names) {
+      matching_indices <- which(names(dimnames(arr)) == ud)
+      ele <- dimnames(arr)[[matching_indices[1]]]
       
       padded_ele <- vapply(ele, function(e) {
         e <- substr(e, 1, 12)
