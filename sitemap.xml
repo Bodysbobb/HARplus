@@ -6,6 +6,9 @@
 <url><loc>https://bodysbobb.github.io/HARplus/authors.html</loc></url>
 <url><loc>https://bodysbobb.github.io/HARplus/index.html</loc></url>
 <url><loc>https://bodysbobb.github.io/HARplus/reference/compare_var_structure.html</loc></url>
+<url><loc>https://bodysbobb.github.io/HARplus/reference/create_calc_config.html</loc></url>
+<url><loc>https://bodysbobb.github.io/HARplus/reference/create_initial_config.html</loc></url>
+<url><loc>https://bodysbobb.github.io/HARplus/reference/create_target_config.html</loc></url>
 <url><loc>https://bodysbobb.github.io/HARplus/reference/export_data.html</loc></url>
 <url><loc>https://bodysbobb.github.io/HARplus/reference/export_hierarchy_to_excel.html</loc></url>
 <url><loc>https://bodysbobb.github.io/HARplus/reference/get_data_by_dims.html</loc></url>
@@ -29,5 +32,7 @@
 <url><loc>https://bodysbobb.github.io/HARplus/reference/rename_col.html</loc></url>
 <url><loc>https://bodysbobb.github.io/HARplus/reference/rename_dims.html</loc></url>
 <url><loc>https://bodysbobb.github.io/HARplus/reference/save_har.html</loc></url>
+<url><loc>https://bodysbobb.github.io/HARplus/reference/shock_calculate.html</loc></url>
+<url><loc>https://bodysbobb.github.io/HARplus/reference/shock_calculate_uniform.html</loc></url>
 </urlset>
 

@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">HARplus</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -57,6 +57,18 @@
 <p><a href="https://www.pattawee-pp.com/" class="external-link"><img src="https://img.shields.io/badge/Pattawee.P-blue?label=Author" alt="Author"></a> <img src="https://img.shields.io/github/last-commit/Bodysbobb/GTAPViz?label=Last%20Updated&amp;color=blue" alt="Last Updated"><a href="https://github.com/Bodysbobb/HARplus/stargazers" class="external-link"><img src="https://img.shields.io/github/stars/Bodysbobb/HARplus?style=social" alt="Star"></a></p>
 <p><a href="https://CRAN.R-project.org/package=HARplus" class="external-link"><img src="https://www.r-pkg.org/badges/version/HARplus" alt="CRAN"></a> <a href="https://github.com/Bodysbobb/HARplus/releases/latest" class="external-link"><img src="https://img.shields.io/github/v/tag/Bodysbobb/HARplus?label=GitHub%20Version&amp;color=3CB371&amp;sort=semver" alt="GitHub Version"></a> <img src="https://img.shields.io/github/license/Bodysbobb/HARplus?color=3CB371" alt="License"></p>
 <p><strong>Extensions:</strong><br><a href="https://www.pattawee-pp.com/GTAPViz/" class="external-link"><img src="https://img.shields.io/badge/GTAPViz-276DC3?style=flat-square&amp;logo=r&amp;logoColor=white" alt="GTAPViz"></a></p>
+<hr>
+</div>
+<div class="section level1">
+<h1 id="update-19-oct-2025">Update (19-Oct-2025)<a class="anchor" aria-label="anchor" href="#update-19-oct-2025"></a>
+</h1>
+<ul>
+<li>
+<strong>Writing HAR files without limitations</strong> – The new <code><a href="reference/save_har.html">save_har()</a></code> function fully supports writing <code>.HAR</code> files with no size restrictions, allowing up to seven dimensions and approximately two million elements per chunk.<br>
+</li>
+<li>
+<strong>Shock calculation and HAR export</strong> – Introduced <code><a href="reference/shock_calculate_uniform.html">shock_calculate_uniform()</a></code> and <code><a href="reference/shock_calculate.html">shock_calculate()</a></code> to compute and <strong>export shock results directly into GEMPACK-compatible <code>.HAR</code> files</strong>, supporting dynamic multi-period calculations (e.g., <code>ONEY</code>, <code>TWOY</code>, <code>THRY</code>, etc.) for recursive-dynamic simulations.</li>
+</ul>
 <hr>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
@@ -104,7 +116,7 @@
 <p>HARplus (version 1.0.1) can be installed directly in R using:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"HARplus"</span><span class="op">)</span></span></code></pre></div>
-<p>While the latest HARplus (version 1.1.1) can be installed from my GitHub using:</p>
+<p>While the latest HARplus (version 1.1.2) can be installed from my GitHub using:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Bodysbobb/HARplus"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -183,7 +195,7 @@
 </ul>
 </div>
 <div class="section level3">
-<h3 id="data-saving">Data Saving<a class="anchor" aria-label="anchor" href="#data-saving"></a>
+<h3 id="data-saving-new-in-v111">Data Saving (New in v1.1.1)<a class="anchor" aria-label="anchor" href="#data-saving-new-in-v111"></a>
 </h3>
 <ul>
 <li>
@@ -207,8 +219,23 @@
 </li>
 <li>Allows <strong>dimension renaming</strong> and supports <strong>duplicate dimension names</strong> (e.g., <code>COMMxREGxREG</code>) during export</li>
 </ul>
-<hr>
 </div>
+</div>
+<div class="section level3">
+<h3 id="shock-calculation-framework-new-in-v112">Shock Calculation Framework (New in v1.1.2)<a class="anchor" aria-label="anchor" href="#shock-calculation-framework-new-in-v112"></a>
+</h3>
+<p>These functions provide a complete workflow to <strong>calculate, structure, and export GEMPACK-compatible shock files</strong> directly from <code>.HAR</code>, <code>.SL4</code>, <code>.CSV</code>, or <code>.XLSX</code> datasets—eliminating the need for manual conversion when preparing dynamic simulation shocks.</p>
+<ul>
+<li>
+<strong><code><a href="reference/shock_calculate_uniform.html">shock_calculate_uniform()</a></code></strong> – Calculates uniform percentage shocks across all base rates and <strong>exports directly to GEMPACK <code>.HAR</code> format</strong>. Supports additive (<code>+</code>, <code>-</code>) and multiplicative (<code>*</code>, <code>/</code>) adjustments.<br>
+</li>
+<li>
+<strong><code><a href="reference/shock_calculate.html">shock_calculate()</a></code></strong> – Computes target-based shocks by comparing initial and target datasets, automatically <strong>exporting the resulting shocks to <code>.HAR</code> files</strong> with dynamic timeline headers (e.g., <code>ONEY</code>, <code>TWOY</code>, <code>THRY</code>, etc.).<br>
+</li>
+<li>
+<strong><code><a href="reference/create_initial_config.html">create_initial_config()</a></code></strong>, <strong><code><a href="reference/create_target_config.html">create_target_config()</a></code></strong>, and <strong><code><a href="reference/create_calc_config.html">create_calc_config()</a></code></strong> – Define input sources, column mappings, and timeline periods for use in both uniform and target-based shock calculations.</li>
+</ul>
+<hr>
 </div>
 </div>
 <div class="section level2">
@@ -239,6 +266,7 @@ Research Assistant at GTAP</p>
 <p>Sample data used in this <a href="https://rpubs.com/Bodysbob/1273998/" class="external-link">vignette</a> is obtained from the GTAPv7 model and utilizes publicly available data from the <a href="https://www.gtap.agecon.purdue.edu/databases/archives.asp" class="external-link">GTAP 9 database</a>. For more details about the GTAP database and model, refer to the <strong><a href="https://www.gtap.agecon.purdue.edu/" class="external-link">GTAP Database</a></strong>.</p>
 </div>
 </div>
+
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
