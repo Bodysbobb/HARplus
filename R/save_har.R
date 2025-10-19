@@ -115,12 +115,12 @@
 #'
 #' # Export HAR
 #' save_har(
-#'   data_list   = list(RTMS = tax),
+#'   data_list   = list(TEST = welfare_data),
 #'   file_path   = file.path(tempdir(), "output_single.har"),
-#'   dimensions  = list(RTMS = c("COMM", "SREG", "DREG")),
-#'   value_cols  = list(RTMS = "Value"),
-#'   long_desc   = list(RTMS = "Shock RTMS"),
-#'   dim_rename  = list(RTMS = c(COMM = "COMM", SREG = "REG", DREG = "REG")),
+#'   dimensions  = list(TEST = c("COMM", "SREG", "DREG")),
+#'   value_cols  = list(TEST = "Value"),
+#'   long_desc   = list(TEST = "Shock RTMS"),
+#'   dim_rename  = list(TEST = c(COMM = "COMM", SREG = "REG", DREG = "REG.1")),
 #'   export_sets = TRUE,
 #'   dim_order   = mapping,
 #'   lowercase   = FALSE

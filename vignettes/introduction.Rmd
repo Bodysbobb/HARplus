@@ -342,11 +342,8 @@ This function is particularly useful when:
 - Accepts data frames or arrays with flexible column naming  
 - Writes associated set headers when `export_sets = TRUE`  
 - Maintains full GEMPACK binary structure with no size limitation  
-- Supports up to seven dimensions and approximately 2 million elements per chunk  
-
-**Note:**  
-To rename dimensions, first rename the corresponding column names in your data (e.g., using `dplyr::rename()` or `data.table::setnames()`).  
-Each dimension name in a `.HAR` file must be no longer than **four characters**.
+- Supports up to seven dimensions and approximately 2 million elements per chunk
+- Allows **dimension renaming** and supports **duplicate dimension names** (e.g., `COMMxREGxREG`) during export  
 
 ```{r save_har_single, eval=FALSE}
 # Load example HAR data
@@ -354,8 +351,8 @@ har_path <- system.file("extdata", "TAR10-WEL.har", package = "HARplus")
 har_data <- load_harx(har_path)
 
 # Extract one matrix for demonstration
-welfare_data <- get_data_by_var("A", har_data)
-welfare_matrix <- welfare_data[["har_data"]][["A"]]
+welfare_data <- get_data_by_var("C17", har_data)
+welfare_matrix <- welfare_data[["har_data"]][["C17"]]
 
 # Save as a single HAR file
 save_har(
@@ -364,7 +361,9 @@ save_har(
   dimensions  = list(WELF = c("REG", "COLUMN")),
   value_cols  = c(WELF = "Value"),
   long_desc   = c(WELF = "Welfare Decomposition"),
+  dim_rename  = list(RTMS = c(COMM = "COMM", SREG = "REG", DREG = "REG")),
   export_sets = TRUE,
+  dim_order   = NULL,
   lowercase   = FALSE
 )
 ```

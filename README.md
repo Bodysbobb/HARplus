@@ -10,6 +10,7 @@
 **Extensions:**  
 [![GTAPViz](https://img.shields.io/badge/GTAPViz-276DC3?style=flat-square&logo=r&logoColor=white)](https://www.pattawee-pp.com/GTAPViz/)
 
+---
 
 ## Overview
 
@@ -17,14 +18,19 @@ HARplus is an R package designed to process and analyze .HAR and .SL4 files, mak
 
 With HARplus, users can extract, restructure, and merge data seamlessly, ensuring compatibility across different tools. The processed data can be exported and used in R, Stata, Python, Julia, or any software that supports .txt, CSV, or Excel formats.
 
+---
+
 ## Key Features
 
 - **Efficient Data Extraction** – Supports selective header loading and optimized memory usage for handling large `.HAR` and `.SL4` files.  
 - **Flexible Data Structuring** – Extract variables by name or dimension patterns while ensuring consistency across multiple inputs.  
 - **Customizable Aggregation & Merging** – Manage subtotals, merge datasets, and structure data dynamically.  
 - **Multiple Export Options** – Output extracted data in CSV, Stata, RDS, and Excel formats with structured formatting.  
+- **Powerful HAR Writing** – Includes `save_har()` for exporting datasets to GEMPACK `.HAR` format with full binary compliance.  
 - **Designed for GEMPACK** – Ensures smooth integration with `.HAR` and `.SL4` files while offering additional flexibility.  
 - **Ideal for GTAP Model Users** – Built specifically to process and analyze GTAP model results efficiently.  
+
+---
 
 ## How It Works
 
@@ -35,11 +41,18 @@ HARplus simplifies `.HAR` and `.SL4` file processing. You can:
 - Pivot and export data into structured formats.
 - Filter subtotals and rename dimensions for clarity.
 
+---
+
 ## Installation
 
-HARplus (version 1.1.0) can be installed directly in R using:
+HARplus (version 1.0.1) can be installed directly in R using:
 ```r
 install.packages("HARplus")
+```
+
+While the latest HARplus (version 1.1.1) can be installed from my GitHub using:
+```r
+devtools::install_github("Bodysbobb/HARplus")
 ```
 
 ## Quick Guide to HARplus
@@ -76,6 +89,17 @@ Below is a categorized reference of the main functions in HARplus:
 ### Data Saving
 - **`save_har()`** – Saves processed data frames or arrays into GEMPACK-compatible `.HAR` files, automatically generating 1C set headers and supporting up to seven dimensions.  
 
+#### Technical Specifications
+- Supports both **1C (string)** and **RE (real)** headers  
+- Automatically generates 1C dimension sets (e.g., `REG`, `COMM`, `ENDW`)  
+- Accepts data frames or arrays with flexible column naming  
+- Writes associated set headers when `export_sets = TRUE`  
+- Maintains full GEMPACK binary structure with no size limitation  
+- Supports up to seven dimensions and approximately 2 million elements per chunk  
+- Allows **dimension renaming** and supports **duplicate dimension names** (e.g., `COMMxREGxREG`) during export  
+
+---
+
 ## License & Author  
 
 HARplus is released under the **MIT License**. See the full **[license](LICENSE)**.  
@@ -86,13 +110,19 @@ Ph.D. Candidate, Agricultural Economics
 Purdue University  
 Research Assistant at GTAP  
 
+---
+
 ## Acknowledgements
 
 Acknowledgement is due to **Maros Ivanic** for his work on the `HARr` package, which served as the foundation for HARplus. This package would not have been possible without his contributions.
 
+---
+
 ## GTAPViz: An Extension of HARplus for Visualization
 
 I have developed another package specifically for visualization, particularly for GTAP users: **[GTAPViz](https://www.pattawee-pp.com/GTAPViz/)**
+
+---
 
 ## GTAP Database
 
