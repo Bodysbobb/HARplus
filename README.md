@@ -1,6 +1,6 @@
 # HARplus: Enhanced R Package for GEMPACK .har and .sl4 Files
 [![Author](https://img.shields.io/badge/Pattawee.P-blue?label=Author)](https://www.pattawee-pp.com/)
-![Last Updated](https://img.shields.io/github/last-commit/Bodysbobb/GTAPViz?label=Last%20Updated&color=blue) 
+![Last Updated](https://img.shields.io/github/last-commit/Bodysbobb/HARplus?label=Last%20Updated&color=blue) 
 [![Star](https://img.shields.io/github/stars/Bodysbobb/HARplus?style=social)](https://github.com/Bodysbobb/HARplus/stargazers)
 
 [![CRAN](https://www.r-pkg.org/badges/version/HARplus)](https://CRAN.R-project.org/package=HARplus)
