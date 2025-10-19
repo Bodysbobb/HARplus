@@ -100,31 +100,9 @@
 #'   dim_order   = mapping,
 #'   lowercase   = FALSE
 #' )
-#'
-#' # Example 4: Rename dimensions with duplicate names (COMMxREGxREG)
-#' tax_data <- welfare_data[["C17"]]
-#' names(tax_data)[names(tax_data) == "REG"] <- "SREG"
-#' tax_data$DREG <- tax_data$SREG
 #' 
-#' mapping <- list(
-#'   COMM = c("Wheat", "Rice", "Corn"),
-#'   REG  = c("USA", "EU", "CHN")
-#' )
-#'
-#' save_har(
-#'   data_list   = list(RTMS = tax_data),
-#'   file_path   = file.path(tempdir(), "output_renamed.har"),
-#'   dimensions  = list(RTMS = c("COLUMN", "SREG", "DREG")),
-#'   value_cols  = list(RTMS = "Value"),
-#'   long_desc   = list(RTMS = "Tariff rates"),
-#'   dim_rename  = list(RTMS = c(COLUMN = "COMM", SREG = "REG", DREG = "REG")),
-#'   export_sets = TRUE,
-#'   dim_order   = mapping,
-#'   lowercase   = FALSE
-#' )
-#' 
-#' # Example 5: Exporting HAR file using custom dimension mapping
-#'
+#' # Example 4: Exporting HAR file using custom dimension mapping 
+#' # e.g., COMMxREGxREG
 #' har_path <- system.file("extdata", "TAR10-WEL.har", package = "HARplus")
 #' har_data <- load_harx(har_path)
 #' welfare_data <- get_data_by_var("C17", har_data)
