@@ -11,7 +11,8 @@ shock_calculate(
   output_path,
   long_desc = "Calculated shock values",
   dim_order = NULL,
-  lowercase = FALSE
+  lowercase = FALSE,
+  new_baseline = FALSE
 )
 }
 \arguments{
@@ -47,6 +48,10 @@ shock_calculate(
 }}
 
 \item{lowercase}{Logical; if TRUE, converts dimension elements to lowercase. Default is FALSE.}
+
+\item{new_baseline}{Logical; if TRUE, generates an additional HAR file with the new baseline rates
+(target values where available, initial values otherwise). The output file will have "_baseline"
+appended to the filename. Default is FALSE.}
 }
 \value{
 Invisibly returns a list containing summary metadata:
@@ -55,6 +60,7 @@ Invisibly returns a list containing summary metadata:
 \item \code{n_included}: records included in shock computation
 \item \code{n_excluded}: records excluded by configuration
 \item \code{output_path}: normalized path to output HAR file
+\item \code{baseline_path}: normalized path to baseline file (if new_baseline = TRUE)
 }
 }
 \description{
@@ -69,10 +75,11 @@ automatically aligns dimensions across datasets and exports results in HAR forma
 \item Compatible with HAR, SL4, CSV, or XLSX input formats
 \item Excludes self-trade or specified region-sector pairs when configured
 \item Exports results as multi-header HAR file (one header per timeline period)
+\item Optionally generates new baseline rate file showing post-adjustment values
 }
 }
 \examples{
-# Example 1: Target-Based Shock Calculation
+# Example 1: Target-Based Shock Calculation with New Baseline
 har_path <- system.file("extdata", "baserate.har", package = "HARplus")
 
 # Sorting Column
@@ -102,12 +109,14 @@ calc <- create_calc_config(
 )
 
 # Compute Shock Based on Initial and Target Values
+# Also generate new baseline file
 shock_calculate(
   initial_config = initial,
   target_config  = target,
   calc_config    = calc,
   output_path    = file.path(tempdir(), "output_target.har"),
-  dim_order      = mapping
+  dim_order      = mapping,
+  new_baseline   = TRUE
 )
 }
 \seealso{

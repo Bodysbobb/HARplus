@@ -149,6 +149,7 @@ create_calc_config <- function(column_mapping = NULL, timeline = 1,
 #' - Handles multiple time periods as defined by `timeline` in \code{calc_config}
 #' - Excludes self-trade or specified region/sector pairs if configured
 #' - Outputs results as multi-header HAR file (one per timeline period)
+#' - Optionally generates new baseline rate file showing post-adjustment values
 #'
 #' @param initial_config A list created by \code{\link{create_initial_config}}, defining:
 #'    - Input file path, format, and variable header
@@ -172,12 +173,16 @@ create_calc_config <- function(column_mapping = NULL, timeline = 1,
 #'    - a named list defining preferred order per dimension
 #'    - a data frame or path to Excel/CSV with explicit order definitions
 #' @param lowercase Logical; if TRUE, converts all dimension elements to lowercase. Default is FALSE.
+#' @param new_baseline Logical; if TRUE, generates an additional HAR file with the new baseline rates
+#'    (target values where available, initial values otherwise). The output file will have "_baseline"
+#'    appended to the filename. Default is FALSE.
 #'
 #' @return Invisibly returns a list containing summary metadata:
 #'    - \code{n_observations}: total records processed
 #'    - \code{n_included}: records included in shock computation
 #'    - \code{n_excluded}: records excluded by configuration
 #'    - \code{output_path}: normalized path to the generated HAR file
+#'    - \code{baseline_path}: normalized path to baseline file (if new_baseline = TRUE)
 #'
 #' @author Pattawee Puangchit
 #'
@@ -187,7 +192,7 @@ create_calc_config <- function(column_mapping = NULL, timeline = 1,
 #' @export
 #'
 #' @examples
-#' # Example 1: Uniform Shock (50% Reduction)
+#' # Example 1: Uniform Shock (50% Reduction) with New Baseline
 #' har_path <- system.file("extdata", "baserate.har", package = "HARplus")
 #'
 #' # Sorting Column
@@ -209,18 +214,20 @@ create_calc_config <- function(column_mapping = NULL, timeline = 1,
 #' )
 #'
 #' # Compute Uniform 50% Reduction (Value_tar = Value_ini * 0.5)
+#' # Also generate new baseline file showing the adjusted rates
 #' shock_calculate_uniform(
 #'   initial_config     = initial,
 #'   adjustment_value   = 0.5,
 #'   calculation_method = "*",
 #'   calc_config        = calc,
 #'   output_path        = file.path(tempdir(), "output_uniform.har"),
-#'   dim_order          = mapping
+#'   dim_order          = mapping,
+#'   new_baseline       = TRUE
 #' )
 shock_calculate_uniform <- function(initial_config, adjustment_value, 
                                     calculation_method = "*", calc_config,
                                     output_path, long_desc = "Uniform shock adjustment",
-                                    dim_order = NULL, lowercase = FALSE) {
+                                    dim_order = NULL, lowercase = FALSE, new_baseline = FALSE) {
   
   if (!calculation_method %in% c("+", "-", "*", "/")) {
     stop("calculation_method must be one of: '+', '-', '*', '/'")
@@ -288,12 +295,12 @@ shock_calculate_uniform <- function(initial_config, adjustment_value,
     
     Value_ini <- shock_df[[initial_config$value_col]]
     
-    # UPDATED: Addition and subtraction now work as percentage points
+    # Calculate target values
     Value_tar <- switch(calculation_method,
-                        "+" = Value_ini + adjustment_value,  # Percentage point addition
-                        "-" = Value_ini - adjustment_value,  # Percentage point subtraction
-                        "*" = Value_ini * adjustment_value,  # Multiplicative adjustment
-                        "/" = Value_ini / adjustment_value   # Division adjustment
+                        "+" = Value_ini + adjustment_value,
+                        "-" = Value_ini - adjustment_value,
+                        "*" = Value_ini * adjustment_value,
+                        "/" = Value_ini / adjustment_value
     )
     
     # Calculate compound shock using power-of-tax formula
@@ -349,11 +356,67 @@ shock_calculate_uniform <- function(initial_config, adjustment_value,
     dim_order = processed_dim_order
   )
   
+  # Generate new baseline file if requested
+  if (new_baseline) {
+    baseline_path <- sub("\\.har$", "_baseline.har", output_path, ignore.case = TRUE)
+    if (baseline_path == output_path) {
+      baseline_path <- paste0(tools::file_path_sans_ext(output_path), "_baseline.har")
+    }
+    
+    # Create single baseline dataframe (not time-dependent)
+    baseline_df <- initial_df
+    
+    Value_ini <- baseline_df[[initial_config$value_col]]
+    
+    # Calculate new baseline rates (target values)
+    Value_tar <- switch(calculation_method,
+                        "+" = Value_ini + adjustment_value,
+                        "-" = Value_ini - adjustment_value,
+                        "*" = Value_ini * adjustment_value,
+                        "/" = Value_ini / adjustment_value
+    )
+    
+    # For new baseline, use target value where included, initial value where excluded
+    baseline_df$Value <- ifelse(keep_mask, Value_tar, Value_ini)
+    baseline_df$Value[is.na(baseline_df$Value)] <- Value_ini[is.na(baseline_df$Value)]
+    baseline_df$Value[is.infinite(baseline_df$Value)] <- Value_ini[is.infinite(baseline_df$Value)]
+    
+    keep_cols <- c(dim_cols, "Value")
+    if ("Subtotal" %in% names(baseline_df)) keep_cols <- c(keep_cols, "Subtotal")
+    
+    # Single header using initial header name
+    baseline_header <- toupper(substr(initial_config$header, 1, 4))
+    baseline_list <- list()
+    baseline_list[[baseline_header]] <- baseline_df[, keep_cols, drop = FALSE]
+    
+    baseline_dimension_list <- list()
+    baseline_dimension_list[[baseline_header]] <- setdiff(names(baseline_list[[baseline_header]]), c("Value", "Subtotal"))
+    
+    baseline_dim_rename <- list()
+    dims <- baseline_dimension_list[[baseline_header]]
+    baseline_dim_rename[[baseline_header]] <- setNames(gsub("\\.\\d+$", "", dims), dims)
+    
+    save_har(
+      data_list = baseline_list,
+      file_path = baseline_path,
+      dimensions = baseline_dimension_list,
+      value_cols = setNames("Value", baseline_header),
+      long_desc = setNames("New baseline rates", baseline_header),
+      dim_rename = baseline_dim_rename,
+      export_sets = TRUE,
+      lowercase = lowercase,
+      dim_order = processed_dim_order
+    )
+    
+    message(sprintf("\nGenerated new baseline file: %s", normalizePath(baseline_path)))
+  }
+  
   invisible(list(
     n_observations = nrow(initial_df),
     n_included = sum(keep_mask),
     n_excluded = sum(!keep_mask),
-    output_path = normalizePath(output_path)
+    output_path = normalizePath(output_path),
+    baseline_path = if(new_baseline) normalizePath(baseline_path) else NULL
   ))
 }
 
@@ -370,6 +433,7 @@ shock_calculate_uniform <- function(initial_config, adjustment_value,
 #' - Compatible with HAR, SL4, CSV, or XLSX input formats
 #' - Excludes self-trade or specified region-sector pairs when configured
 #' - Exports results as multi-header HAR file (one header per timeline period)
+#' - Optionally generates new baseline rate file showing post-adjustment values
 #'
 #' @param initial_config A list created by \code{\link{create_initial_config}}, defining:
 #'    - Input path, file format, and variable header for the initial dataset
@@ -389,12 +453,16 @@ shock_calculate_uniform <- function(initial_config, adjustment_value,
 #'    - a named list defining order for each dimension (e.g., REG, COMM)
 #'    - a data frame or path to Excel/CSV file containing order definitions
 #' @param lowercase Logical; if TRUE, converts dimension elements to lowercase. Default is FALSE.
+#' @param new_baseline Logical; if TRUE, generates an additional HAR file with the new baseline rates
+#'    (target values where available, initial values otherwise). The output file will have "_baseline"
+#'    appended to the filename. Default is FALSE.
 #'
 #' @return Invisibly returns a list containing summary metadata:
 #'    - \code{n_observations}: total records processed
 #'    - \code{n_included}: records included in shock computation
 #'    - \code{n_excluded}: records excluded by configuration
 #'    - \code{output_path}: normalized path to output HAR file
+#'    - \code{baseline_path}: normalized path to baseline file (if new_baseline = TRUE)
 #'
 #' @author Pattawee Puangchit
 #'
@@ -404,7 +472,7 @@ shock_calculate_uniform <- function(initial_config, adjustment_value,
 #' @export
 #'
 #' @examples
-#' # Example 1: Target-Based Shock Calculation
+#' # Example 1: Target-Based Shock Calculation with New Baseline
 #' har_path <- system.file("extdata", "baserate.har", package = "HARplus")
 #'
 #' # Sorting Column
@@ -434,16 +502,18 @@ shock_calculate_uniform <- function(initial_config, adjustment_value,
 #' )
 #'
 #' # Compute Shock Based on Initial and Target Values
+#' # Also generate new baseline file
 #' shock_calculate(
 #'   initial_config = initial,
 #'   target_config  = target,
 #'   calc_config    = calc,
 #'   output_path    = file.path(tempdir(), "output_target.har"),
-#'   dim_order      = mapping
+#'   dim_order      = mapping,
+#'   new_baseline   = TRUE
 #' )
 shock_calculate <- function(initial_config, target_config, calc_config,
                             output_path, long_desc = "Calculated shock values",
-                            dim_order = NULL, lowercase = FALSE) {
+                            dim_order = NULL, lowercase = FALSE, new_baseline = FALSE) {
   
   if (is.null(calc_config$column_mapping)) {
     stop("column_mapping is required for target file shocks")
@@ -585,11 +655,58 @@ shock_calculate <- function(initial_config, target_config, calc_config,
     dim_order = processed_dim_order
   )
   
+  # Generate new baseline file if requested
+  if (new_baseline) {
+    baseline_path <- sub("\\.har$", "_baseline.har", output_path, ignore.case = TRUE)
+    if (baseline_path == output_path) {
+      baseline_path <- paste0(tools::file_path_sans_ext(output_path), "_baseline.har")
+    }
+    
+    # Create single baseline dataframe (not time-dependent)
+    baseline_df <- merged_df
+    
+    # For new baseline, use target value where available and included, initial value otherwise
+    baseline_df$Value <- ifelse(keep_mask & !is.na(baseline_df$Value_tar), 
+                                baseline_df$Value_tar, 
+                                baseline_df$Value_ini)
+    baseline_df$Value[is.na(baseline_df$Value)] <- baseline_df$Value_ini[is.na(baseline_df$Value)]
+    baseline_df$Value[is.infinite(baseline_df$Value)] <- baseline_df$Value_ini[is.infinite(baseline_df$Value)]
+    
+    keep_cols <- c(initial_cols, "Value")
+    
+    # Single header using initial header name
+    baseline_header <- toupper(substr(initial_config$header, 1, 4))
+    baseline_list <- list()
+    baseline_list[[baseline_header]] <- baseline_df[, keep_cols, drop = FALSE]
+    
+    baseline_dimension_list <- list()
+    baseline_dimension_list[[baseline_header]] <- setdiff(names(baseline_list[[baseline_header]]), c("Value", "Subtotal"))
+    
+    baseline_dim_rename <- list()
+    dims <- baseline_dimension_list[[baseline_header]]
+    baseline_dim_rename[[baseline_header]] <- setNames(gsub("\\.\\d+$", "", dims), dims)
+    
+    save_har(
+      data_list = baseline_list,
+      file_path = baseline_path,
+      dimensions = baseline_dimension_list,
+      value_cols = setNames("Value", baseline_header),
+      long_desc = setNames("New baseline rates", baseline_header),
+      dim_rename = baseline_dim_rename,
+      export_sets = TRUE,
+      lowercase = lowercase,
+      dim_order = processed_dim_order
+    )
+    
+    message(sprintf("\nGenerated new baseline file: %s", normalizePath(baseline_path)))
+  }
+  
   invisible(list(
     n_observations = nrow(merged_df),
     n_included = sum(keep_mask),
     n_excluded = sum(!keep_mask),
-    output_path = normalizePath(output_path)
+    output_path = normalizePath(output_path),
+    baseline_path = if(new_baseline) normalizePath(baseline_path) else NULL
   ))
 }
 

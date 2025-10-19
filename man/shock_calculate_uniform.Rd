@@ -12,7 +12,8 @@ shock_calculate_uniform(
   output_path,
   long_desc = "Uniform shock adjustment",
   dim_order = NULL,
-  lowercase = FALSE
+  lowercase = FALSE,
+  new_baseline = FALSE
 )
 }
 \arguments{
@@ -55,6 +56,10 @@ shock_calculate_uniform(
 }}
 
 \item{lowercase}{Logical; if TRUE, converts all dimension elements to lowercase. Default is FALSE.}
+
+\item{new_baseline}{Logical; if TRUE, generates an additional HAR file with the new baseline rates
+(target values where available, initial values otherwise). The output file will have "_baseline"
+appended to the filename. Default is FALSE.}
 }
 \value{
 Invisibly returns a list containing summary metadata:
@@ -63,6 +68,7 @@ Invisibly returns a list containing summary metadata:
 \item \code{n_included}: records included in shock computation
 \item \code{n_excluded}: records excluded by configuration
 \item \code{output_path}: normalized path to the generated HAR file
+\item \code{baseline_path}: normalized path to baseline file (if new_baseline = TRUE)
 }
 }
 \description{
@@ -78,10 +84,11 @@ multiplicative adjustments, single or multi-period configurations, and direct HA
 \item Handles multiple time periods as defined by \code{timeline} in \code{calc_config}
 \item Excludes self-trade or specified region/sector pairs if configured
 \item Outputs results as multi-header HAR file (one per timeline period)
+\item Optionally generates new baseline rate file showing post-adjustment values
 }
 }
 \examples{
-# Example 1: Uniform Shock (50\% Reduction)
+# Example 1: Uniform Shock (50\% Reduction) with New Baseline
 har_path <- system.file("extdata", "baserate.har", package = "HARplus")
 
 # Sorting Column
@@ -103,13 +110,15 @@ calc <- create_calc_config(
 )
 
 # Compute Uniform 50\% Reduction (Value_tar = Value_ini * 0.5)
+# Also generate new baseline file showing the adjusted rates
 shock_calculate_uniform(
   initial_config     = initial,
   adjustment_value   = 0.5,
   calculation_method = "*",
   calc_config        = calc,
   output_path        = file.path(tempdir(), "output_uniform.har"),
-  dim_order          = mapping
+  dim_order          = mapping,
+  new_baseline       = TRUE
 )
 }
 \seealso{
