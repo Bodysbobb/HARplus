@@ -37,7 +37,7 @@ HARplus simplifies `.HAR` and `.SL4` file processing. You can:
 
 ## Installation
 
-HARplus (version 1.0.1) can be installed directly in R using:
+HARplus (version 1.1.0) can be installed directly in R using:
 ```r
 install.packages("HARplus")
 ```
@@ -72,6 +72,9 @@ Below is a categorized reference of the main functions in HARplus:
 
 ### Data Export
 - **`export_data()`** – Exports extracted data to CSV, Stata, TXT, RDS, or XLSX, with support for multi-sheet exports.
+
+### Data Saving
+- **`save_har()`** – Saves processed data frames or arrays into GEMPACK-compatible `.HAR` files, automatically generating 1C set headers and supporting up to seven dimensions.  
 
 ## License & Author  
 

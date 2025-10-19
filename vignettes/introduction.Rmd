@@ -328,6 +328,48 @@ renamed_both <- rename_dims(sl4_data1, mapping_df, rename_list_names = TRUE)
 The mapping dataframe must have two columns: the first for current names and the second for new names. The function preserves data structure while updating dimension labels according to the specified mapping.
 
 
+# Saving Data to GEMPACK `.HAR` Format
+
+This function is particularly useful when:
+- Creating custom HAR files for simulation inputs or aggregated datasets  
+- Converting R-based results into GEMPACK-readable format  
+- Exporting modified or merged results from GTAP-style models for use in RunDynam or RunGTAP
+
+## Key Features
+
+- Supports both **1C (string)** and **RE (real)** headers  
+- Automatically generates 1C dimension sets (e.g., `REG`, `COMM`, `ENDW`)  
+- Accepts data frames or arrays with flexible column naming  
+- Writes associated set headers when `export_sets = TRUE`  
+- Maintains full GEMPACK binary structure with no size limitation  
+- Supports up to seven dimensions and approximately 2 million elements per chunk  
+
+**Note:**  
+To rename dimensions, first rename the corresponding column names in your data (e.g., using `dplyr::rename()` or `data.table::setnames()`).  
+Each dimension name in a `.HAR` file must be no longer than **four characters**.
+
+```{r save_har_single, eval=FALSE}
+# Load example HAR data
+har_path <- system.file("extdata", "TAR10-WEL.har", package = "HARplus")
+har_data <- load_harx(har_path)
+
+# Extract one matrix for demonstration
+welfare_data <- get_data_by_var("A", har_data)
+welfare_matrix <- welfare_data[["har_data"]][["A"]]
+
+# Save as a single HAR file
+save_har(
+  data_list   = list(WELF = welfare_matrix),
+  file_path   = file.path(tempdir(), "output_single.har"),
+  dimensions  = list(WELF = c("REG", "COLUMN")),
+  value_cols  = c(WELF = "Value"),
+  long_desc   = c(WELF = "Welfare Decomposition"),
+  export_sets = TRUE,
+  lowercase   = FALSE
+)
+```
+
+
 # Exporting Data to CSV/STATA/TEXT/RDS/XLSX
 
 The `export_data` function allows you to export SL4 and HAR data into various formats. Supported formats include: `"csv"`, `"xlsx"`, `"stata"`, `"txt"`, and `"rds"`. You can export single data frames or multi-variable results while preserving their structure.

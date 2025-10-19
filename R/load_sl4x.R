@@ -110,7 +110,11 @@ load_sl4x <- function(file_path, lowercase = FALSE, select_header = NULL) {
       if (!is.null(solution$PSHK) && !is.null(solution$SHOC) && solution$PSHK[v] == 1) {
         shock_values <- solution$SHOC[shoc_row:(shoc_row + solution$OREX[v] - 1), 1]
         for (st_idx in seq_along(stHeaders)) {
-          results[[solution$VARS[v]]][, st_idx] <- shock_values
+          if (length(dim(results[[solution$VARS[v]]])) == 2) {
+            results[[solution$VARS[v]]][, st_idx] <- shock_values
+          } else {
+            results[[solution$VARS[v]]][st_idx] <- shock_values[1]
+          }
         }
         shoc_row <- shoc_row + solution$OREX[v]
       } else {
