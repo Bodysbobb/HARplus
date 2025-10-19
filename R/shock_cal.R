@@ -288,13 +288,15 @@ shock_calculate_uniform <- function(initial_config, adjustment_value,
     
     Value_ini <- shock_df[[initial_config$value_col]]
     
+    # UPDATED: Addition and subtraction now work as percentage points
     Value_tar <- switch(calculation_method,
-                        "+" = Value_ini + adjustment_value,
-                        "-" = Value_ini - adjustment_value,
-                        "*" = Value_ini * adjustment_value,
-                        "/" = Value_ini / adjustment_value
+                        "+" = Value_ini + adjustment_value,  # Percentage point addition
+                        "-" = Value_ini - adjustment_value,  # Percentage point subtraction
+                        "*" = Value_ini * adjustment_value,  # Multiplicative adjustment
+                        "/" = Value_ini / adjustment_value   # Division adjustment
     )
     
+    # Calculate compound shock using power-of-tax formula
     denominator <- 1 + Value_ini/100
     shock_df$Value <- ifelse(abs(denominator) < 1e-10, 0,
                              100 * (((1 + Value_tar/100) / denominator)^(1/period) - 1))
