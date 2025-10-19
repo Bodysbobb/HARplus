@@ -1,5 +1,5 @@
 # HARplus: Enhanced R Package for GEMPACK .har and .sl4 Files
-[![Author](https://img.shields.io/badge/Pattawee.P-blue?label=Author)](https://bodysbobb.github.io/)
+[![Author](https://img.shields.io/badge/Pattawee.P-blue?label=Author)](https://www.pattawee-pp.com/)
 ![Last Updated](https://img.shields.io/github/last-commit/Bodysbobb/GTAPViz?label=Last%20Updated&color=blue) 
 [![Star](https://img.shields.io/github/stars/Bodysbobb/HARplus?style=social)](https://github.com/Bodysbobb/HARplus/stargazers)
 
@@ -8,7 +8,7 @@
 ![License](https://img.shields.io/github/license/Bodysbobb/HARplus?color=3CB371)
 
 **Extensions:**  
-[![GTAPViz](https://img.shields.io/badge/GTAPViz-276DC3?style=flat-square&logo=r&logoColor=white)](https://bodysbobb.github.io/GTAPViz/)
+[![GTAPViz](https://img.shields.io/badge/GTAPViz-276DC3?style=flat-square&logo=r&logoColor=white)](https://www.pattawee-pp.com/GTAPViz/)
 
 
 ## Overview
@@ -44,7 +44,7 @@ install.packages("HARplus")
 
 ## Quick Guide to HARplus
 
-All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[Vignette](https://rpubs.com/Bodysbob/1273998/)** or **[GitHub Vignette](https://bodysbobb.github.io/HARplus/)**
+All commands in this package have several options that allow users to play around with the data more freely and efficiently, not just import and get the data. For a complete guide on HARplus functions, check out the **[Vignette](https://rpubs.com/Bodysbob/1273998/)** or **[GitHub Vignette](https://www.pattawee-pp.com/HARplus/)**
 
 Below is a categorized reference of the main functions in HARplus:
 
