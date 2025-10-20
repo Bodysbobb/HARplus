@@ -93,7 +93,7 @@ Below is a categorized reference of the main functions in HARplus:
 ### Data Export
 - **`export_data()`** – Exports extracted data to CSV, Stata, TXT, RDS, or XLSX, with support for multi-sheet exports.
 
-### Data Saving (New in v1.1.1)
+### HAR Exporting (New in v1.1.1)
 - **`save_har()`** – Saves processed data frames or arrays into GEMPACK-compatible `.HAR` files, automatically generating 1C set headers and supporting up to seven dimensions.  
 
 #### Technical Specifications
@@ -103,7 +103,7 @@ Below is a categorized reference of the main functions in HARplus:
 - Writes associated set headers when `export_sets = TRUE`  
 - Maintains full GEMPACK binary structure with no size limitation  
 - Supports up to seven dimensions and approximately 2 million elements per chunk  
-- Allows **dimension renaming** and supports **duplicate dimension names** (e.g., `COMMxREGxREG`) during export  
+- Allows **dimension renaming** and supports **duplicate dimension names** (e.g., `COMMxREGxREG`) during export (New in v1.1.2)  
 
 ### Shock Calculation Framework (New in v1.1.2)
 These functions provide a complete workflow to **calculate, structure, and export GEMPACK-compatible shock files** directly from `.HAR`, `.SL4`, `.CSV`, or `.XLSX` datasets—eliminating the need for manual conversion when preparing dynamic simulation shocks.
