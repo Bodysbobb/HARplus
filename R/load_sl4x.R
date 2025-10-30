@@ -105,19 +105,35 @@ load_sl4x <- function(file_path, lowercase = FALSE, select_header = NULL) {
   zero_indices <- which(partials == FALSE & solution$PCUM == 0)
   
   if (length(zero_indices) > 0) {
-    shoc_row <- 1
-    for (v in zero_indices) {
-      if (!is.null(solution$PSHK) && !is.null(solution$SHOC) && solution$PSHK[v] == 1) {
-        shock_values <- solution$SHOC[shoc_row:(shoc_row + solution$OREX[v] - 1), 1]
-        for (st_idx in seq_along(stHeaders)) {
-          if (length(dim(results[[solution$VARS[v]]])) == 2) {
-            results[[solution$VARS[v]]][, st_idx] <- shock_values
+    has_valid_shoc <- !is.null(solution$SHOC) && 
+      !is.null(solution$PSHK) && 
+      is.matrix(solution$SHOC) && 
+      nrow(solution$SHOC) > 0
+    
+    if (has_valid_shoc) {
+      shoc_row <- 1
+      for (v in zero_indices) {
+        if (solution$PSHK[v] == 1) {
+          end_row <- shoc_row + solution$OREX[v] - 1
+          if (end_row <= nrow(solution$SHOC)) {
+            shock_values <- solution$SHOC[shoc_row:end_row, 1]
+            for (st_idx in seq_along(stHeaders)) {
+              if (length(dim(results[[solution$VARS[v]]])) == 2) {
+                results[[solution$VARS[v]]][, st_idx] <- shock_values
+              } else {
+                results[[solution$VARS[v]]][st_idx] <- shock_values[1]
+              }
+            }
+            shoc_row <- shoc_row + solution$OREX[v]
           } else {
-            results[[solution$VARS[v]]][st_idx] <- shock_values[1]
+            results[[solution$VARS[v]]][] <- 0
           }
+        } else {
+          results[[solution$VARS[v]]][] <- 0
         }
-        shoc_row <- shoc_row + solution$OREX[v]
-      } else {
+      }
+    } else {
+      for (v in zero_indices) {
         results[[solution$VARS[v]]][] <- 0
       }
     }
