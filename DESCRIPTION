@@ -13,7 +13,7 @@ Description: Provides tools for processing and analyzing .har and .sl4 files, ma
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 BugReports: https://github.com/bodysbobb/HARplus/issues/
 URL: https://github.com/bodysbobb/HARplus/, https://www.pattawee-pp.com/HARplus/
 Imports:
