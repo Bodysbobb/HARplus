@@ -156,7 +156,16 @@ load_harplus <- function(con, coefAsname = FALSE, lowercase = TRUE, select_heade
         contents <- contents[1:expected_length]
       }
       
-      m <- matrix(strsplit(rawToChar(contents), '')[[1]], 
+      char_vector <- strsplit(rawToChar(contents), '')[[1]]
+      char_length <- length(char_vector)
+      
+      if (char_length < expected_length) {
+        char_vector <- c(char_vector, rep(' ', expected_length - char_length))
+      } else if (char_length > expected_length) {
+        char_vector <- char_vector[1:expected_length]
+      }
+      
+      m <- matrix(char_vector, 
                   nrow = headers[[h]]$dimensions[2], 
                   ncol = headers[[h]]$dimensions[1])
       
@@ -194,8 +203,17 @@ load_harplus <- function(con, coefAsname = FALSE, lowercase = TRUE, select_heade
       headers[[h]]$coefficient <- rawToChar(headers[[h]]$records[[3]][17:28])
       
       if (headers[[h]]$usedDimensions > 0) {
-        dnames <- matrix(strsplit(rawToChar(headers[[h]]$records[[3]][33:(33 + headers[[h]]$usedDimensions * 12 - 1)]), '')[[1]],
-                         nrow = 12)
+        raw_bytes <- headers[[h]]$records[[3]][33:(33 + headers[[h]]$usedDimensions * 12 - 1)]
+        char_vector <- strsplit(rawToChar(raw_bytes), '')[[1]]
+        expected_len <- headers[[h]]$usedDimensions * 12
+        
+        if (length(char_vector) < expected_len) {
+          char_vector <- c(char_vector, rep(' ', expected_len - length(char_vector)))
+        } else if (length(char_vector) > expected_len) {
+          char_vector <- char_vector[1:expected_len]
+        }
+        
+        dnames <- matrix(char_vector, nrow = 12)
         dnames <- apply(dnames, 2, paste, collapse = '')
         
         actualDimsNames <- headers[[h]]$records[[3]][(33 + headers[[h]]$usedDimensions * 12) + 0:6] == 0x6b
@@ -205,8 +223,17 @@ load_harplus <- function(con, coefAsname = FALSE, lowercase = TRUE, select_heade
         if (length(uniqueDimNames) > 0) {
           for (d in seq_along(uniqueDimNames)) {
             nele <- readBin(headers[[h]]$records[[3 + d]][13:16], 'integer', size = 4)
-            m <- matrix(strsplit(rawToChar(headers[[h]]$records[[3 + d]][17:(17 + nele * 12 - 1)]), '')[[1]],
-                        nrow = 12)
+            raw_bytes <- headers[[h]]$records[[3 + d]][17:(17 + nele * 12 - 1)]
+            char_vector <- strsplit(rawToChar(raw_bytes), '')[[1]]
+            expected_len <- nele * 12
+            
+            if (length(char_vector) < expected_len) {
+              char_vector <- c(char_vector, rep(' ', expected_len - length(char_vector)))
+            } else if (length(char_vector) > expected_len) {
+              char_vector <- char_vector[1:expected_len]
+            }
+            
+            m <- matrix(char_vector, nrow = 12)
             
             for (dd in which(dnames == uniqueDimNames[d])) {
               dimNames[[dd]] <- trimws(apply(m, 2, paste, collapse = ''))
