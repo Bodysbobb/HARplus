@@ -146,6 +146,16 @@ load_harplus <- function(con, coefAsname = FALSE, lowercase = TRUE, select_heade
       contents <- Reduce(function(a, f) c(a, f[17:length(f)]), 
                          headers[[h]]$records[3:length(headers[[h]]$records)], c())
       contents[contents == 0x00] <- as.raw(0x20)
+      
+      expected_length <- headers[[h]]$dimensions[1] * headers[[h]]$dimensions[2]
+      actual_length <- length(contents)
+      
+      if (actual_length < expected_length) {
+        contents <- c(contents, rep(as.raw(0x20), expected_length - actual_length))
+      } else if (actual_length > expected_length) {
+        contents <- contents[1:expected_length]
+      }
+      
       m <- matrix(strsplit(rawToChar(contents), '')[[1]], 
                   nrow = headers[[h]]$dimensions[2], 
                   ncol = headers[[h]]$dimensions[1])
