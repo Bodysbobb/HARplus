@@ -5,7 +5,7 @@
 
 [![CRAN](https://www.r-pkg.org/badges/version/HARplus)](https://CRAN.R-project.org/package=HARplus)
 [![GitHub Version](https://img.shields.io/github/v/tag/Bodysbobb/HARplus?label=GitHub%20Version&color=3CB371&sort=semver)](https://github.com/Bodysbobb/HARplus/releases/latest)
-![License](https://img.shields.io/github/license/Bodysbobb/HARplus?color=3CB371)
+[![License](https://img.shields.io/github/license/Bodysbobb/HARplus?color=3CB371)](https://github.com/Bodysbobb/HARplus/blob/main/LICENSE.md/)
 
 **Extensions:**  
 [![GTAPViz](https://img.shields.io/badge/GTAPViz-276DC3?style=flat-square&logo=r&logoColor=white)](https://www.pattawee-pp.com/GTAPViz/)
@@ -52,12 +52,12 @@ HARplus simplifies `.HAR` and `.SL4` file processing. You can:
 
 ## Installation
 
-HARplus (version 1.0.1) can be installed directly in R using:
+HARplus (version 1.1.2) can be installed directly in R using:
 ```r
 install.packages("HARplus")
 ```
 
-While the latest HARplus (version 1.1.2) can be installed from my GitHub using:
+While the latest HARplus (version 1.1.3) can be installed from my GitHub using:
 ```r
 devtools::install_github("Bodysbobb/HARplus")
 ```
