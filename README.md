@@ -116,7 +116,7 @@ These functions provide a complete workflow to **calculate, structure, and expor
 
 ## License & Author  
 
-HARplus is released under the **MIT License**. See the full **[license](LICENSE)**.  
+HARplus is released under the **MIT License**. See the full **[license](https://github.com/Bodysbobb/HARplus/blob/main/LICENSE.md)**.  
 
 **Author:**  
 **Pattawee Puangchit**  
