@@ -128,7 +128,7 @@ Research Assistant at GTAP
 
 ## Acknowledgements
 
-Acknowledgement is due to **Maros Ivanic** for his work on the `HARr` package, which served as the foundation for HARplus. This package would not have been possible without his contributions.
+Acknowledgement is due to **Maros Ivanic** for his work on the [`HARr`](https://github.com/USDA-REE-ERS/MTED-HARr/) package, which served as the foundation for HARplus. This package would not have been possible without his contributions.
 
 ---
 
