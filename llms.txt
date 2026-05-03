@@ -114,7 +114,7 @@ using:
 
 ``` r
 
-devtools::install_github("Bodysbobb/HARplus")
+pak::pak("Bodysbobb/HARplus")
 ```
 
 ## Quick Guide to HARplus
