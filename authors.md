@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/bodysbobb/HARplus/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/bodysbobb/HARplus/blob/V1.2.0/DESCRIPTION)
 
 Puangchit P (2026). *HARplus: Enhanced R Package for 'GEMPACK' .har and
 .sl4 Files*. R package version 1.2.0,

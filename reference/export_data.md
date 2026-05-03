@@ -111,10 +111,10 @@ export_data(data_multiple, file.path(tempdir(), "output_directory"),
            format = c("csv", "xlsx", "stata", "txt", "rds"),
            create_subfolder = TRUE,
            multi_sheet_xlsx = TRUE)
-#> Exported 2 file(s) to csv format in /tmp/RtmpLK60cu/output_directory/csv
-#> Exported multi-sheet Excel file 'output_directory.xlsx' to /tmp/RtmpLK60cu/output_directory/xlsx
-#> Exported 2 file(s) to stata format in /tmp/RtmpLK60cu/output_directory/stata
-#> Exported 2 file(s) to txt format in /tmp/RtmpLK60cu/output_directory/txt
-#> Exported 2 file(s) to rds format in /tmp/RtmpLK60cu/output_directory/rds
+#> Exported 2 file(s) to csv format in /tmp/Rtmpp9aRk7/output_directory/csv
+#> Exported multi-sheet Excel file 'output_directory.xlsx' to /tmp/Rtmpp9aRk7/output_directory/xlsx
+#> Exported 2 file(s) to stata format in /tmp/Rtmpp9aRk7/output_directory/stata
+#> Exported 2 file(s) to txt format in /tmp/Rtmpp9aRk7/output_directory/txt
+#> Exported 2 file(s) to rds format in /tmp/Rtmpp9aRk7/output_directory/rds
 # }
 ```

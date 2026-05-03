@@ -99,6 +99,6 @@ pivot_export <- pivot_data_hierarchy(data_multiple,
                                      pivot_cols = c("REG", "COMM"),
                                      export = TRUE,
                                      file_path = file.path(tempdir(), "pivot_output.xlsx"))
-#> Exported hierarchical pivot Excel file '.xlsx' to /tmp/RtmpLK60cu
+#> Exported hierarchical pivot Excel file '.xlsx' to /tmp/Rtmpp9aRk7
 # }
 ```
