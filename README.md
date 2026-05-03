@@ -69,7 +69,7 @@ install.packages("HARplus")
 
 While the latest HARplus (version 1.2.0) can be installed from my GitHub using:
 ```r
-devtools::install_github("Bodysbobb/HARplus")
+pak::pak("Bodysbobb/HARplus")
 ```
 
 ## Quick Guide to HARplus
