@@ -7,153 +7,199 @@
 save_har(
   data_list,
   file_path,
-  dimensions,
+  dimensions = NULL,
   value_cols = NULL,
+  header_type = NULL,
+  mappings = NULL,
   long_desc = NULL,
   coefficients = NULL,
   export_sets = TRUE,
   lowercase = TRUE,
   dim_order = NULL,
-  dim_rename = NULL
+  dim_rename = NULL,
+  force_sparse = NULL,
+  max_chunk = 2e+06
 )
 }
 \arguments{
-\item{data_list}{A named list of data frames or arrays (names up to 4 characters).}
+\item{data_list}{Named list of objects to write. List names are used as HAR
+header names after conversion to uppercase and truncation to four characters.}
 
-\item{file_path}{Path to the output HAR file.}
+\item{file_path}{Character string giving the output HAR file path.}
 
-\item{dimensions}{A named list specifying dimension columns for each header.
-\itemize{
-\item HAR dimension names follow these column names; rename columns before saving to change them.
-}}
+\item{dimensions}{Optional named list. For data-frame inputs, each element
+gives the columns used as array dimensions.}
 
-\item{value_cols}{A named vector of value column names. Defaults to "Value".}
+\item{value_cols}{Optional named list or named character vector. For
+data-frame inputs, each element gives the numeric value column. Defaults to
+\code{"Value"} when omitted.}
 
-\item{long_desc}{A named vector of long descriptions (optional).}
+\item{header_type}{Optional named list or named character vector giving
+explicit header roles. Accepted values are \code{"auto"}, \code{"set"},
+\code{"mapping"}, \code{"real"}, \code{"sparse"}, and \code{"integer"}.}
 
-\item{coefficients}{A named vector of coefficient names (optional).}
+\item{mappings}{Optional named list. Each element must be
+\code{c(source_set, destination_set)} for the corresponding mapping header.}
 
-\item{export_sets}{Logical; if TRUE, exports dimension sets as 1C headers. Default is TRUE.}
+\item{long_desc}{Optional named list or named character vector of long header
+descriptions.}
 
-\item{lowercase}{Logical; if TRUE, converts elements to lowercase. Default is TRUE.}
+\item{coefficients}{Optional named list or named character vector of
+coefficient names for numeric headers.}
 
-\item{dim_order}{Optional dimension ordering specification. Can be:
-\itemize{
-\item \code{NULL} (default): alphabetical A–Z ordering
-\item a data frame with columns matching dimension names
-\item a named list specifying order for each dimension
-\item a character string giving the path to an Excel or CSV file with order definitions
-}}
+\item{export_sets}{Logical. If \code{TRUE}, dimension sets from numeric
+arrays are written as character headers unless already supplied. Default is
+\code{TRUE}.}
 
-\item{dim_rename}{Optional named list to rename dimensions in HAR output.
-\itemize{
-\item Names are original column names, values are desired HAR dimension names
-\item Allows duplicate dimension names in HAR (e.g., COMMxREGxREG from COMMxSREGxDREG)
-\item Example: list(RTMS = c(COMM = "COMM", SREG = "REG", DREG = "REG"))
-}}
+\item{lowercase}{Logical. If \code{TRUE}, character elements and dimension
+values are converted to lowercase during data-frame and ordering
+processing. Default is \code{TRUE}.}
+
+\item{dim_order}{Optional dimension-ordering specification. Can be
+\code{NULL}, a data frame, a named list, or a path to a CSV or Excel file.}
+
+\item{dim_rename}{Optional named list for renaming array dimensions in the
+HAR output.}
+
+\item{force_sparse}{Optional character vector of headers to write in sparse
+numeric format.}
+
+\item{max_chunk}{Integer. Maximum number of elements per dense numeric data
+chunk. Default is \code{2e6}.}
 }
 \value{
-Invisibly returns a list containing export metadata, including file path and header summary.
+Invisibly returns a list containing the output path, written headers,
+and counts of set, data, and mapping headers.
 }
 \description{
-Writes one or more data matrices or arrays into a GEMPACK-compatible
-HAR file format, automatically generating associated 1C set headers.
-}
-\details{
-\itemize{
-\item Supports \verb{1CFULL} (string sets) and \code{REFULL} (real arrays) headers
-\item \verb{2IFULL} (integer) and \code{RESPSE} (sparse) types are not implemented
-\item Up to seven dimensions and ~2 million elements per chunk
-\item No practical file-size limit or header count restriction
-}
+Writes a named list of R objects to a GEMPACK-compatible HAR file, including
+character sets, mapping vectors, integer matrices, numeric arrays, sparse
+numeric arrays, and data frames reshaped to arrays.
 }
 \examples{
-# Example 1: Save a single matrix
-har_path <- system.file("extdata", "TAR10-WEL.har", package = "HARplus")
-har_data <- load_harx(har_path)
-welfare_data <- get_data_by_var("A", har_data)
-welfare_data_A <- welfare_data[["har_data"]][["A"]]
+# Example 1: Save one numeric data frame
+REG <- c("USA", "EU", "ROW")
+COLUMN <- c("alloc_A1", "tot_E1")
+WELF <- expand.grid(REG = REG, COLUMN = COLUMN, stringsAsFactors = FALSE)
+WELF$Value <- seq_len(nrow(WELF))
 
 save_har(
-  data_list   = list(WELF = welfare_data),
-  file_path   = file.path(tempdir(), "output_single.har"),
-  dimensions  = list(WELF = c("REG", "COLUMN")),
-  value_cols  = c(WELF = "Value"),
-  long_desc   = c(WELF = "Welfare Decomposition"),
+  data_list = list(WELF = WELF),
+  file_path = file.path(tempdir(), "output_single.har"),
+  dimensions = list(WELF = c("REG", "COLUMN")),
+  value_cols = list(WELF = "Value"),
+  long_desc = list(WELF = "Welfare Decomposition"),
+  coefficients = list(WELF = "WELF"),
   export_sets = TRUE,
-  lowercase   = FALSE
+  lowercase = FALSE
 )
 
-# Example 2: Save multiple matrices
-welfare_data <- get_data_by_var(c("A", "A1"), har_data)
-welfare_data <- welfare_data[["har_data"]]
+# Example 2: Save multiple numeric data frames
+DECOM <- expand.grid(REG = REG, ALLOCEFF = c("A1", "A2"), stringsAsFactors = FALSE)
+DECOM$Value <- seq_len(nrow(DECOM))
 
 save_har(
-  data_list   = list(WELF = welfare_data[["A"]],
-                     DECOM = welfare_data[["A1"]]),
-  file_path   = file.path(tempdir(), "output_multi.har"),
-  dimensions  = list(WELF = c("REG", "COLUMN"),
-                     DECOM = c("REG", "ALLOCEFF")),
-  value_cols  = list(WELF = "Value",
-                     DECOM = "Value"),
-  long_desc   = list(WELF = "Welfare Decomposition",
-                     DECOM = "Allocative efficiency effect"),
-  export_sets = TRUE,
-  lowercase   = FALSE
-)
-
-# Example 3: Apply mapping file for sorting
-mapping <- list(
-  REG    = c("RestofWorld", "MENA", "EU_28"),
-  COLUMN = c("alloc_A1", "tot_E1")
-)
-
-save_har(
-  data_list   = list(
-    WELF  = welfare_data[["A"]],
-    DECOM = welfare_data[["A1"]]
-  ),
-  file_path   = file.path(tempdir(), "output_sorted.har"),
-  dimensions  = list(
-    WELF  = c("REG", "COLUMN"),
+  data_list = list(WELF = WELF, DECOM = DECOM),
+  file_path = file.path(tempdir(), "output_multi.har"),
+  dimensions = list(
+    WELF = c("REG", "COLUMN"),
     DECOM = c("REG", "ALLOCEFF")
   ),
-  value_cols  = list(
-    WELF  = "Value",
+  value_cols = list(
+    WELF = "Value",
     DECOM = "Value"
   ),
-  long_desc   = list(
-    WELF  = "Welfare Decomposition",
+  long_desc = list(
+    WELF = "Welfare Decomposition",
     DECOM = "Allocative efficiency effect"
   ),
+  coefficients = list(
+    WELF = "WELF",
+    DECOM = "DECOM"
+  ),
   export_sets = TRUE,
-  dim_order   = mapping,
-  lowercase   = FALSE
+  lowercase = FALSE
 )
 
-# Example 4: Rename duplicated dimension names  
-# to export as a single structure (e.g., COMMxREGxREG)
-har_path <- system.file("extdata", "TAR10-WEL.har", package = "HARplus")
-har_data <- load_harx(har_path)
-welfare_data <- get_data_by_var("C17", har_data)
-welfare_data <- welfare_data[["har_data"]][["C17"]] 
+# Example 3: Save a mapping vector
+SC <- c("AF", "AP", "BA")
+GSEC <- c("OCR", "V_F", "GRO")
+MASC <- c(AF = "OCR", AP = "V_F", BA = "GRO")
 
-mapping <- list(
-  COMM = c("TransComm", "MeatLstk"),
-  REG  = c("SSA", "RestofWorld", "SEAsia")  
-)
-
-# Export HAR
 save_har(
-  data_list   = list(TEST = welfare_data),
-  file_path   = file.path(tempdir(), "output_single.har"),
-  dimensions  = list(TEST = c("COMM", "REG", "REG.1")),
-  value_cols  = list(TEST = "Value"),
-  long_desc   = list(TEST = "Shock RTMS"),
-  dim_rename  = list(TEST = c(COMM = "COMM", SREG = "REG", DREG = "REG.1")),
+  data_list = list(SC = SC, GSEC = GSEC, MASC = MASC),
+  file_path = file.path(tempdir(), "mapping.har"),
+  mappings = list(MASC = c("SC", "GSEC")),
+  long_desc = list(
+    SC = "Set SC",
+    GSEC = "Set GSEC",
+    MASC = "Mapping SC to GSEC"
+  ),
+  export_sets = FALSE,
+  lowercase = FALSE
+)
+
+# Example 4: Save mixed headers
+CODE <- matrix(as.integer(c(1, 2, 3, 4)), nrow = 2)
+TAX <- expand.grid(SC = SC, REG = REG, stringsAsFactors = FALSE)
+TAX$Value <- c(0, 0, 0, 1.2, 0, 0, 0, 0, 2.5)
+
+save_har(
+  data_list = list(
+    WELF = WELF,
+    REG = REG,
+    SC = SC,
+    GSEC = GSEC,
+    MASC = MASC,
+    TAX = TAX,
+    CODE = CODE
+  ),
+  file_path = file.path(tempdir(), "output_mixed.har"),
+  dimensions = list(
+    WELF = c("REG", "COLUMN"),
+    TAX = c("SC", "REG")
+  ),
+  value_cols = list(
+    WELF = "Value",
+    TAX = "Value"
+  ),
+  mappings = list(
+    MASC = c("SC", "GSEC")
+  ),
+  long_desc = list(
+    WELF = "Welfare Decomposition",
+    REG = "Set REG",
+    SC = "Set SC",
+    GSEC = "Set GSEC",
+    MASC = "Mapping SC to GSEC",
+    TAX = "Sparse tax example",
+    CODE = "Integer matrix example"
+  ),
+  coefficients = list(
+    WELF = "WELF",
+    TAX = "TAX"
+  ),
+  force_sparse = "TAX",
+  export_sets = FALSE,
+  lowercase = FALSE
+)
+
+# Example 5: Apply custom dimension ordering
+dim_order <- list(
+  REG = c("ROW", "USA", "EU"),
+  COLUMN = c("tot_E1", "alloc_A1")
+)
+
+save_har(
+  data_list = list(WELF = WELF),
+  file_path = file.path(tempdir(), "output_sorted.har"),
+  dimensions = list(WELF = c("REG", "COLUMN")),
+  value_cols = list(WELF = "Value"),
+  long_desc = list(WELF = "Welfare Decomposition"),
+  coefficients = list(WELF = "WELF"),
   export_sets = TRUE,
-  dim_order   = mapping,
-  lowercase   = FALSE
+  dim_order = dim_order,
+  lowercase = FALSE
 )
 }
 \seealso{

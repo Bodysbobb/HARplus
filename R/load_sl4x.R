@@ -110,19 +110,72 @@ load_sl4x <- function(file_path, lowercase = FALSE, select_header = NULL) {
     
     shoc_row <- 1
     for (v in zero_indices) {
-      if (has_valid_shoc && solution$PSHK[v] == 1) {
+      # Guard: ensure PSHK index is valid before accessing
+      if (has_valid_shoc && 
+          v <= length(solution$PSHK) && 
+          !is.na(solution$PSHK[v]) &&
+          solution$PSHK[v] == 1) {
+        
+        # Guard: ensure OREX index is valid and value is positive
+        if (v > length(solution$OREX) || is.na(solution$OREX[v]) || solution$OREX[v] <= 0) {
+          results[[solution$VARS[v]]][] <- 0
+          next
+        }
+        
         end_row <- shoc_row + solution$OREX[v] - 1
-        if (end_row <= nrow(solution$SHOC)) {
+        
+        if (shoc_row >= 1 && end_row <= nrow(solution$SHOC)) {
           shock_values <- solution$SHOC[shoc_row:end_row, 1]
-          for (st_idx in seq_along(stHeaders)) {
-            if (length(dim(results[[solution$VARS[v]]])) == 2) {
-              results[[solution$VARS[v]]][, st_idx] <- shock_values
+          
+          var_name <- solution$VARS[v]
+          if (!is.null(results[[var_name]])) {
+            if (length(dim(results[[var_name]])) == 2) {
+              # Multi-dimensional: fill shock values into each subtotal column
+              n_elements <- solution$OREX[v]
+              for (st_idx in seq_along(stHeaders)) {
+                if (n_elements == nrow(results[[var_name]])) {
+                  results[[var_name]][, st_idx] <- shock_values
+                } else {
+                  # Size mismatch - fill what we can
+                  fill_len <- min(n_elements, nrow(results[[var_name]]))
+                  results[[var_name]][1:fill_len, st_idx] <- shock_values[1:fill_len]
+                }
+              }
+            } else if (length(dim(results[[var_name]])) > 2) {
+              # Higher-dimensional arrays: broadcast shock across subtotal dimension
+              n_elements <- solution$OREX[v]
+              arr_dims <- dim(results[[var_name]])
+              subtotal_dim <- length(arr_dims)  # last dimension is subtotal
+              
+              for (st_idx in seq_along(stHeaders)) {
+                idx_list <- vector("list", length(arr_dims))
+                for (d in seq_along(arr_dims)) {
+                  if (d == subtotal_dim) {
+                    idx_list[[d]] <- st_idx
+                  } else {
+                    idx_list[[d]] <- seq_len(arr_dims[d])
+                  }
+                }
+                sub_array <- do.call(`[`, c(list(results[[var_name]]), idx_list, list(drop = FALSE)))
+                if (length(sub_array) == n_elements) {
+                  do.call(`[<-`, c(list(results[[var_name]]), idx_list, list(value = shock_values)))
+                  results[[var_name]] <- do.call(`[<-`, c(list(results[[var_name]]), idx_list, list(value = shock_values)))
+                } else {
+                  fill_len <- min(n_elements, length(sub_array))
+                  fill_vals <- rep(0, length(sub_array))
+                  fill_vals[1:fill_len] <- shock_values[1:fill_len]
+                  results[[var_name]] <- do.call(`[<-`, c(list(results[[var_name]]), idx_list, list(value = fill_vals)))
+                }
+              }
             } else {
-              results[[solution$VARS[v]]][st_idx] <- shock_values[1]
+              # Scalar or 1D
+              results[[var_name]][seq_along(stHeaders)] <- shock_values[1]
             }
           }
+          
           shoc_row <- shoc_row + solution$OREX[v]
         } else {
+          # SHOC matrix exhausted or row out of bounds
           results[[solution$VARS[v]]][] <- 0
         }
       } else {
