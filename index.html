@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="index.html">HARplus</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -58,18 +58,34 @@
 <p><a href="https://CRAN.R-project.org/package=HARplus" class="external-link"><img src="https://www.r-pkg.org/badges/version/HARplus" alt="CRAN"></a> <a href="https://github.com/Bodysbobb/HARplus/releases/latest" class="external-link"><img src="https://img.shields.io/github/v/tag/Bodysbobb/HARplus?label=GitHub%20Version&amp;color=3CB371&amp;sort=semver" alt="GitHub Version"></a> <a href="https://github.com/Bodysbobb/HARplus/blob/main/LICENSE.md/" class="external-link"><img src="https://img.shields.io/github/license/Bodysbobb/HARplus?color=3CB371" alt="License"></a></p>
 <p><strong>Extensions:</strong><br><a href="https://www.pattawee-pp.com/GTAPViz/" class="external-link"><img src="https://img.shields.io/badge/GTAPViz-276DC3?style=flat-square&amp;logo=r&amp;logoColor=white" alt="GTAPViz"></a></p>
 <hr>
+<div class="section level2">
+<h2 id="version-120---update-02-may-2026">Version 1.2.0 - Update (02-May-2026)<a class="anchor" aria-label="anchor" href="#version-120---update-02-may-2026"></a>
+</h2>
+<div class="section level3">
+<h3 id="bug-fixes">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes"></a>
+</h3>
+<ul>
+<li>Fixed an issue where <code><a href="reference/load_sl4x.html">load_sl4x()</a></code> and <code><a href="reference/load_harx.html">load_harx()</a></code> returned a <code>subscript out of bounds</code> error for macro variables.</li>
+</ul>
 </div>
-<div class="section level1">
-<h1 id="update-19-oct-2025">Update (19-Oct-2025)<a class="anchor" aria-label="anchor" href="#update-19-oct-2025"></a>
-</h1>
+<div class="section level3">
+<h3 id="new-features">New features<a class="anchor" aria-label="anchor" href="#new-features"></a>
+</h3>
 <ul>
 <li>
-<strong>Writing HAR files without limitations</strong> – The new <code><a href="reference/save_har.html">save_har()</a></code> function fully supports writing <code>.HAR</code> files with no size restrictions, allowing up to seven dimensions and approximately two million elements per chunk.<br>
-</li>
+<code><a href="reference/save_har.html">save_har()</a></code> now supports writing <code>1C</code> headers for string-format data.</li>
 <li>
-<strong>Shock calculation and HAR export</strong> – Introduced <code><a href="reference/shock_calculate_uniform.html">shock_calculate_uniform()</a></code> and <code><a href="reference/shock_calculate.html">shock_calculate()</a></code> to compute and <strong>export shock results directly into GEMPACK-compatible <code>.HAR</code> files</strong>, supporting dynamic multi-period calculations (e.g., <code>ONEY</code>, <code>TWOY</code>, <code>THRY</code>, etc.) for recursive-dynamic simulations.</li>
+<code><a href="reference/save_har.html">save_har()</a></code> now supports writing ViewHAR-recognized mapping headers through the new <code>mappings</code> argument.</li>
+<li>Added support for writing mixed HAR files containing string sets, mapping vectors, numeric data frames, sparse numeric data, and integer matrices in a single <code><a href="reference/save_har.html">save_har()</a></code> call.</li>
+<li>Added optional <code>header_type</code> control for explicitly defining header roles when automatic detection is not sufficient.</li>
+<li>Added stricter header-name validation to prevent silent duplication after GEMPACK’s four-character header truncation.</li>
+<li>Improved mapping validation: missing or invalid mapping targets are written as <code>"0"</code> and reported with warnings.</li>
+<li>Clarified the <code><a href="reference/save_har.html">save_har()</a></code> interface: <code>value_cols</code> is used only for numeric value columns in data-frame inputs, while mapping behavior is defined separately through <code>mappings</code>.</li>
+<li>Updated <code><a href="reference/save_har.html">save_har()</a></code> documentation and examples for CRAN-style usage, including mixed-header exports and ViewHAR-compatible mapping exports.</li>
 </ul>
 <hr>
+</div>
+</div>
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
@@ -116,7 +132,7 @@
 <p>HARplus (version 1.1.2) can be installed directly in R using:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"HARplus"</span><span class="op">)</span></span></code></pre></div>
-<p>While the latest HARplus (version 1.1.3) can be installed from my GitHub using:</p>
+<p>While the latest HARplus (version 1.2.0) can be installed from my GitHub using:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"Bodysbobb/HARplus"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -264,6 +280,22 @@ Research Assistant at GTAP</p>
 <h2 id="gtap-database">GTAP Database<a class="anchor" aria-label="anchor" href="#gtap-database"></a>
 </h2>
 <p>Sample data used in this <a href="https://rpubs.com/Bodysbob/1273998/" class="external-link">vignette</a> is obtained from the GTAPv7 model and utilizes publicly available data from the <a href="https://www.gtap.agecon.purdue.edu/databases/archives.asp" class="external-link">GTAP 9 database</a>. For more details about the GTAP database and model, refer to the <strong><a href="https://www.gtap.agecon.purdue.edu/" class="external-link">GTAP Database</a></strong>.</p>
+<hr>
+</div>
+</div>
+<div class="section level1">
+<h1 id="older-version">Older Version<a class="anchor" aria-label="anchor" href="#older-version"></a>
+</h1>
+<div class="section level2">
+<h2 id="version-113---update-30-oct-2025">Version 1.1.3 - Update (30-Oct-2025)<a class="anchor" aria-label="anchor" href="#version-113---update-30-oct-2025"></a>
+</h2>
+<ul>
+<li>
+<strong>Writing HAR files without limitations</strong> – The new <code><a href="reference/save_har.html">save_har()</a></code> function fully supports writing <code>.HAR</code> files with no size restrictions, allowing up to seven dimensions and approximately two million elements per chunk.<br>
+</li>
+<li>
+<strong>Shock calculation and HAR export</strong> – Introduced <code><a href="reference/shock_calculate_uniform.html">shock_calculate_uniform()</a></code> and <code><a href="reference/shock_calculate.html">shock_calculate()</a></code> to compute and <strong>export shock results directly into GEMPACK-compatible <code>.HAR</code> files</strong>, supporting dynamic multi-period calculations (e.g., <code>ONEY</code>, <code>TWOY</code>, <code>THRY</code>, etc.) for recursive-dynamic simulations.</li>
+</ul>
 </div>
 </div>
 
@@ -310,7 +342,7 @@ Research Assistant at GTAP</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
